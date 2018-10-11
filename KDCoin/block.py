@@ -5,7 +5,6 @@ from KDCoin.helperFunctions import simpleLOD
 from KDCoin.preImage import getDigest, findPreimage
 from KDCoin.transaction import Transaction
 from KDCoin.keyPair import GenerateKeyPair
-from KDCoin.globalState import State
 from multiprocessing import Process, Queue
 
 
@@ -24,43 +23,98 @@ def createTreeFromTx(_transaction_list):
 ##########################
 # Assembling a Block:
 # Block should be able to be created by specifying a list of transactions
-# Only leave _prev and _root empty for genisys block creation
+# Only leave _prev empty for genisys block creation
 ##########################
 class Block:
-    def __init__(self, _transaction_list, _prev_header=None, _prev_block=None):
+    def __init__(self, _transaction_list, _prev_header=None, _prev_block=None, _difficulty=3):
+        # to create
+        self.header = ""
+        self.nonce = ""
+
+        # variables included in hash
         self.prev_header = _prev_header  # hash of previous header
         self.timestamp = str(time.time())  # timestamp of block
-        self.merkle_tree = None
-        self.tx_list = _transaction_list
+        self.merkle_root = None
 
+        # pointers
+        self.merkle_tree = None
         self.prev_block = _prev_block
-        self.state = State()
-        self.nonce = "default_nonce"
-        self.header = "genisys"
+
+        # static variables
+        self.tx_list = _transaction_list  # transactions verified within this block
+        self.state = {
+            "Balance": {},
+            "Tx_pool": [],
+            "Blockchain_length": 0
+        }
+        self.difficulty = _difficulty
 
         if _prev_header is not None:
             self.nonce = None  # random number needed to generate PoW
             self.prev_header = None  # header has to be created after nonce is found
             # init state from prev
-            self.state = State(_prev_block.state)
+            self.state["Balance"] = _prev_block.state["Balance"]
+            self.state["Blockchain_length"] = _prev_block.state["Blockchain_length"]
 
+        self.filterTxFromPool(_transaction_list)
+
+    # filter and verify transaction from the tx_list given
+    def filterTxFromPool(self, _transaction_list):
         tx_list = []
         for tx in _transaction_list:
             # invalid transactions will be lost here
-            if self.state.changeState(tx):
+            if self.changeState(tx):
                 tx_list.append(tx)
 
         # build merkle tree from transaction list
         self.merkle_tree = createTreeFromTx(tx_list)
+        self.merkle_root = self.merkle_tree.root
+
+    # changes state based off transaction
+    def changeState(self, _tx):
+        sendr_addr = _tx.data["Receiver"]
+        amount = _tx.data["Amount"]
+
+        balance = self.state["Balance"]
+
+        if _tx.data["Reward"]:
+            # reward block, immediately award
+            self.completeTransaction(_tx, True)
+
+        # cannot send from someone non-existent if not reward
+        if sendr_addr not in balance:
+            return False
+
+        # if less than amount
+        if balance[sendr_addr] < amount:
+            return False
+
+        self.completeTransaction(_tx)
+        return True
+
+    # completes transaction, assumes everything is correct
+    def completeTransaction(self, _transaction, _reward=False):
+        sendr_addr = _transaction.data["Receiver"]
+        recv_addr = _transaction.data["Receiver"]
+        amount = _transaction.data["Amount"]
+
+        balance = self.state["Balance"]
+
+        if not _reward:
+            balance[sendr_addr] -= amount
+
+        if recv_addr not in balance:
+            balance[recv_addr] = 0
+        balance[recv_addr] += amount
 
     # This should be called by miners as the block comes in
     # Validate checks that the nonce is proper
-    def validate(self, _LOD):
+    def validate(self):
         validating_string = self.prev_header \
                             + self.timestamp \
                             + self.merkle_tree.root.data["Transaction"] \
                             + self.nonce
-        minimum_pow = simpleLOD(_LOD)
+        minimum_pow = simpleLOD(self.difficulty)
 
         # verify proof of work is more than minimum requirement
         # this requires digest <= minimum proof of work
@@ -70,24 +124,22 @@ class Block:
     # This should take up the longest time
     # This must be called manually
     # todo: have a way to interrupt
-    def build(self, _LOD, _book):
+    def build(self, _book):
         first_half = self.prev_header \
                      + str(self.timestamp) \
                      + self.merkle_tree.root.data["Transaction"]
 
-        return Process(target=findPreimage, args=(simpleLOD(_LOD), first_half, _book))
+        return Process(target=findPreimage,
+                       args=(simpleLOD(self.difficulty), first_half, _book))
 
-    def setNonce(self, _nonce):
+    def completeBlockWithNonce(self, _nonce):
         self.nonce = _nonce
         self.header = self.prev_header \
                      + str(self.timestamp) \
                      + self.merkle_tree.root.data["Transaction"] \
                      + self.nonce
 
-    def setPrevBlock(self, _block):
-        self.prev_block = _block
-
-    def checkTransactionInBlock(self, _transaction):
+    def checkIfTransactionInBlock(self, _transaction):
         return _transaction in self.merkle_tree.leaf_nodes
 
 
