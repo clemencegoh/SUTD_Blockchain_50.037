@@ -56,12 +56,14 @@ def findCollision(numberOfBits, message):
 
 
 # Find preimage given target text and current digest of the header
-def findPreimage(_target, _message, _channel):
+def findPreimage(_target, _message, _found, _interrupt):
     strings_done = {}  # keep a hashmap of strings already done
 
     random_string = generateRandomByteStrings(100)
 
     while True:
+        # todo: add method to interrupt
+
         # generate until a new string not tried before has been found
         while random_string in strings_done:
             random_string = generateRandomByteStrings(100)
@@ -70,7 +72,7 @@ def findPreimage(_target, _message, _channel):
             break
         strings_done[random_string] = 1
 
-    _channel.put(random_string.decode())
+    _found.put(random_string.decode())
 
 
 # if __name__ == '__main__':

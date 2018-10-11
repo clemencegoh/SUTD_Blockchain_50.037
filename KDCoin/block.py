@@ -26,7 +26,7 @@ def createTreeFromTx(_transaction_list):
 # Only leave _prev empty for genisys block creation
 ##########################
 class Block:
-    def __init__(self, _transaction_list, _prev_header=None, _prev_block=None, _difficulty=3):
+    def __init__(self, _transaction_list, _prev_header="", _prev_block=None, _difficulty=3):
         # to create
         self.header = ""
         self.nonce = ""
@@ -51,7 +51,9 @@ class Block:
 
         if _prev_header is not None:
             self.nonce = None  # random number needed to generate PoW
-            self.prev_header = None  # header has to be created after nonce is found
+            self.prev_header = _prev_header  # header has to be created after nonce is found
+
+        if _prev_block is not None:
             # init state from prev
             self.state["Balance"] = _prev_block.state["Balance"]
             self.state["Blockchain_length"] = _prev_block.state["Blockchain_length"]
@@ -112,7 +114,7 @@ class Block:
     def validate(self):
         validating_string = self.prev_header \
                             + self.timestamp \
-                            + self.merkle_tree.root.data["Transaction"] \
+                            + self.merkle_root.data["Transaction"] \
                             + self.nonce
         minimum_pow = simpleLOD(self.difficulty)
 
@@ -123,25 +125,27 @@ class Block:
     # Call build after initialising with all the params
     # This should take up the longest time
     # This must be called manually
-    # todo: have a way to interrupt
-    def build(self, _book):
+    def build(self, _found, _interrupt):
+
         first_half = self.prev_header \
                      + str(self.timestamp) \
-                     + self.merkle_tree.root.data["Transaction"]
+                     + self.merkle_root.data["Transaction"]
 
         return Process(target=findPreimage,
-                       args=(simpleLOD(self.difficulty), first_half, _book))
+                       args=(simpleLOD(self.difficulty), first_half, _found, _interrupt))
 
     def completeBlockWithNonce(self, _nonce):
         self.nonce = _nonce
         self.header = self.prev_header \
                      + str(self.timestamp) \
-                     + self.merkle_tree.root.data["Transaction"] \
+                     + self.merkle_root.data["Transaction"] \
                      + self.nonce
 
     def checkIfTransactionInBlock(self, _transaction):
         return _transaction in self.merkle_tree.leaf_nodes
 
+    def setPrevBlock(self, _block):
+        self.prev_block = _block
 
 # Test with proper transactions in block
 # if __name__ == '__main__':

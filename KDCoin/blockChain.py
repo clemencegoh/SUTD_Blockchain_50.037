@@ -31,11 +31,8 @@ class Blockchain:
         if self.current_block is None:
             return False
 
-        # todo: determine what to do with this level_of_difficulty
-        level_of_difficulty = 3
-
         # validates current block, should be called when broadcasted by miner
-        return self.current_block.validate(level_of_difficulty)
+        return self.current_block.validate()
 
     # adds a new block
     # has option to add a new block to a certain block along the chain
