@@ -12,10 +12,10 @@ from KDCoin import blockChain, block, transaction, spvClient
 # - Keeping track of balance is done either through UTXO or account balance
 # - How to verify transaction?
 class Miner:
-    def __init__(self, _public_key, _blockchain=None):
+    def __init__(self, _blockchain=None, _pub="", _priv=""):
         # create new miner with fields:
         # todo: SPV_client
-        self.client = spvClient.SPVClient()  # client
+        self.client = spvClient.SPVClient(_pub, _priv)  # client
         self.blockchain = _blockchain  # current valid blockchain
         self.wip_block = None  # to be built
         self.tx_pool = []  # tx_pool held by miner
@@ -42,11 +42,11 @@ class Miner:
                 )
             )
 
-    def broadcast(self, _type, _data):
-        if _type == "Block":
-            pass
-        elif _type == "Transaction":
-            pass
+
+
+    def broadcastBlock(self, _type, _data):
+        # broadcasts blocks
+        pass
 
     # todo: determine amount to give as reward for block
     def createRewardTransaction(self, _private_key):

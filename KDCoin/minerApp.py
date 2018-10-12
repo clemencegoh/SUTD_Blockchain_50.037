@@ -1,19 +1,16 @@
-from flask import Flask, request
-import handlers
-import miner
-import keyPair
-
 import ecdsa
+from flask import Flask, request
+from KDCoin import handlers, miner, keyPair, spvClient
 
 
 app = Flask(__name__)
 
 
 internal_storage = {
-    "Public_key": None,
-    "Private_key": None,
-    "Neighbour_nodes": [],
-    "User": None,
+    "Public_key": "",  # hex, might want to eventually replace with SPVclient
+    "Private_key": "",  # hex
+    "Neighbour_nodes": [],  # array of website addresses to make requests to
+    "Miner": miner.Miner(),  # Miner Object
 }
 
 
@@ -46,7 +43,7 @@ def loginAPI():
     priv_key = priv_hex #Might want to change it to a key object in the future
     internal_storage["Private_key"] = priv_key
 
-    internal_storage["User"] = miner.Miner.new(internal_storage["Public_key"])
+    internal_storage["Miner"] = miner.Miner(internal_storage["Public_key"], pub_key, priv_key)
 
     # re-routes back to homepage
     return homePage()
@@ -63,9 +60,10 @@ def newUser():
 
     info = "Public Key: {}<br>" \
     "Private Key: {}<br>" \
-    "Please save these 2 (They are unrecoverable)".\
-    format(pub.to_string().hex(), priv.to_string().hex())
-
+    "Please save these 2 (They are unrecoverable)".format(
+        pub.to_string().hex(),
+        priv.to_string().hex()
+    )
 
     return info + newUser
 
@@ -89,4 +87,4 @@ def payTo(recv_addr):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5000)
