@@ -83,6 +83,11 @@ def payTo(recv_addr):
     pass
 
 
+@app.route('/newTransaction')
+def newTransaction():
+    # todo: new transaction parsing
+    pass
+
 # todo: create more routes for miners and users of blockchain
 
 

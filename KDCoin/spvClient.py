@@ -3,51 +3,43 @@ from KDCoin.keyPair import GenerateKeyPair
 import requests
 import json
 
+
 # Single Client
 # Functionalities: i) Create Transactions, ii) Verify transactions validated
-
-receiver_private_key, receiver_public_key = GenerateKeyPair()
-
 class SPVClient:
-
     def __init__(self, privatekey, publickey):
         self.privatekey = privatekey
         self.publickey = publickey
 
-
-#Creates transaction and sign with private key
-    def createTransaction(self, amount, comment):
+    # Creates transaction and sign with private key
+    def createTransaction(self, receiver_public_key, amount, comment):
         transaction_tobemade = Transaction(self.publickey, receiver_public_key,
                                                    amount, comment, self.privatekey)
         print(transaction_tobemade.data)
         transaction_tobemade.sign(self.privatekey)
+        return transaction_tobemade
 
-        if (transaction_tobemade.validate()):
-            print('got into here')
+    # Check acc balance of specified spvclient
+    def checkBalance(self, _address):
+        # get blockchain from miner
+        blockchain = ""
 
-        # json_tobesent = transaction_tobemade.to_json(transaction_tobemade.data)
-            json_tobesent = transaction_tobemade.__str__()
+        response = requests.get(_address + '/blockchain',
+                     headers={'Content-Type': 'application/json'}, json=blockchain)
 
-            #Send json to server
-            t1 = requests.post('http://127.0.0.1:8081/createTransaction',
-                               headers = {'Content-Type': 'application/json'},
-                               json = json_tobesent)
-            return True
-        else:
-            return False
+        # not sure if this is needed
+        blockchain = response.json
 
-#Check acc balance of specified spvclient
-    def checkBalance(self):
-        #Object type 'VerifyingKey' is not JSON serializable
-        publickeyinfo = {'publickey_tobechecked': str(self.publickey)}
-        json_tobesent = json.dumps(publickeyinfo)
+        balance = blockchain["current_block"]["state"]["Balance"][self.publickey]
+        return balance
 
-        requests.get('http://127.0.0.1:8081/clientCheckBalance',
-                     headers = {'Content-Type': 'application/json'}, json = json_tobesent)
+    def getMiners(self, _trusted_server):
+        response = requests.get(_trusted_server)
+        return response.json["miners_list"]
 
-sender_privatekey , sender_publickey = GenerateKeyPair()
-newclient = SPVClient(sender_privatekey , sender_publickey)
-#Send Transaction
-newclient.createTransaction(100,'demo')
-#Check Balance
-newclient.checkBalance()
+# sender_privatekey , sender_publickey = GenerateKeyPair()
+# newclient = SPVClient(sender_privatekey , sender_publickey)
+# #Send Transaction
+# newclient.createTransaction(100,'demo')
+# #Check Balance
+# newclient.checkBalance()
