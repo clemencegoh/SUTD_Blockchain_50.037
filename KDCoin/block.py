@@ -1,10 +1,10 @@
 import time
-from KDCoin.merkleNode import MerkleNode
-from KDCoin.merkleTree import MerkleTree
-from KDCoin.helperFunctions import simpleLOD
-from KDCoin.preImage import getDigest, findPreimage
-from KDCoin.transaction import Transaction
-from KDCoin.keyPair import GenerateKeyPair
+from merkleNode import MerkleNode
+from merkleTree import MerkleTree
+from helperFunctions import simpleLOD
+from preImage import getDigest, findPreimage
+from transaction import Transaction
+from keyPair import GenerateKeyPair
 from multiprocessing import Process, Queue
 
 
