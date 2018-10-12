@@ -26,10 +26,13 @@ class Transaction:
         t.sign(_private_key)
         return t
 
-    def to_json(self, _data):
+    def to_json(self, _data=None):
+        if _data is None:
+            _data = self.data
+
         # Edit signature
-        if type(self.data["Signature"]) is not str:
-            self.data["Signature"] = self.data["Signature"].hex()
+        if type(_data["Signature"]) is not str:
+            _data["Signature"] = _data["Signature"].hex()
         return json.dumps(_data)
 
     @classmethod

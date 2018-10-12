@@ -9,6 +9,7 @@ from multiprocessing import Process, Queue
 
 
 def createTreeFromTx(_transaction_list):
+
     node = MerkleNode("Leaf", _transaction_list[0])
     tree = MerkleTree(node)
 
@@ -65,9 +66,15 @@ class Block:
         tx_list = []
         for tx in _transaction_list:
             # invalid transactions will be lost here
-            if self.changeState(tx):
-                tx_list.append(tx)
+<<<<<<< HEAD
 
+            if self.state.changeState(tx):
+                print ('appended')
+=======
+            if self.changeState(tx):
+>>>>>>> master
+                tx_list.append(tx)
+        print (tx_list)
         # build merkle tree from transaction list
         self.merkle_tree = createTreeFromTx(tx_list)
         self.merkle_root = self.merkle_tree.root
@@ -148,35 +155,35 @@ class Block:
         self.prev_block = _block
 
 # Test with proper transactions in block
-# if __name__ == '__main__':
-#     sender_private_key, sender_public_key = GenerateKeyPair()
-#
-#     receiver_private_key, receiver_public_key = GenerateKeyPair()
-#
-#     amount = 10000
-#     comment = "testRun"
-#     tx_list = [
-#         Transaction(sender_public_key, receiver_public_key, amount, comment),
-#         Transaction(sender_public_key, receiver_public_key, amount, "new one"),
-#     ]
-#     b = Block(tx_list)
-#
-#     channel = Queue(1)  # max size = 1
-#
-#     level_of_difficulty = 3
-#
-#     p = b.build(level_of_difficulty, channel)
-#
-#     p.start()
-#     p.join()
-#
-#     nonce_found = channel.get()  # nonce string from process
-#
-#     # setNonce must be called once a result is found
-#     b.setNonce(nonce_found)
-#
-#     # debug messages
-#     print("Nonce found:", nonce_found)
-#     print("Current header:", b.header)
-#     print("Verifying block...", b.validate(level_of_difficulty))
+if __name__ == '__main__':
+    sender_private_key, sender_public_key = GenerateKeyPair()
+
+    receiver_private_key, receiver_public_key = GenerateKeyPair()
+
+    amount = 10000
+    comment = "testRun"
+    tx_list = [
+        Transaction(sender_public_key, receiver_public_key, amount, comment),
+        Transaction(sender_public_key, receiver_public_key, amount, "new one"),
+    ]
+    b = Block(tx_list)
+
+    channel = Queue(1)  # max size = 1
+
+    level_of_difficulty = 3
+
+    p = b.build(level_of_difficulty, channel)
+
+    p.start()
+    p.join()
+
+    nonce_found = channel.get()  # nonce string from process
+
+    # setNonce must be called once a result is found
+    b.setNonce(nonce_found)
+
+    # debug messages
+    print("Nonce found:", nonce_found)
+    print("Current header:", b.header)
+    print("Verifying block...", b.validate(level_of_difficulty))
 #
