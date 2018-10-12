@@ -1,10 +1,10 @@
 import unittest
 import time
 from multiprocessing import Queue
-from KDCoin.blockChain import Blockchain
-from KDCoin.block import Block
-from KDCoin.keyPair import GenerateKeyPair
-from KDCoin.transaction import Transaction
+from blockChain import Blockchain
+from block import Block
+from keyPair import GenerateKeyPair
+from transaction import Transaction
 
 
 class TestBlockchain(unittest.TestCase):

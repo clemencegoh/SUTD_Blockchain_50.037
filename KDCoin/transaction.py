@@ -3,15 +3,6 @@ from keyPair import GenerateKeyPair, signWithPrivateKey, verifyExisting
 import ecdsa
 
 
-# variables
-# sender_private_key, sender_public_key = GenerateKeyPair()
-#
-# receiver_private_key, receiver_public_key = GenerateKeyPair()
-#
-# amount = 10000
-# comment = "testRun"
-
-
 # Transaction class
 class Transaction:
     def __init__(self, _sender_public_key, _receiver_public_key, _amount, _comment, _private, _reward=False):
@@ -64,7 +55,7 @@ class Transaction:
         # Validate transaction correctness.
         # Can be called within from_json()
         # remove signature
-        sig = bytes.fromhex(self.data["Signature"])
+        sig = self.data["Signature"]
         self.data["Signature"] = ""
 
         # verify data without signature in it
@@ -80,8 +71,3 @@ class Transaction:
     def __str__(self):
         return self.to_json(self.data)
 
-
-# if __name__=="__main__":
-#     t = Transaction.new(sender_public_key, receiver_public_key, amount, comment, sender_private_key)
-#     # print(t.data)
-#     print(t.validate())
