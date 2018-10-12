@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from KDCoin.transaction import Transaction
 from KDCoin.keyPair import GenerateKeyPair
 
@@ -25,3 +26,18 @@ class SPVClient:
 # if __name__ == "__main__":
 #     newclient = SPVClient()
 #     newclient.createTransaction(150,'')
+=======
+class SPVClient:
+    def __init__(self):
+        self.pub_key = ""
+        self.priv_key = ""
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    pass
+>>>>>>> master
