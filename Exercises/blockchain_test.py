@@ -1,4 +1,5 @@
 import unittest
+import time
 from multiprocessing import Queue
 from KDCoin.blockChain import Blockchain
 from KDCoin.block import Block
@@ -92,6 +93,68 @@ class TestBlockchain(unittest.TestCase):
         )
 
         self.assertTrue(res, "Validation is not True")
+
+    def test_blockchainInterrupt(self):
+        # create parties
+        sender_priv, sender_pub = GenerateKeyPair()
+        recv_priv, recv_pub = GenerateKeyPair()
+        difficulty = 1
+
+        # init with 20 coins each
+        tx0 = Transaction(
+            sender_pub,
+            sender_pub,
+            20,
+            "First transaction",
+            sender_priv,
+            True
+        )
+        tx1 = Transaction(
+            recv_pub,
+            recv_pub,
+            10,
+            "First transaction",
+            recv_priv,
+            True
+        )
+        tx2 = Transaction(
+            sender_pub,
+            recv_pub,
+            10,
+            "Sending money",
+            sender_priv
+        )
+        tx3 = Transaction(
+            recv_pub,
+            sender_pub,
+            5,
+            "Return Transaction",
+            recv_priv
+        )
+
+        tx_list = [tx0, tx1, tx2, tx3]
+
+        # create block from tx_list
+        # this should be the longest step
+        b = Block(tx_list, _difficulty=6)
+        q = Queue(1)
+        interrupt = Queue(1)
+
+        process = b.build(q, interrupt)
+        process.start()
+
+        # test interrupt
+        time.sleep(1)
+        interrupt.put(1)
+
+        # wait for block to finish building
+        process.join()
+
+        nonce = q.get()
+        print("Nonce:", nonce)  # not sure but this should not work
+
+        # finish building block
+        # b.completeBlockWithNonce(nonce)
 
 
 if __name__ == "__main__":
