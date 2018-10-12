@@ -1,15 +1,15 @@
 import json
-from keyPair import GenerateKeyPair, signWithPrivateKey, verifyExisting
+from KDCoin.keyPair import GenerateKeyPair, signWithPrivateKey, verifyExisting
 import ecdsa
 
 
 # variables
-# sender_private_key, sender_public_key = GenerateKeyPair()
-#
-# receiver_private_key, receiver_public_key = GenerateKeyPair()
-#
-# amount = 10000
-# comment = "testRun"
+sender_private_key, sender_public_key = GenerateKeyPair()
+
+receiver_private_key, receiver_public_key = GenerateKeyPair()
+
+amount = 10000
+comment = "testRun"
 
 
 # Transaction class
@@ -52,6 +52,7 @@ class Transaction:
         return json.loads(_data)
 
     def sign(self, _private_key):
+
         # Sign object with private key passed
         # That can be called within new()
 
@@ -75,8 +76,9 @@ class Transaction:
 
         # verify data without signature in it
         vk = self.getVKFromData("Sender")
+        print(self.to_json(self.data))
         result = verifyExisting(_message=self.to_json(self.data), _public_key=vk, _sig=sig)
-        self.data["Signature"] = sig
+        # self.data["Signature"] = sig
         return result
 
     def __eq__(self, other):
@@ -90,4 +92,5 @@ class Transaction:
 # if __name__=="__main__":
 #     t = Transaction.new(sender_public_key, receiver_public_key, amount, comment, sender_private_key)
 #     # print(t.data)
-#     print(t.validate())
+#     # print(t.validate())
+

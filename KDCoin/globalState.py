@@ -20,7 +20,9 @@ class State:
             self.header = self.prev_state.header
 
     def changeState(self, _transaction):
-        sendr_addr = _transaction.data["Receiver"]
+        # sendr_addr = _transaction.data["Receiver"]
+        sendr_addr = _transaction.data["Sender"]
+        print(sendr_addr)
         recv_addr = _transaction.data["Receiver"]
         amount = _transaction.data["Amount"]
 
@@ -31,10 +33,12 @@ class State:
             self.data["Balance"][recv_addr] += amount
 
         if sendr_addr not in self.data:
+            print('got into sendr addr not in data')
             return False
 
         # if less than amount
         if self.data[sendr_addr] < amount:
+            print('got into < amount')
             return False
 
         self.completeTransaction(_transaction)
