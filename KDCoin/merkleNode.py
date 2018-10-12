@@ -1,5 +1,5 @@
 import json
-from KDCoin.helperFunctions import hashItem
+from helperFunctions import hashItem
 
 
 ############

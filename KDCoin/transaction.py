@@ -14,16 +14,17 @@ comment = "testRun"
 
 # Transaction class
 class Transaction:
-    def __init__(self, _sender_public_key, _receiver_public_key, _amount, _comment):
+    def __init__(self, _sender_public_key, _receiver_public_key, _amount, _comment, _private, _reward=False):
         self.version = 1.0
         self.data = {
             "Sender": _sender_public_key.to_string().hex(),
             "Receiver": _receiver_public_key.to_string().hex(),
             "Amount": _amount,
             "Comment": _comment,
-            "Reward": False,
+            "Reward": _reward,
             "Signature": ""
         }
+        self.sign(_private)
 
     @classmethod
     def new(cls, _from, _to, _amount, _comment, _private_key):
@@ -34,30 +35,23 @@ class Transaction:
         t.sign(_private_key)
         return t
 
-    @classmethod
-    def newReward(cls, _miner, _private_key):
-        t = Transaction(_miner, _miner, 100, "Reward Block")
-        t.data["Reward"] = True
-
-        t.sign(_private_key)
-        return t
-
     def to_json(self, _data):
-        # Serializes object to JSON string
+        # Edit signature
+        if type(self.data["Signature"]) is not str:
+            self.data["Signature"] = self.data["Signature"].hex()
         return json.dumps(_data)
 
     @classmethod
     def from_json(cls, _data):
         # Instantiates/Deserializes object from JSON string
-        return json.loads(_data)
+        hex_data = json.loads(_data)
+        hex_data["Signature"] = bytes.fromhex(hex_data["Signature"])
 
     def sign(self, _private_key):
 
         # Sign object with private key passed
-        # That can be called within new()
-
         # sign data with private key
-        sig = signWithPrivateKey(_message=self.to_json(self.data), sk=_private_key)
+        sig = signWithPrivateKey(_message=json.dumps(self.data), sk=_private_key)
 
         # add signature to existing data
         self.data["Signature"] = sig
@@ -71,7 +65,7 @@ class Transaction:
         # Validate transaction correctness.
         # Can be called within from_json()
         # remove signature
-        sig = self.data["Signature"]
+        sig = bytes.fromhex(self.data["Signature"])
         self.data["Signature"] = ""
 
         # verify data without signature in it

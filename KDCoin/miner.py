@@ -1,5 +1,5 @@
 from keyPair import GenerateKeyPair
-import blockChain, block, transaction
+from KDCoin import blockChain, block, transaction, spvClient
 
 
 # todo: Idea is for every miner to have its own flask app
@@ -14,24 +14,29 @@ import blockChain, block, transaction
 class Miner:
     def __init__(self, _public_key, _blockchain=None):
         # create new miner with fields:
-        self.blockchain = _blockchain
-        self.tx_list = []
-        self.balance = 0
-        self.address = _public_key
+        # todo: SPV_client
+        self.client = spvClient.SPVClient()  # client
+        self.blockchain = _blockchain  # current valid blockchain
+        self.wip_block = None  # to be built
+        self.tx_pool = []  # tx_pool held by miner
 
         # if this is ever invoked, it must be the first block
         # of the first miner
         if self.blockchain is None:
             # create new blockchain with empty data
+            # balance = self.blockchain.current_block.state["Balance"]
+
             self.blockchain = blockChain.Blockchain(
                 block.Block(
                     _transaction_list=[
                         # initial empty transaction
                         transaction.Transaction(
-                            self.address,
-                            self.address,
-                            self.balance,
-                            "Init Tx"
+                            _sender_public_key=self.client.pub_key,
+                            _receiver_public_key=self.client.pub_key,
+                            _amount=0,
+                            _comment="Init Tx",
+                            _private=self.client.priv_key,
+                            _reward=False,
                         )
                     ]
                 )
@@ -42,6 +47,20 @@ class Miner:
             pass
         elif _type == "Transaction":
             pass
+
+    # todo: determine amount to give as reward for block
+    def createRewardTransaction(self, _private_key):
+        reward = 100
+        t = transaction.Transaction(
+            _sender_public_key=self.address,
+            _receiver_public_key=self.address,
+            _amount=reward,
+            _comment="Reward transaction",
+            _private=_private_key,
+            _reward=True
+        )
+
+        return t
 
 
 if __name__ == '__main__':

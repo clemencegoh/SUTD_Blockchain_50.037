@@ -1,5 +1,5 @@
-from KDCoin.helperFunctions import hashItem
-from KDCoin.merkleNode import MerkleNode
+from helperFunctions import hashItem
+from merkleNode import MerkleNode
 
 
 def createNewNode(_merging_node, _incoming_node):
