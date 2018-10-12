@@ -24,7 +24,7 @@ class Transaction:
             "Reward": _reward,
             "Signature": ""
         }
-        self.sign(_private)
+        # self.sign(_private)
 
     @classmethod
     def new(cls, _from, _to, _amount, _comment, _private_key):
@@ -65,7 +65,9 @@ class Transaction:
         # Validate transaction correctness.
         # Can be called within from_json()
         # remove signature
-        sig = bytes.fromhex(self.data["Signature"])
+        print(type(self.data["Signature"]))
+        # sig = bytes.fromhex(self.data["Signature"])
+        sig = self.data["Signature"]
         self.data["Signature"] = ""
 
         # verify data without signature in it
