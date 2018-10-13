@@ -1,6 +1,6 @@
 import ecdsa
 from flask import Flask, request
-from KDCoin import handlers, miner, keyPair, spvClient
+import handlers, miner, keyPair, spvClient
 
 
 app = Flask(__name__)

@@ -1,5 +1,5 @@
-from KDCoin.transaction import Transaction
-from KDCoin.keyPair import GenerateKeyPair
+from transaction import Transaction
+from keyPair import GenerateKeyPair
 import requests
 import json
 

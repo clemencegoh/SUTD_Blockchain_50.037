@@ -8,8 +8,8 @@ class Transaction:
     def __init__(self, _sender_public_key, _receiver_public_key, _amount, _comment, _private, _reward=False):
         self.version = 1.0
         self.data = {
-            "Sender": _sender_public_key.to_string().hex(),
-            "Receiver": _receiver_public_key.to_string().hex(),
+            "Sender": _sender_public_key.hex(),
+            "Receiver": _receiver_public_key.hex(),
             "Amount": _amount,
             "Comment": _comment,
             "Reward": _reward,

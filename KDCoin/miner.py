@@ -1,5 +1,5 @@
 from keyPair import GenerateKeyPair
-from KDCoin import blockChain, block, transaction, spvClient
+import blockChain, block, transaction, spvClient
 
 
 # todo: Idea is for every miner to have its own flask app
