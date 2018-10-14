@@ -1,6 +1,7 @@
 import ecdsa
 from flask import Flask, request
 import requests
+import handlers, miner, keyPair, spvClient
 
 
 app = Flask(__name__)
