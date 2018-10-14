@@ -51,7 +51,7 @@ class Miner:
     def verifyTransaction():
         pass
 
-    def mineBlock()
+    def mineBlock(self):
         #While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
         interruptQueue = Queue(1)
         nonceQueue = Queue(1)
@@ -96,7 +96,7 @@ class Miner:
             newBlock = block.Block(
                     _transaction_list=
                         # choose first 10 transactions in tx_pool
-                        self.tx_pool[:10].append(createRewardTransaction(self.client.privatekey)),
+                        temp_pool.append(createRewardTransaction(self.client.privatekey)),
                     _prev_header=self.blockchain.current_block.header,
                     _difficulty=1
                 )
