@@ -1,6 +1,6 @@
 import ecdsa
 from flask import Flask, request
-from KDCoin import requests
+import requests
 
 
 app = Flask(__name__)
