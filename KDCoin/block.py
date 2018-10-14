@@ -26,7 +26,7 @@ def createTreeFromTx(_transaction_list):
 # Only leave _prev empty for genisys block creation
 ##########################
 class Block:
-    def __init__(self, _transaction_list, _prev_header="", _prev_block=None, _difficulty=3, _current_header="", _nonce=""):
+    def __init__(self, _transaction_list, _prev_header="", _prev_block=None, _difficulty=3, _current_header="", _nonce="", _state=None):
         # to create
         self.header = _current_header
         self.nonce = _nonce
@@ -42,11 +42,14 @@ class Block:
 
         # static variables
         self.tx_list = _transaction_list  # transactions verified within this block
-        self.state = {
-            "Balance": {},
-            "Tx_pool": [],
-            "Blockchain_length": 0
-        }
+        if _state is None:
+            self.state = {
+                "Balance": {},
+                "Tx_pool": [],
+                "Blockchain_length": 0
+            }
+        else:
+            self.state = _state
         self.difficulty = _difficulty
 
         if _prev_header is not None:

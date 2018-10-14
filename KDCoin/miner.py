@@ -29,17 +29,12 @@ class Miner:
 
         self.mineBlock()
 
-
-    def broadcastBlock(self, _type, _data):
-        # broadcasts blocks
-        pass
-
     # todo: determine amount to give as reward for block
     def createRewardTransaction(self, _private_key):
         reward = 100
         t = transaction.Transaction(
-            _sender_public_key=self.address,
-            _receiver_public_key=self.address,
+            _sender_public_key=self.client.publickey,
+            _receiver_public_key=self.client.publickey,
             _amount=reward,
             _comment="Reward transaction",
             _private=_private_key,
@@ -48,7 +43,7 @@ class Miner:
 
         return t
 
-    def verifyTransaction():
+    def verifyTransaction(self):
         pass
 
     def mineBlock(self):
@@ -90,9 +85,9 @@ class Miner:
             #validate the transactions
             temp_pool = []
             counter = 0
-            while temp_pool.len() < 9:
-                if tx_pool[counter].validate == True:
-                    temp_pool.append(tx_pool[counter])
+            while len(temp_pool) < 9:
+                if self.tx_pool[counter].validate:
+                    temp_pool.append(self.tx_pool[counter])
             newBlock = block.Block(
                     _transaction_list=
                         # choose first 10 transactions in tx_pool
@@ -121,17 +116,6 @@ class Miner:
                     "Block": _block_data
                 })
 
-    def createRewardTransaction(self, _private_key):
-        reward = 100
-        t = transaction.Transaction(
-            _sender_public_key=self.client.publickey,
-            _receiver_public_key=self.client.publickey,
-            _amount=reward,
-            _comment="Reward transaction",
-            _private=_private_key,
-            _reward=True
-        )
-        return t
 
 
 

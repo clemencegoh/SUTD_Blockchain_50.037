@@ -39,15 +39,19 @@ def requestLatestBlockchain():
     return req.json()
 
 
-def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
-    tx = internal_storage["Miner"].client.\
-        createTransaction(_recv_pub, _amount, _comment)
+def broadcastTx(_tx):
     for i in internal_storage["Neighbour_nodes"]:
         if i != self_address:
             # broadcast
             requests.post(i + "/newTx", {
-                "TX": tx
+                "TX": _tx.data
             })
+
+
+def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
+    tx = internal_storage["Miner"].client.\
+        createTransaction(_recv_pub, _amount, _comment)
+    broadcastTx(tx)
     internal_storage["Miner"].tx_pool.append(tx)
 
     # debug:
@@ -177,7 +181,7 @@ def newTx():
     tx = request.form.get("TX")
     if tx in internal_storage["Miner"].tx_pool:
         # don't do anything
-        return homePage()
+        return ""
     else:
         t = transaction.Transaction(
             _sender_public_key=tx["Sender"],
@@ -188,13 +192,31 @@ def newTx():
         t.data["Signature"] = tx["Signature"]
         internal_storage["Miner"].tx_pool.append(t)
 
+        # broadcast to the rest
+        broadcastTx(t)
+        return "Transaction received"
+
 
 # receive new Block from broadcast
 @app.route('/newBlock')
 def newBlock():
-    
-    
-    return block
+    block = request.form.get("Block")
+    b = block.Block(_transaction_list=block.tx_list,
+                    _prev_header=block.prev_header,
+                    _prev_block=block.prev_block,
+                    _difficulty=block.difficulty,
+                    _current_header=block.current_header,
+                    _nonce=block.nonce,
+                    _state=block.state)
+    if b.validate():
+        # interrupt and add block
+        current_chain = internal_storage["Miner"].blockchain
+        current_chain.addBlock(
+            _prev_block=current_chain.current_block,
+            _incoming_block=b
+        )
+
+    return ""
 
 
 @app.route('/mine')
