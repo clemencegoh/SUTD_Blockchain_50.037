@@ -231,6 +231,7 @@ def mineAPI():
 @app.route('/mining')
 def miningPage():
     global internal_storage
+    internal_storage["Miner"].mineBlock()
     mining = "Currently Mining ...!<br>" \
             "Statistics:<br><br>" \
             "Currently logged in as: {}<br>" \
