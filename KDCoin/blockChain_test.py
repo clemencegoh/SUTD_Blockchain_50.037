@@ -20,31 +20,31 @@ class TestBlockchain(unittest.TestCase):
             sender_pub,
             20,
             "First transaction",
-            sender_priv,
             True
         )
+        tx0.sign(sender_priv)
         tx1 = Transaction(
             recv_pub,
             recv_pub,
             10,
             "First transaction",
-            recv_priv,
             True
         )
+        tx1.sign(recv_priv)
         tx2 = Transaction(
             sender_pub,
             recv_pub,
             10,
-            "Sending money",
-            sender_priv
+            "Sending money"
         )
+        tx2.sign(sender_priv)
         tx3 = Transaction(
             recv_pub,
             sender_pub,
             5,
-            "Return Transaction",
-            recv_priv
+            "Return Transaction"
         )
+        tx3.sign(recv_priv)
 
         tx_list = [tx0, tx1, tx2, tx3]
 
@@ -106,31 +106,31 @@ class TestBlockchain(unittest.TestCase):
             sender_pub,
             20,
             "First transaction",
-            sender_priv,
             True
         )
+        tx0.sign(sender_priv)
         tx1 = Transaction(
             recv_pub,
             recv_pub,
             10,
             "First transaction",
-            recv_priv,
             True
         )
+        tx1.sign(recv_priv)
         tx2 = Transaction(
             sender_pub,
             recv_pub,
             10,
-            "Sending money",
-            sender_priv
+            "Sending money"
         )
+        tx2.sign(sender_priv)
         tx3 = Transaction(
             recv_pub,
             sender_pub,
             5,
-            "Return Transaction",
-            recv_priv
+            "Return Transaction"
         )
+        tx3.sign(recv_priv)
 
         tx_list = [tx0, tx1, tx2, tx3]
 
