@@ -109,7 +109,7 @@ class Miner:
             self.blockchain.addBlock(_incoming_block=newBlock)
 
         broadcastBlock(self.blockchain.current_block) #inform the rest that you have created a block first 
-        #truncate of the first 10 transactions from tx_pool
+        self.tx_pool = self.tx_pool[10:] #truncate of the first 10 transactions from tx_pool
 
     # takes in the block data, and a list of neighbours to broadcast to
     def broadcastBlock(self, _block_data, _neighbours, _self_addr):
