@@ -26,10 +26,10 @@ def createTreeFromTx(_transaction_list):
 # Only leave _prev empty for genisys block creation
 ##########################
 class Block:
-    def __init__(self, _transaction_list, _prev_header="", _prev_block=None, _difficulty=3):
+    def __init__(self, _transaction_list, _prev_header="", _prev_block=None, _difficulty=3, _current_header="", _nonce=""):
         # to create
-        self.header = ""
-        self.nonce = ""
+        self.header = _current_header
+        self.nonce = _nonce
 
         # variables included in hash
         self.prev_header = _prev_header  # hash of previous header
@@ -67,6 +67,8 @@ class Block:
             # invalid transactions will be lost here
             if self.changeState(tx):
                 tx_list.append(tx)
+            else:
+                print("lost:\n", tx)
 
         # build merkle tree from transaction list
         self.merkle_tree = createTreeFromTx(tx_list)

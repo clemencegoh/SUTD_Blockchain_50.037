@@ -6,10 +6,16 @@ import ecdsa
 # Transaction class
 class Transaction:
     def __init__(self, _sender_public_key, _receiver_public_key, _amount, _comment, _private, _reward=False):
+        if type(_sender_public_key) is not str:
+            _sender_public_key = _sender_public_key.to_string().hex()
+        if type(_receiver_public_key) is not str:
+            _receiver_public_key = _receiver_public_key.to_string().hex()
+
         self.version = 1.0
         self.data = {
-            "Sender": _sender_public_key.hex(),
-            "Receiver": _receiver_public_key.hex(),
+
+            "Sender": _sender_public_key,
+            "Receiver": _receiver_public_key,
             "Amount": _amount,
             "Comment": _comment,
             "Reward": _reward,

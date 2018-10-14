@@ -16,7 +16,6 @@ class SPVClient:
         transaction_tobemade = Transaction(self.publickey, receiver_public_key,
                                                    amount, comment, self.privatekey)
         print(transaction_tobemade.data)
-        transaction_tobemade.sign(self.privatekey)
         return transaction_tobemade
 
     # Check acc balance of specified spvclient
@@ -28,14 +27,14 @@ class SPVClient:
                      headers={'Content-Type': 'application/json'}, json=blockchain)
 
         # not sure if this is needed
-        blockchain = response.json
+        blockchain = response.json()
 
         balance = blockchain["current_block"]["state"]["Balance"][self.publickey]
         return balance
 
     def getMiners(self, _trusted_server):
         response = requests.get(_trusted_server)
-        return response.json["miners_list"]
+        return response.json()["miners_list"]
 
 # sender_privatekey , sender_publickey = GenerateKeyPair()
 # newclient = SPVClient(sender_privatekey , sender_publickey)
