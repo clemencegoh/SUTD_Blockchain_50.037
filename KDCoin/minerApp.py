@@ -244,12 +244,7 @@ def mineAPI():
 
 @app.route('/mining')
 def miningPage():
-<<<<<<< HEAD
-    global internal_storage
-    internal_storage["Miner"].mineBlock()
-=======
     global internal_storage, interruptQueue
->>>>>>> 5fd07e388283ce97b2d4077968a0e0962f730799
     mining = "Currently Mining ...!<br>" \
             "Statistics:<br><br>" \
             "Currently logged in as: {}<br>" \
