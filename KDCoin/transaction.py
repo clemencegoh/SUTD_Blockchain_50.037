@@ -13,6 +13,7 @@ class Transaction:
 
         self.version = 1.0
         self.data = {
+
             "Sender": _sender_public_key,
             "Receiver": _receiver_public_key,
             "Amount": _amount,
