@@ -77,5 +77,3 @@ class Miner:
         return t
 
 
-if __name__ == '__main__':
-    pass

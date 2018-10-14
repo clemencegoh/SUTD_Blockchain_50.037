@@ -1,12 +1,11 @@
-from flask import Flask, request
+from flask import Flask
 import json
-from KDCoin.transaction import Transaction
 
 app = Flask(__name__)
 
 miners_list = []
 
-
+# runs on http://127.0.0.1:8080/
 @app.route('/')
 def setupServer():
     return str(miners_list)
@@ -22,13 +21,6 @@ def addNewMiner(miner):
 @app.route('/updateSPVMinerList')
 def updateMinerList():
     json_miners_list = json.dumps({'miners_list' : miners_list})
-    return json_miners_list
-
-
-
-@app.route('/updateSPVMinerList')
-def updateMinerList():
-    json_miners_list = json.dumps({'miners_list': miners_list})
     return json_miners_list
 
 

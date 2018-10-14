@@ -1,7 +1,7 @@
 import requests
 import json
 from flask import Flask, request
-from KDCoin import spvClient
+import spvClient
 
 
 app = Flask(__name__)
