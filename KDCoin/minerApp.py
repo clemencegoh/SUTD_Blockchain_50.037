@@ -178,7 +178,9 @@ def newTx():
 # receive new Block from broadcast
 @app.route('/newBlock')
 def newBlock():
-    pass
+    
+    
+    return block
 
 
 @app.route('/mine')

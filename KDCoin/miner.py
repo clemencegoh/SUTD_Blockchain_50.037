@@ -26,8 +26,35 @@ class Miner:
         self.wip_block = None  # to be built
         self.tx_pool = []  # tx_pool held by miner
 
-        self.interruptQueue = Queue(1)
-        self.nonceQueue = Queue(1)
+        mineBlock()
+
+
+    def broadcastBlock(self, _type, _data):
+        # broadcasts blocks
+        pass
+
+    # todo: determine amount to give as reward for block
+    def createRewardTransaction(self, _private_key):
+        reward = 100
+        t = transaction.Transaction(
+            _sender_public_key=self.address,
+            _receiver_public_key=self.address,
+            _amount=reward,
+            _comment="Reward transaction",
+            _private=_private_key,
+            _reward=True
+        )
+
+        return t
+
+    def verifyTransaction():
+        pass
+
+    def mineBlock()
+        #While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
+        interruptQueue = Queue(1)
+        nonceQueue = Queue(1)
+        yield interruptQueue
 
         # if this is ever invoked, it must be the first block
         # of the first miner
@@ -50,30 +77,38 @@ class Miner:
                     _difficulty=1
                 )
 
-            p = firstBlock.build(_found=self.nonceQueue, _interrupt=self.interruptQueue)
+            p = firstBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
             p.start()
 
             p.join()
-            firstBlock.completeBlockWithNonce(_nonce=self.nonceQueue.get())
+            firstBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
 
             self.blockchain = blockChain.Blockchain(_block=firstBlock)
 
-    def broadcastBlock(self, _type, _data):
-        # broadcasts blocks
-        pass
+        else:
+            #validate the transactions
+            temp_pool = []
+            counter = 0
+            while temp_pool.len() < 9:
+                if tx_pool[counter].validate == True:
+                    temp_pool.append(tx_pool[counter])
+            newBlock = block.Block(
+                    _transaction_list=
+                        # choose first 10 transactions in tx_pool
+                        self.tx_pool[:10].append(createRewardTransaction(self.client.privatekey)),
+                    _prev_header=self.blockchain.current_block.header,
+                    _difficulty=1
+                )
 
-    # todo: determine amount to give as reward for block
-    def createRewardTransaction(self, _private_key):
-        reward = 100
-        t = transaction.Transaction(
-            _sender_public_key=self.address,
-            _receiver_public_key=self.address,
-            _amount=reward,
-            _comment="Reward transaction",
-            _private=_private_key,
-            _reward=True
-        )
+            p = newBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
+            p.start()
 
-        return t
+            p.join()
+            newBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
+            self.blockchain.addBlock(_incoming_block=newBlock)
+
+        broadcastBlock(self.blockchain.current_block) #inform the rest that you have created a block first 
+        #truncate of the first 10 transactions from tx_pool
+
 
 
