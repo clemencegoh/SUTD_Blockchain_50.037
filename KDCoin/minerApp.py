@@ -70,6 +70,7 @@ def homePage():
 
     loginPage = open("Mainpage.html").read()
 
+
     return welcome + loginPage
 
 
@@ -91,7 +92,7 @@ def loginAPI():
         current_block = current_blockchain['current_block']
 
         # update state
-        create_block = block.Block(
+        create_block = block.Block( #Is this still needed since in miner class when it init, block is created.
             _transaction_list=current_block['tx_list'],
             _prev_header=current_block['prev_header'],
             _prev_block=None,
@@ -197,10 +198,26 @@ def newBlock():
 
 
 @app.route('/mine')
-def mineBlock():
-    # todo: start mining
-    pass
+def mineAPI():
+    global internal_storage
 
+    if internal_storage["Public_key"] == "":
+        return homePage()
+    else:
+        return miningPage()
+
+@app.route('/mining')
+def miningPage():
+    global internal_storage
+    mining = "Currently Mining ...!<br>" \
+            "Statistics:<br><br>" \
+            "Currently logged in as: {}<br>" \
+            "Neighbour nodes registered: {}<br>" \
+            "".format(
+        internal_storage["Public_key"],
+        internal_storage["Neighbour_nodes"])
+    miningPage = open("Mining.html").read()
+    return mining + miningPage
 
 if __name__ == '__main__':
     machine_IP = ""
