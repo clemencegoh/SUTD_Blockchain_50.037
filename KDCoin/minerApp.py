@@ -183,8 +183,8 @@ def newTx():
             _receiver_public_key=tx["Receiver"],
             _amount=tx["Amount"],
             _comment=tx["Comment"],
-            _sig=tx["Signature"],
         )
+        t.data["Signature"] = tx["Signature"]
         internal_storage["Miner"].tx_pool.append(t)
 
 
