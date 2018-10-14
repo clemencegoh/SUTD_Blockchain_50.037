@@ -2,6 +2,7 @@ import ecdsa
 from flask import Flask, request
 import requests
 import handlers, miner, keyPair, spvClient, block, blockChain, transaction
+from multiprocessing import Queue
 
 
 app = Flask(__name__)
@@ -16,6 +17,7 @@ internal_storage = {
 
 self_address = "http://localhost:8082"
 trusted_server_addr = "http://localhost:8080"
+interruptQueue = Queue(1)
 
 
 def getNeighbours(_self_addr):
@@ -200,6 +202,7 @@ def newTx():
 # receive new Block from broadcast
 @app.route('/newBlock')
 def newBlock():
+    global interruptQueue
     block = request.form.get("Block")
     b = block.Block(_transaction_list=block.tx_list,
                     _prev_header=block.prev_header,
@@ -210,6 +213,7 @@ def newBlock():
                     _state=block.state)
     if b.validate():
         # interrupt and add block
+        interruptQueue.put(1)
         current_chain = internal_storage["Miner"].blockchain
         current_chain.addBlock(
             _prev_block=current_chain.current_block,
@@ -228,9 +232,10 @@ def mineAPI():
     else:
         return miningPage()
 
+
 @app.route('/mining')
 def miningPage():
-    global internal_storage
+    global internal_storage, interruptQueue
     mining = "Currently Mining ...!<br>" \
             "Statistics:<br><br>" \
             "Currently logged in as: {}<br>" \
@@ -240,6 +245,7 @@ def miningPage():
         internal_storage["Neighbour_nodes"])
     miningPage = open("Mining.html").read()
     return mining + miningPage
+
 
 if __name__ == '__main__':
     machine_IP = ""

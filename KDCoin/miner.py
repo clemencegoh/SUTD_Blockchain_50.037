@@ -82,16 +82,16 @@ class Miner:
             self.blockchain = blockChain.Blockchain(_block=firstBlock)
 
         else:
-            #validate the transactions
+            # validate the transactions
             temp_pool = []
             counter = 0
             while len(temp_pool) < 9:
                 if self.tx_pool[counter].validate:
                     temp_pool.append(self.tx_pool[counter])
             newBlock = block.Block(
-                    _transaction_list=
-                        # choose first 10 transactions in tx_pool
-                        temp_pool.append(self.createRewardTransaction(self.client.privatekey)),
+                    # choose first 10 transactions in tx_pool
+                    _transaction_list=temp_pool.append(
+                        self.createRewardTransaction(self.client.privatekey)),
                     _prev_header=self.blockchain.current_block.header,
                     _difficulty=1
                 )
