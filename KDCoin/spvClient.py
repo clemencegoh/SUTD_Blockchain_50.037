@@ -14,7 +14,8 @@ class SPVClient:
     # Creates transaction and sign with private key
     def createTransaction(self, receiver_public_key, amount, comment):
         transaction_tobemade = Transaction(self.publickey, receiver_public_key,
-                                                   amount, comment, self.privatekey)
+                                                   amount, comment)
+        transaction_tobemade.sign(self.privatekey)
         print(transaction_tobemade.data)
         return transaction_tobemade
 

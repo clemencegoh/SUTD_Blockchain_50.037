@@ -5,7 +5,7 @@ import ecdsa
 
 # Transaction class
 class Transaction:
-    def __init__(self, _sender_public_key, _receiver_public_key, _amount, _comment, _private, _reward=False):
+    def __init__(self, _sender_public_key, _receiver_public_key, _amount, _comment, _reward=False):
         if type(_sender_public_key) is not str:
             _sender_public_key = _sender_public_key.to_string().hex()
         if type(_receiver_public_key) is not str:
@@ -13,7 +13,6 @@ class Transaction:
 
         self.version = 1.0
         self.data = {
-
             "Sender": _sender_public_key,
             "Receiver": _receiver_public_key,
             "Amount": _amount,
@@ -21,7 +20,6 @@ class Transaction:
             "Reward": _reward,
             "Signature": ""
         }
-        self.sign(_private)
 
     @classmethod
     def new(cls, _from, _to, _amount, _comment, _private_key):

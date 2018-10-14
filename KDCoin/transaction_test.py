@@ -12,7 +12,8 @@ class TestTransaction(unittest.TestCase):
         amount = 10000
         comment = "testRun"
 
-        t = transaction.Transaction(sender_public_key, receiver_public_key, amount, comment, sender_private_key)
+        t = transaction.Transaction(sender_public_key, receiver_public_key, amount, comment)
+        t.sign(sender_private_key)
         # print(t.data)
         self.assertTrue(t.validate())
 

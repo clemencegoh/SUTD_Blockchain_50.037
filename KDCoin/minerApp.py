@@ -173,7 +173,8 @@ def payTo():
 # receive new Tx from broadcast
 @app.route('/newTx')
 def newTx():
-    pass
+    transaction = request.form.get("TX")
+
 
 # receive new Block from broadcast
 @app.route('/newBlock')
@@ -182,10 +183,13 @@ def newBlock():
 
 
 @app.route('/mine')
-def newTransaction():
+def mineBlock():
     # todo: start mining
     pass
 
 
 if __name__ == '__main__':
-    app.run(port=8082)
+    machine_IP = ""
+    if machine_IP == "":
+        machine_IP = "localhost"
+    app.run(host=machine_IP, port=8082)
