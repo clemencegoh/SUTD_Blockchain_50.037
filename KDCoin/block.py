@@ -66,13 +66,13 @@ class Block:
         tx_list = []
         for tx in _transaction_list:
             # invalid transactions will be lost here
-<<<<<<< HEAD
-
-            if self.state.changeState(tx):
-                print ('appended')
-=======
+# <<<<<<< HEAD
+#
+#             if self.state.changeState(tx):
+#                 print ('appended')
+# =======
             if self.changeState(tx):
->>>>>>> master
+# >>>>>>> master
                 tx_list.append(tx)
         print (tx_list)
         # build merkle tree from transaction list
