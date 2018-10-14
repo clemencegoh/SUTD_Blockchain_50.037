@@ -1,6 +1,7 @@
 import ecdsa
 from flask import Flask, request
-import handlers, miner, keyPair, spvClient
+from KDCoin import handlers, miner, keyPair, spvClient, blockChain, block
+import requests
 
 
 app = Flask(__name__)
@@ -13,10 +14,34 @@ internal_storage = {
     "Miner": None,  # Miner Object
 }
 
+self_address = "http://localhost:8082"
+trusted_server_addr = "http://localhost:8080"
+
+
+def getNeighbours(_self_addr):
+    global internal_storage
+    req = requests.get(trusted_server_addr)
+    miner_list = req.json()['miners_list']
+    if miner_list:
+        internal_storage["Neighbour_nodes"] = miner_list
+        return True
+
+    requests.post(trusted_server_addr + "/add", {
+        "miner": self_address
+    })
+
+    return False
+
+
+def requestLatestBlockchain():
+    req = requests.get(internal_storage["Neighbour_nodes"][0] + "/blockchain")
+    print(req.json())
+    return req.json()
+
 
 @app.route('/')
 def homePage():
-    if internal_storage["Public_key"] is None:
+    if internal_storage["Public_key"] == "":
         welcome = "Please log in:"
     else:
         welcome = "Welcome to KDCoin!<br>" \
@@ -43,7 +68,33 @@ def loginAPI():
     priv_key = priv_hex #Might want to change it to a key object in the future
     internal_storage["Private_key"] = priv_key
 
-    internal_storage["Miner"] = miner.Miner(internal_storage["Public_key"], pub_key, priv_key)
+    if getNeighbours(self_address):
+        # not the first one
+        # request latest block
+        current_blockchain = requestLatestBlockchain()
+        current_block = current_blockchain['current_block']
+
+        # update state
+        create_block = block.Block(
+            _transaction_list=current_block['tx_list'],
+            _prev_header=current_block['prev_header'],
+            _prev_block=None,
+            _current_header=current_block['current_header'],
+            _nonce=current_block['nonce'],
+            _difficulty=current_block['difficulty'],
+        )
+        bc = blockChain.Blockchain(_block=create_block)
+        internal_storage["Miner"] = miner.Miner(
+            _blockchain=bc,
+            _pub=pub_key,
+            _priv=priv_key
+        )
+
+    else:
+        # create first block
+        internal_storage["Miner"] = miner.Miner(_blockchain=None,
+                                                _pub=pub_key,
+                                                _priv=priv_key)
 
     # re-routes back to homepage
     return homePage()
@@ -69,6 +120,9 @@ def newUser():
     priv_key = internal_storage["Private_key"]
 
     internal_storage["Miner"] = miner.Miner(_blockchain=None, _pub=pub_key, _priv=priv_key)
+
+    # announce yourself
+    getNeighbours(self_address)
 
     return info + newUser
 
@@ -97,4 +151,4 @@ def newTransaction():
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=8082)
