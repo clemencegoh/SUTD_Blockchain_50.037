@@ -86,7 +86,6 @@ class Miner:
 
             self.blockchain = blockChain.Blockchain(_block=firstBlock)
 
-<<<<<<< HEAD
         else:
             #validate the transactions
             temp_pool = []
@@ -111,7 +110,7 @@ class Miner:
 
         broadcastBlock(self.blockchain.current_block) #inform the rest that you have created a block first 
         #truncate of the first 10 transactions from tx_pool
-=======
+
     # takes in the block data, and a list of neighbours to broadcast to
     def broadcastBlock(self, _block_data, _neighbours, _self_addr):
         # broadcasts blocks
@@ -132,7 +131,7 @@ class Miner:
             _private=_private_key,
             _reward=True
         )
->>>>>>> e72346bb7a4a67caf3d7ec1eaa30861adfc94040
+        return t
 
 
 
