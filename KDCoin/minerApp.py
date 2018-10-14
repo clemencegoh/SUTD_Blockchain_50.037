@@ -1,7 +1,6 @@
 import ecdsa
 from flask import Flask, request
-from KDCoin import handlers, miner, keyPair, spvClient, blockChain, block
-import requests
+from KDCoin import requests
 
 
 app = Flask(__name__)
@@ -37,6 +36,22 @@ def requestLatestBlockchain():
     req = requests.get(internal_storage["Neighbour_nodes"][0] + "/blockchain")
     print(req.json())
     return req.json()
+
+
+def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
+    tx = internal_storage["Miner"].client.\
+        createTransaction(_recv_pub, _amount, _comment)
+    for i in internal_storage["Neighbour_nodes"]:
+        if i != self_address:
+            # broadcast
+            requests.post(i + "/newTx", {
+                "TX": tx
+            })
+    internal_storage["Miner"].tx_pool.append(tx)
+
+    # debug:
+    # print("Complete")
+    # print(internal_storage["Miner"].tx_pool)
 
 
 @app.route('/')
@@ -133,21 +148,43 @@ def getCurrentBlockchain():
     return internal_storage["User"].blockchain
 
 
-@app.route('/pay/<recv_addr>')
-def payTo(recv_addr):
-    # todo: handler to pay from sender to recv
-    sender = internal_storage["Public_key"]
-    recv = recv_addr
+@app.route('/pay', methods=["GET", "POST"])
+def payTo():
+    if request.method == "GET":
+        current_user_status = \
+            "Currently logged in as: {} \n\n<br>".format(
+                internal_storage["Public_key"]
+            )
+        payment_page = open('Payment.html').read()
+        return current_user_status + payment_page
+    if request.method == "POST":
+        pub_key = request.values.get("pub_key")
+        amount = request.values.get("amount")
+        comment = request.values.get("comment")
 
+        # execute payment method
+        createTxWithBroadcast(pub_key, amount, comment)
+        return "Transaction Complete"
+
+    return "Invalid method"
+
+
+# receive new Tx from broadcast
+@app.route('/newTx')
+def newTx():
+    pass
+
+# receive new Block from broadcast
+@app.route('/newBlock')
+def newBlock():
     pass
 
 
-@app.route('/newTransaction')
+@app.route('/mine')
 def newTransaction():
-    # todo: new transaction parsing
+    # todo: start mining
     pass
 
-# todo: create more routes for miners and users of blockchain
 
 
 if __name__ == '__main__':
