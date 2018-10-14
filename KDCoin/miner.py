@@ -27,8 +27,6 @@ class Miner:
         self.wip_block = None  # to be built
         self.tx_pool = []  # tx_pool held by miner
 
-        self.mineBlock()
-
     # todo: determine amount to give as reward for block
     def createRewardTransaction(self, _private_key):
         reward = 100
@@ -46,7 +44,7 @@ class Miner:
     def verifyTransaction(self):
         pass
 
-    def mineBlock(self):
+    def mineBlock(self, _neighbours, _self_addr):
         #While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
         interruptQueue = Queue(1)
         nonceQueue = Queue(1)
@@ -58,18 +56,16 @@ class Miner:
             # create new blockchain with empty data
             # balance = self.blockchain.current_block.state["Balance"]
             # todo: this is left here until implementation of finding block holds
-            firstBlock = block.Block(
-                    _transaction_list=[
-                        # initial empty transaction
-                        transaction.Transaction(
+            tx = transaction.Transaction(
                             _sender_public_key=self.client.publickey,
                             _receiver_public_key=self.client.publickey,
                             _amount=0,
                             _comment="Init Tx",
-                            _private=self.client.privatekey,
                             _reward=True,
                         )
-                    ],
+            tx.sign(self.client.privatekey)
+            firstBlock = block.Block(
+                    _transaction_list=[tx],
                     _difficulty=1
                 )
 
@@ -103,8 +99,9 @@ class Miner:
             newBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
             self.blockchain.addBlock(_incoming_block=newBlock)
 
-        self.broadcastBlock(self.blockchain.current_block) #inform the rest that you have created a block first 
+        self.broadcastBlock(self.blockchain.current_block, _neighbours, _self_addr) #inform the rest that you have created a block first
         self.tx_pool = self.tx_pool[10:] #truncate of the first 10 transactions from tx_pool
+        yield "Done Mining"
 
     # takes in the block data, and a list of neighbours to broadcast to
     def broadcastBlock(self, _block_data, _neighbours, _self_addr):

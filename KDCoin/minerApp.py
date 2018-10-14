@@ -76,7 +76,6 @@ def homePage():
 
     loginPage = open("Mainpage.html").read()
 
-
     return welcome + loginPage
 
 
@@ -118,6 +117,12 @@ def loginAPI():
         internal_storage["Miner"] = miner.Miner(_blockchain=None,
                                                 _pub=pub_key,
                                                 _priv=priv_key)
+        generator = internal_storage["Miner"].mineBlock(
+            _neighbours=internal_storage["Neighbour_nodes"],
+            _self_addr=self_address
+        )
+        interruptQueue = next(generator)
+        next(generator)
 
     # re-routes back to homepage
     return homePage()
@@ -146,6 +151,10 @@ def newUser():
 
     # announce yourself
     getNeighbours(self_address)
+    internal_storage["Miner"].mineBlock(
+        _neighbours=internal_storage["Neighbour_nodes"],
+        _self_addr=self_address
+    )
 
     return info + newUser
 
@@ -244,6 +253,12 @@ def miningPage():
         internal_storage["Public_key"],
         internal_storage["Neighbour_nodes"])
     miningPage = open("Mining.html").read()
+    generator = internal_storage["Miner"].mineBlock(
+        _neighbours=internal_storage["Neighbour_nodes"],
+        _self_addr=self_address
+    )
+    interruptQueue = next(generator)
+    print(next(generator))
     return mining + miningPage
 
 
