@@ -10,7 +10,7 @@ internal_storage = {
     "Public_key": "",  # hex, might want to eventually replace with SPVclient
     "Private_key": "",  # hex
     "Neighbour_nodes": [],  # array of website addresses to make requests to
-    "Miner": miner.Miner(),  # Miner Object
+    "Miner": "",  # Miner Object
 }
 
 
@@ -55,6 +55,7 @@ def newUser():
     priv, pub = keyPair.GenerateKeyPair()
     internal_storage["Private_key"] = priv.to_string().hex()
     internal_storage["Public_key"] = pub.to_string().hex()
+    internal_storage["Miner"] = miner.Miner(_pub=pub.to_string().hex(),_priv=priv.to_string().hex())
 
     newUser = open("Newuser.html").read()
 
