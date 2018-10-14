@@ -27,7 +27,7 @@ class Miner:
         self.wip_block = None  # to be built
         self.tx_pool = []  # tx_pool held by miner
 
-        mineBlock()
+        self.mineBlock()
 
 
     def broadcastBlock(self, _type, _data):
@@ -96,7 +96,7 @@ class Miner:
             newBlock = block.Block(
                     _transaction_list=
                         # choose first 10 transactions in tx_pool
-                        temp_pool.append(createRewardTransaction(self.client.privatekey)),
+                        temp_pool.append(self.createRewardTransaction(self.client.privatekey)),
                     _prev_header=self.blockchain.current_block.header,
                     _difficulty=1
                 )
@@ -108,7 +108,7 @@ class Miner:
             newBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
             self.blockchain.addBlock(_incoming_block=newBlock)
 
-        broadcastBlock(self.blockchain.current_block) #inform the rest that you have created a block first 
+        self.broadcastBlock(self.blockchain.current_block) #inform the rest that you have created a block first 
         self.tx_pool = self.tx_pool[10:] #truncate of the first 10 transactions from tx_pool
 
     # takes in the block data, and a list of neighbours to broadcast to
