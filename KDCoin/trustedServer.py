@@ -31,4 +31,8 @@ def updateMinerList():
 
 
 if __name__ == '__main__':
-    app.run(port=8080)
+    # use this for visibility to others
+    machine_IP = ""
+    if machine_IP == "":
+        machine_IP = "localhost"
+    app.run(host=machine_IP, port=8080)

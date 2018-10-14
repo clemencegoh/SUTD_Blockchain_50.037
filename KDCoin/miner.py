@@ -2,6 +2,7 @@ from keyPair import GenerateKeyPair
 import blockChain, block, transaction, spvClient
 from multiprocessing import Queue
 import ecdsa
+import requests
 
 
 # todo: Idea is for every miner to have its own flask app
@@ -85,6 +86,7 @@ class Miner:
 
             self.blockchain = blockChain.Blockchain(_block=firstBlock)
 
+<<<<<<< HEAD
         else:
             #validate the transactions
             temp_pool = []
@@ -109,6 +111,28 @@ class Miner:
 
         broadcastBlock(self.blockchain.current_block) #inform the rest that you have created a block first 
         #truncate of the first 10 transactions from tx_pool
+=======
+    # takes in the block data, and a list of neighbours to broadcast to
+    def broadcastBlock(self, _block_data, _neighbours, _self_addr):
+        # broadcasts blocks
+        for neighbour in _neighbours:
+            if neighbour != _self_addr:
+                # broadcast
+                requests.post(neighbour + "/newBlock", {
+                    "Block": _block_data
+                })
+
+    def createRewardTransaction(self, _private_key):
+        reward = 100
+        t = transaction.Transaction(
+            _sender_public_key=self.client.publickey,
+            _receiver_public_key=self.client.publickey,
+            _amount=reward,
+            _comment="Reward transaction",
+            _private=_private_key,
+            _reward=True
+        )
+>>>>>>> e72346bb7a4a67caf3d7ec1eaa30861adfc94040
 
 
 
