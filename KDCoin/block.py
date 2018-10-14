@@ -67,6 +67,8 @@ class Block:
             # invalid transactions will be lost here
             if self.changeState(tx):
                 tx_list.append(tx)
+            else:
+                print("lost:\n", tx)
 
         # build merkle tree from transaction list
         self.merkle_tree = createTreeFromTx(tx_list)
