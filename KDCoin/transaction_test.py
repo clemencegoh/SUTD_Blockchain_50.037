@@ -14,7 +14,7 @@ class TestTransaction(unittest.TestCase):
 
         t = transaction.Transaction(sender_public_key, receiver_public_key, amount, comment)
         t.sign(sender_private_key)
-        # print(t.data)
+        print(t.data)
         self.assertTrue(t.validate())
 
 

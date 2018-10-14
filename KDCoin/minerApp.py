@@ -1,7 +1,7 @@
 import ecdsa
 from flask import Flask, request
 import requests
-import handlers, miner, keyPair, spvClient, block, blockChain
+import handlers, miner, keyPair, spvClient, block, blockChain, transaction
 
 
 app = Flask(__name__)
@@ -173,7 +173,19 @@ def payTo():
 # receive new Tx from broadcast
 @app.route('/newTx')
 def newTx():
-    transaction = request.form.get("TX")
+    tx = request.form.get("TX")
+    if tx in internal_storage["Miner"].tx_pool:
+        # don't do anything
+        return homePage()
+    else:
+        t = transaction.Transaction(
+            _sender_public_key=tx["Sender"],
+            _receiver_public_key=tx["Receiver"],
+            _amount=tx["Amount"],
+            _comment=tx["Comment"],
+            _sig=tx["Signature"],
+        )
+        internal_storage["Miner"].tx_pool.append(t)
 
 
 # receive new Block from broadcast
