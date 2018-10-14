@@ -1,7 +1,7 @@
 import ecdsa
 from flask import Flask, request
 import requests
-import handlers, miner, keyPair, spvClient
+import handlers, miner, keyPair, spvClient, block, blockChain
 
 
 app = Flask(__name__)
