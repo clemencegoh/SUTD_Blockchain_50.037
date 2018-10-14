@@ -43,7 +43,7 @@ class Miner:
 
         return t
 
-    def verifyTransaction():
+    def verifyTransaction(self):
         pass
 
     def mineBlock(self):
