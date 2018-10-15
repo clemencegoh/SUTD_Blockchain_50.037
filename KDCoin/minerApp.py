@@ -2,6 +2,7 @@ import ecdsa
 from flask import Flask, request
 import requests
 import json
+import time
 import handlers, miner, keyPair, spvClient, block, blockChain, transaction
 from multiprocessing import Queue
 
@@ -25,13 +26,21 @@ def getNeighbours(_self_addr):
     global internal_storage
     req = requests.get(trusted_server_addr)
     miner_list = req.json()['miners_list']
-    if miner_list:
+
+    if self_address in miner_list:
         internal_storage["Neighbour_nodes"] = miner_list
         return True
 
     requests.post(trusted_server_addr + "/add", {
         "miner": self_address
     })
+    print("Posted:", {
+        "miner": self_address
+    })
+
+    req = requests.get(trusted_server_addr)
+    miner_list = req.json()['miners_list']
+    internal_storage["Neighbour_nodes"] = miner_list
 
     return False
 
@@ -214,6 +223,7 @@ def newTx():
 def newBlock():
     global interruptQueue
     block = request.form.get("Block")
+    # create block from data
     b = block.Block(_transaction_list=block.tx_list,
                     _prev_header=block.prev_header,
                     _prev_block=block.prev_block,
@@ -221,6 +231,7 @@ def newBlock():
                     _current_header=block.current_header,
                     _nonce=block.nonce,
                     _state=block.state)
+    # validate
     if b.validate():
         # interrupt and add block
         interruptQueue.put(1)
@@ -246,21 +257,25 @@ def mineAPI():
 @app.route('/mining')
 def miningPage():
     global internal_storage, interruptQueue
-    mining = "Currently Mining ...!<br>" \
-            "Statistics:<br><br>" \
-            "Currently logged in as: {}<br>" \
-            "Neighbour nodes registered: {}<br>" \
-            "".format(
-        internal_storage["Public_key"],
-        internal_storage["Neighbour_nodes"])
-    miningPage = open("Mining.html").read()
-    generator = internal_storage["Miner"].mineBlock(
-        _neighbours=internal_storage["Neighbour_nodes"],
-        _self_addr=self_address
-    )
-    interruptQueue = next(generator)
-    print(next(generator))
-    return mining + miningPage
+    # mining = "Currently Mining ...!<br>" \
+    #         "Statistics:<br><br>" \
+    #         "Currently logged in as: {}<br>" \
+    #         "Neighbour nodes registered: {}<br>" \
+    #         "".format(
+    #     internal_storage["Public_key"],
+    #     internal_storage["Neighbour_nodes"])
+    # miningPage = open("Mining.html").read()
+    while True:
+        if len(internal_storage["Miner"].tx_pool) >= 1:
+            generator = internal_storage["Miner"].mineBlock(
+                _neighbours=internal_storage["Neighbour_nodes"],
+                _self_addr=self_address
+            )
+            interruptQueue = next(generator)
+            print(next(generator))
+        time.sleep(1)
+
+    # return mining + miningPage
 
 
 @app.route('/state')

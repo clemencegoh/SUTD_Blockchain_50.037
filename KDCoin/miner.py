@@ -17,7 +17,6 @@ import requests
 class Miner:
     def __init__(self, _blockchain=None, _pub="", _priv=""):
         # create new miner with fields:
-        # todo: SPV_client
         # _pub and _priv are in hex, convert to object
         pub_key = ecdsa.VerifyingKey.from_string(bytes.fromhex(_pub))
         priv_key = ecdsa.SigningKey.from_string(bytes.fromhex(_priv))
@@ -35,9 +34,9 @@ class Miner:
             _receiver_public_key=self.client.publickey,
             _amount=reward,
             _comment="Reward transaction",
-            _private=_private_key,
             _reward=True
         )
+        t.sign(_private_key)
 
         return t
 
@@ -45,7 +44,7 @@ class Miner:
         pass
 
     def mineBlock(self, _neighbours, _self_addr):
-        #While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
+        # While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
         interruptQueue = Queue(1)
         nonceQueue = Queue(1)
         yield interruptQueue
@@ -99,8 +98,8 @@ class Miner:
             newBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
             self.blockchain.addBlock(_incoming_block=newBlock)
 
-        self.broadcastBlock(self.blockchain.current_block, _neighbours, _self_addr) #inform the rest that you have created a block first
-        self.tx_pool = self.tx_pool[10:] #truncate of the first 10 transactions from tx_pool
+        self.broadcastBlock(self.blockchain.current_block.__dict__, _neighbours, _self_addr)  # inform the rest that you have created a block first
+        self.tx_pool = self.tx_pool[10:]  # truncate of the first 10 transactions from tx_pool
         yield "Done Mining"
 
     # takes in the block data, and a list of neighbours to broadcast to

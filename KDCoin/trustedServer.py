@@ -19,6 +19,8 @@ def addNewMiner():
 
     miner = request.form.get('miner')
 
+    print("received:", miner)
+
     if miner not in miners_list:
         miners_list.append(miner)
     return setupServer()
