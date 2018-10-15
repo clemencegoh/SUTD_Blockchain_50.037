@@ -9,7 +9,6 @@ from multiprocessing import Process, Queue
 
 
 def createTreeFromTx(_transaction_list):
-
     node = MerkleNode("Leaf", _transaction_list[0])
     tree = MerkleTree(node)
 
@@ -27,10 +26,10 @@ def createTreeFromTx(_transaction_list):
 # Only leave _prev empty for genisys block creation
 ##########################
 class Block:
-    def __init__(self, _transaction_list, _prev_header="", _prev_block=None, _difficulty=3):
+    def __init__(self, _transaction_list, _prev_header="", _prev_block=None, _difficulty=3, _current_header="", _nonce="", _state=None):
         # to create
-        self.header = ""
-        self.nonce = ""
+        self.header = _current_header
+        self.nonce = _nonce
 
         # variables included in hash
         self.prev_header = _prev_header  # hash of previous header
@@ -43,11 +42,14 @@ class Block:
 
         # static variables
         self.tx_list = _transaction_list  # transactions verified within this block
-        self.state = {
-            "Balance": {},
-            "Tx_pool": [],
-            "Blockchain_length": 0
-        }
+        if _state is None:
+            self.state = {
+                "Balance": {},
+                "Tx_pool": [],
+                "Blockchain_length": 0
+            }
+        else:
+            self.state = _state
         self.difficulty = _difficulty
 
         if _prev_header is not None:
@@ -66,15 +68,13 @@ class Block:
         tx_list = []
         for tx in _transaction_list:
             # invalid transactions will be lost here
-# <<<<<<< HEAD
-#
-#             if self.state.changeState(tx):
-#                 print ('appended')
-# =======
-            if self.changeState(tx):
-# >>>>>>> master
+
+            if tx.validate and self.changeState(tx):
+
                 tx_list.append(tx)
-        print (tx_list)
+            else:
+                print("lost:\n", tx)
+
         # build merkle tree from transaction list
         self.merkle_tree = createTreeFromTx(tx_list)
         self.merkle_root = self.merkle_tree.root
@@ -155,35 +155,35 @@ class Block:
         self.prev_block = _block
 
 # Test with proper transactions in block
-if __name__ == '__main__':
-    sender_private_key, sender_public_key = GenerateKeyPair()
-
-    receiver_private_key, receiver_public_key = GenerateKeyPair()
-
-    amount = 10000
-    comment = "testRun"
-    tx_list = [
-        Transaction(sender_public_key, receiver_public_key, amount, comment),
-        Transaction(sender_public_key, receiver_public_key, amount, "new one"),
-    ]
-    b = Block(tx_list)
-
-    channel = Queue(1)  # max size = 1
-
-    level_of_difficulty = 3
-
-    p = b.build(level_of_difficulty, channel)
-
-    p.start()
-    p.join()
-
-    nonce_found = channel.get()  # nonce string from process
-
-    # setNonce must be called once a result is found
-    b.setNonce(nonce_found)
-
-    # debug messages
-    print("Nonce found:", nonce_found)
-    print("Current header:", b.header)
-    print("Verifying block...", b.validate(level_of_difficulty))
+# if __name__ == '__main__':
+#     sender_private_key, sender_public_key = GenerateKeyPair()
+#
+#     receiver_private_key, receiver_public_key = GenerateKeyPair()
+#
+#     amount = 10000
+#     comment = "testRun"
+#     tx_list = [
+#         Transaction(sender_public_key, receiver_public_key, amount, comment),
+#         Transaction(sender_public_key, receiver_public_key, amount, "new one"),
+#     ]
+#     b = Block(tx_list)
+#
+#     channel = Queue(1)  # max size = 1
+#
+#     level_of_difficulty = 3
+#
+#     p = b.build(level_of_difficulty, channel)
+#
+#     p.start()
+#     p.join()
+#
+#     nonce_found = channel.get()  # nonce string from process
+#
+#     # setNonce must be called once a result is found
+#     b.setNonce(nonce_found)
+#
+#     # debug messages
+#     print("Nonce found:", nonce_found)
+#     print("Current header:", b.header)
+#     print("Verifying block...", b.validate(level_of_difficulty))
 #

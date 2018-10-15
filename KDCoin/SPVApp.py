@@ -2,7 +2,9 @@ import requests
 import json
 from KDCoin.keyPair import GenerateKeyPair
 from flask import Flask, request
+
 from KDCoin.spvClient import SPVClient
+
 
 app = Flask(__name__)
 

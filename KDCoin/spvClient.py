@@ -1,5 +1,5 @@
-from KDCoin.transaction import Transaction
-from KDCoin.keyPair import GenerateKeyPair
+from transaction import Transaction
+from keyPair import GenerateKeyPair
 import requests
 import json
 
@@ -14,9 +14,9 @@ class SPVClient:
     # Creates transaction and sign with private key
     def createTransaction(self, receiver_public_key, amount, comment):
         transaction_tobemade = Transaction(self.publickey, receiver_public_key,
-                                                   amount, comment, self.privatekey)
-        print(transaction_tobemade.data)
+                                                   amount, comment)
         transaction_tobemade.sign(self.privatekey)
+        print(transaction_tobemade.data)
         return transaction_tobemade
 
     # Check acc balance of specified spvclient
@@ -28,14 +28,14 @@ class SPVClient:
                      headers={'Content-Type': 'application/json'}, json=blockchain)
 
         # not sure if this is needed
-        blockchain = response.json
+        blockchain = response.json()
 
         balance = blockchain["current_block"]["state"]["Balance"][self.publickey]
         return balance
 
     def getMiners(self, _trusted_server):
         response = requests.get(_trusted_server)
-        return response.json["miners_list"]
+        return response.json()["miners_list"]
 
 # sender_privatekey , sender_publickey = GenerateKeyPair()
 # newclient = SPVClient(sender_privatekey , sender_publickey)

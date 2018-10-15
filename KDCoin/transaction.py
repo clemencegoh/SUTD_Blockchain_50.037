@@ -5,17 +5,21 @@ import ecdsa
 
 # Transaction class
 class Transaction:
-    def __init__(self, _sender_public_key, _receiver_public_key, _amount, _comment, _private, _reward=False):
+    def __init__(self, _sender_public_key, _receiver_public_key, _amount, _comment, _reward=False):
+        if type(_sender_public_key) is not str:
+            _sender_public_key = _sender_public_key.to_string().hex()
+        if type(_receiver_public_key) is not str:
+            _receiver_public_key = _receiver_public_key.to_string().hex()
+
         self.version = 1.0
         self.data = {
-            "Sender": _sender_public_key.to_string().hex(),
-            "Receiver": _receiver_public_key.to_string().hex(),
+            "Sender": _sender_public_key,
+            "Receiver": _receiver_public_key,
             "Amount": _amount,
             "Comment": _comment,
             "Reward": _reward,
-            "Signature": ""
+            "Signature": "",
         }
-        self.sign(_private)
 
     @classmethod
     def new(cls, _from, _to, _amount, _comment, _private_key):
@@ -50,8 +54,8 @@ class Transaction:
         self.data["Signature"] = sig
         return self.data, sig
 
-    def getVKFromData(self, _person):
-        return ecdsa.VerifyingKey.from_string(bytes.fromhex(self.data[_person]))
+    def getVKFromData(self):
+        return ecdsa.VerifyingKey.from_string(bytes.fromhex(self.data["Sender"]))
 
     # only this is supposed to be touched once client inits using new or newReward
     def validate(self):
@@ -62,7 +66,7 @@ class Transaction:
         self.data["Signature"] = ""
 
         # verify data without signature in it
-        vk = self.getVKFromData("Sender")
+        vk = self.getVKFromData()
         result = verifyExisting(_message=self.to_json(self.data), _public_key=vk, _sig=sig)
         self.data["Signature"] = sig
         return result
