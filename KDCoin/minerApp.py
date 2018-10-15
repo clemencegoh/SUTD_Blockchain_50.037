@@ -1,6 +1,7 @@
 import ecdsa
 from flask import Flask, request
 import requests
+import json
 import handlers, miner, keyPair, spvClient, block, blockChain, transaction
 from multiprocessing import Queue
 
@@ -260,6 +261,11 @@ def miningPage():
     interruptQueue = next(generator)
     print(next(generator))
     return mining + miningPage
+
+
+@app.route('/state')
+def getState():
+    return json.dumps(internal_storage["Miner"].blockchain.current_block.state)
 
 
 if __name__ == '__main__':
