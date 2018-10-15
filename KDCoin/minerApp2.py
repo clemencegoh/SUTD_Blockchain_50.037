@@ -17,7 +17,7 @@ internal_storage = {
     "Miner": None,  # Miner Object
 }
 
-self_address = "http://localhost:8082"
+self_address = "http://localhost:8083"
 trusted_server_addr = "http://localhost:8080"
 interruptQueue = Queue(1)
 
@@ -231,6 +231,7 @@ def newTx():
 @app.route('/newBlock', methods=["POST"])
 def newBlock():
     global interruptQueue
+    # this is returning None
     recv_block = request.get_json()
     print(recv_block)
     rb = recv_block["Block"]
@@ -311,4 +312,4 @@ if __name__ == '__main__':
     machine_IP = ""
     if machine_IP == "":
         machine_IP = "localhost"
-    app.run(host=machine_IP, port=8082)
+    app.run(host=machine_IP, port=8083)
