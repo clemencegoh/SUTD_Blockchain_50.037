@@ -58,7 +58,7 @@ class Miner:
             tx = transaction.Transaction(
                             _sender_public_key=self.client.publickey,
                             _receiver_public_key=self.client.publickey,
-                            _amount=0,
+                            _amount=100,
                             _comment="Init Tx",
                             _reward=True,
                         )

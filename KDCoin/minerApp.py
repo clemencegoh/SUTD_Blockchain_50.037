@@ -71,8 +71,8 @@ def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
     internal_storage["Miner"].tx_pool.append(tx)
 
     # debug:
-    # print("Complete")
-    # print(internal_storage["Miner"].tx_pool)
+    print("Complete")
+    print(internal_storage["Miner"].tx_pool)
 
 
 @app.route('/')
@@ -165,10 +165,12 @@ def newUser():
 
     # announce yourself
     getNeighbours(self_address)
-    internal_storage["Miner"].mineBlock(
+    generator = internal_storage["Miner"].mineBlock(
         _neighbours=internal_storage["Neighbour_nodes"],
         _self_addr=self_address
     )
+    next(generator)
+    next(generator)
 
     return info + newUser
 
@@ -204,17 +206,19 @@ def payTo():
 @app.route('/newTx')
 def newTx():
     tx = request.form.get("TX")
-    if tx in internal_storage["Miner"].tx_pool:
+    t = transaction.Transaction(
+        _sender_public_key=tx["Sender"],
+        _receiver_public_key=tx["Receiver"],
+        _amount=tx["Amount"],
+        _comment=tx["Comment"],
+    )
+    t.data["Signature"] = tx["Signature"]
+
+    if t in internal_storage["Miner"].tx_pool:
         # don't do anything
         return ""
     else:
-        t = transaction.Transaction(
-            _sender_public_key=tx["Sender"],
-            _receiver_public_key=tx["Receiver"],
-            _amount=tx["Amount"],
-            _comment=tx["Comment"],
-        )
-        t.data["Signature"] = tx["Signature"]
+        # add to pool
         internal_storage["Miner"].tx_pool.append(t)
 
         # broadcast to the rest
@@ -284,7 +288,20 @@ def miningPage():
 
 @app.route('/state')
 def getState():
-    return json.dumps(internal_storage["Miner"].blockchain.current_block.state)
+    state = internal_storage["Miner"].blockchain.current_block.state
+    pool = []
+    for tx in state["Tx_pool"]:
+        pool.append(tx.to_json())
+
+    return "Balance: " + json.dumps(state["Balance"]) + "<br>" \
+           + "Pool" + str(pool) + "<br>" \
+           + "Length" + str(state["Blockchain_length"])
+
+
+@app.route('/update')
+def updateNeighbours():
+    getNeighbours(self_address)
+    return homePage()
 
 
 if __name__ == '__main__':
