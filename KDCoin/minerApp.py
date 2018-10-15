@@ -55,9 +55,13 @@ def broadcastTx(_tx):
     for i in internal_storage["Neighbour_nodes"]:
         if i != self_address:
             # broadcast
-            requests.post(i + "/newTx", {
-                "TX": _tx.data
-            })
+            try:
+                requests.post(i + "/newTx", {
+                    "TX": _tx.data
+                })
+            except:
+                print(i, "no longer present")
+                del i
 
 
 def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
