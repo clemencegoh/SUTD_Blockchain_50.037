@@ -232,7 +232,7 @@ def newTx():
 def newBlock():
     global interruptQueue
     # this is returning None
-    recv_block = request.get_json()
+    recv_block = request.__dict__
     print(recv_block)
     rb = recv_block["Block"]
     # create block from data

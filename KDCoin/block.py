@@ -34,7 +34,7 @@ class Block:
         # variables included in hash
         self.prev_header = _prev_header  # hash of previous header
         self.timestamp = str(time.time())  # timestamp of block
-        self.merkle_root = None
+        self.merkle_root = ""
 
         # pointers
         self.merkle_tree = None

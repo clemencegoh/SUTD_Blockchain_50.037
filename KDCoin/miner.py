@@ -98,7 +98,7 @@ class Miner:
             newBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
             self.blockchain.addBlock(_incoming_block=newBlock)
 
-        self.broadcastBlock(self.blockchain.current_block.__dict__, _neighbours, _self_addr)  # inform the rest that you have created a block first
+        self.broadcastBlock(self.blockchain.current_block, _neighbours, _self_addr)  # inform the rest that you have created a block first
         self.tx_pool = self.tx_pool[10:]  # truncate of the first 10 transactions from tx_pool
         yield "Done Mining"
 
