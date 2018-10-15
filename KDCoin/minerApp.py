@@ -203,9 +203,10 @@ def payTo():
 
 
 # receive new Tx from broadcast
-@app.route('/newTx')
+@app.route('/newTx', methods=["POST"])
 def newTx():
     tx = request.get_json()["TX"]
+    print(tx)
     t = transaction.Transaction(
         _sender_public_key=tx["Sender"],
         _receiver_public_key=tx["Receiver"],
@@ -227,18 +228,20 @@ def newTx():
 
 
 # receive new Block from broadcast
-@app.route('/newBlock')
+@app.route('/newBlock', methods=["POST"])
 def newBlock():
     global interruptQueue
-    block = request.get_json()["Block"]
+    recv_block = request.get_json()
+    print(recv_block)
+    rb = recv_block["Block"]
     # create block from data
-    b = block.Block(_transaction_list=block.tx_list,
-                    _prev_header=block.prev_header,
-                    _prev_block=block.prev_block,
-                    _difficulty=block.difficulty,
-                    _current_header=block.current_header,
-                    _nonce=block.nonce,
-                    _state=block.state)
+    b = block.Block(_transaction_list=rb["tx_list"],
+                    _prev_header=rb["prev_header"],
+                    _prev_block=rb["prev_block"],
+                    _difficulty=rb["difficulty"],
+                    _current_header=rb["current_header"],
+                    _nonce=rb["nonce"],
+                    _state=rb["state"])
     # validate
     if b.validate():
         # interrupt and add block

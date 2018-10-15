@@ -109,7 +109,7 @@ class Miner:
             if neighbour != _self_addr:
                 # broadcast
                 try:
-                    requests.post(neighbour + "/newBlock", {
+                    requests.post(neighbour + "/newBlock", data={
                         "Block": _block_data
                     })
                 except:  # neighbour no longer present
