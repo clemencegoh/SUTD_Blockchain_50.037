@@ -3,16 +3,14 @@ import ecdsa
 
 # Blockchain contains the current block
 class Blockchain:
-    def __init__(self, _block):
+    def __init__(self, _block, _length=1):
         # verify that block has a nonce, required
         if _block.nonce is None or _block.header is None:
             raise ValueError("Block must be properly initiated")
 
         # current leading block to be worked on
         self.current_block = _block
-
-        # hashmap of all leading blocks in case of forking
-        self.block_heads = {_block: 1}
+        self.chain_length = _length
 
     # checkChainLength meant to be used to check the chain's length
     # starts from current block and keeps counting backwards
@@ -23,6 +21,8 @@ class Blockchain:
         while current_block.prev_block is not None:
             count += 1
             current_block = current_block.prev_block
+
+        self.chain_length = count
 
         return count
 
@@ -37,17 +37,10 @@ class Blockchain:
     # adds a new block
     # has option to add a new block to a certain block along the chain
     def addBlock(self, _incoming_block, _prev_block=None):
-        # default sets the prev block as the head of the chain
-        if _prev_block is None:
-            _prev_block = self.current_block
-
         # set current block
         _incoming_block.setPrevBlock(self.current_block)
         self.current_block = _incoming_block
-
-        # replace prev entry with incoming block
-        del self.block_heads[_prev_block]
-        self.block_heads[_incoming_block] = 1
+        self.chain_length += 1
 
     # In case of forking, choose current block to work on based on longest chain
     def resolve(self):
@@ -62,6 +55,7 @@ class Blockchain:
                 longest_chain = chain_length
 
         self.current_block = new_head_block
+        self.chain_length = longest_chain
 
 
 # if __name__ == '__main__':
