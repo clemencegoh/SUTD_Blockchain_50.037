@@ -1,6 +1,7 @@
 from keyPair import GenerateKeyPair
-import blockChain, block, transaction, spvClient
+from KDCoin import blockChain, block, transaction, spvClient
 from multiprocessing import Queue
+import json
 import ecdsa
 import requests
 
@@ -15,18 +16,19 @@ import requests
 # - Keeping track of balance is done either through UTXO or account balance
 # - How to verify transaction?
 class Miner:
-    def __init__(self, _blockchain=None, _pub="", _priv=""):
+    def __init__(self, _pub="", _priv=""):
         # create new miner with fields:
         # _pub and _priv are in hex, convert to object
         pub_key = ecdsa.VerifyingKey.from_string(bytes.fromhex(_pub))
         priv_key = ecdsa.SigningKey.from_string(bytes.fromhex(_priv))
 
         self.client = spvClient.SPVClient(publickey=pub_key, privatekey=priv_key)  # client
-        self.blockchain = _blockchain  # current valid blockchain
+        self.blockchain = None  # current valid blockchain
         self.wip_block = None  # to be built
         self.tx_pool = []  # tx_pool held by miner
+        self.chains = {self.blockchain: 0}  # contains dict of chains in case of forks
 
-    # todo: determine amount to give as reward for block
+    # todo: determine amount to give as reward for blockd
     def createRewardTransaction(self, _private_key):
         reward = 100
         t = transaction.Transaction(
@@ -42,6 +44,31 @@ class Miner:
 
     def verifyTransaction(self):
         pass
+
+    def sortChain(self, _block, _chain):
+        current = _chain.current_block
+        count = _chain.chain_length
+        while current.prev_block is not None:
+            if current.header == _block.prev_header:
+                _block.prev_block = current  # set prev block for incoming
+                self.chains[blockChain.Blockchain(_block, count)] = count  # create new blockchain
+                return 1
+
+            current = current.prev_block
+            count -= 1
+        return 0
+
+    def handleBroadcastedBlock(self, _block):
+        longest_chains = []
+        longest_length = 0
+        if len(self.chains) == 1:
+            # just replace
+            self.chains = {blockChain.Blockchain(_block): 1}
+
+        # Find and add to chain
+        for chain, _ in self.chains.items():
+            if self.sortChain(_block, chain) == 1:
+                break
 
     def mineBlock(self, _neighbours, _self_addr):
         # While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
@@ -98,8 +125,11 @@ class Miner:
             newBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
             self.blockchain.addBlock(_incoming_block=newBlock)
 
-        self.broadcastBlock(self.blockchain.current_block.__dict__, _neighbours, _self_addr)  # inform the rest that you have created a block first
+        to_broadcast = self.blockchain.current_block.getData()
+
+        self.broadcastBlock(to_broadcast, _neighbours, _self_addr)  # inform the rest that you have created a block first
         self.tx_pool = self.tx_pool[10:]  # truncate of the first 10 transactions from tx_pool
+        self.handleBroadcastedBlock(self.blockchain.current_block)
         yield "Done Mining"
 
     # takes in the block data, and a list of neighbours to broadcast to
@@ -109,6 +139,9 @@ class Miner:
             if neighbour != _self_addr:
                 # broadcast
                 try:
+                    # successful
+                    print("sending block:", _block_data)
+                    print("to:", neighbour)
                     requests.post(neighbour + "/newBlock", data={
                         "Block": _block_data
                     })

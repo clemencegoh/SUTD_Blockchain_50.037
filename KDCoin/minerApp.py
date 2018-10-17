@@ -161,7 +161,7 @@ def newUser():
     pub_key = internal_storage["Public_key"]
     priv_key = internal_storage["Private_key"]
 
-    internal_storage["Miner"] = miner.Miner(_blockchain=None, _pub=pub_key, _priv=priv_key)
+    internal_storage["Miner"] = miner.Miner(_pub=pub_key, _priv=priv_key)
 
     # announce yourself
     getNeighbours(self_address)

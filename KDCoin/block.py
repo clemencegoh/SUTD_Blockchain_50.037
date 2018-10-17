@@ -1,4 +1,5 @@
 import time
+import json
 from merkleNode import MerkleNode
 from merkleTree import MerkleTree
 from helperFunctions import simpleLOD
@@ -34,7 +35,7 @@ class Block:
         # variables included in hash
         self.prev_header = _prev_header  # hash of previous header
         self.timestamp = str(time.time())  # timestamp of block
-        self.merkle_root = None
+        self.merkle_header = ""
 
         # pointers
         self.merkle_tree = None
@@ -77,7 +78,7 @@ class Block:
 
         # build merkle tree from transaction list
         self.merkle_tree = createTreeFromTx(tx_list)
-        self.merkle_root = self.merkle_tree.root
+        self.merkle_header = self.merkle_tree.root.data["Transaction"]
 
     # changes state based off transaction
     def changeState(self, _tx):
@@ -121,7 +122,7 @@ class Block:
     def validate(self):
         validating_string = self.prev_header \
                             + self.timestamp \
-                            + self.merkle_root.data["Transaction"] \
+                            + self.merkle_header \
                             + self.nonce
         minimum_pow = simpleLOD(self.difficulty)
 
@@ -136,7 +137,7 @@ class Block:
 
         first_half = self.prev_header \
                      + str(self.timestamp) \
-                     + self.merkle_root.data["Transaction"]
+                     + self.merkle_header
 
         return Process(target=findPreimage,
                        args=(simpleLOD(self.difficulty), first_half, _found, _interrupt))
@@ -145,7 +146,7 @@ class Block:
         self.nonce = _nonce
         self.header = self.prev_header \
                      + str(self.timestamp) \
-                     + self.merkle_root.data["Transaction"] \
+                     + self.merkle_header \
                      + self.nonce
 
     def checkIfTransactionInBlock(self, _transaction):
@@ -154,36 +155,13 @@ class Block:
     def setPrevBlock(self, _block):
         self.prev_block = _block
 
-# Test with proper transactions in block
-# if __name__ == '__main__':
-#     sender_private_key, sender_public_key = GenerateKeyPair()
-#
-#     receiver_private_key, receiver_public_key = GenerateKeyPair()
-#
-#     amount = 10000
-#     comment = "testRun"
-#     tx_list = [
-#         Transaction(sender_public_key, receiver_public_key, amount, comment),
-#         Transaction(sender_public_key, receiver_public_key, amount, "new one"),
-#     ]
-#     b = Block(tx_list)
-#
-#     channel = Queue(1)  # max size = 1
-#
-#     level_of_difficulty = 3
-#
-#     p = b.build(level_of_difficulty, channel)
-#
-#     p.start()
-#     p.join()
-#
-#     nonce_found = channel.get()  # nonce string from process
-#
-#     # setNonce must be called once a result is found
-#     b.setNonce(nonce_found)
-#
-#     # debug messages
-#     print("Nonce found:", nonce_found)
-#     print("Current header:", b.header)
-#     print("Verifying block...", b.validate(level_of_difficulty))
-#
+    def getData(self):
+        return json.dumps({
+            "Header": self.header,
+            "Nonce": self.nonce,
+            "Prev_header": self.prev_header,
+            "Timestamp": self.timestamp,
+            "Merkle_header": self.merkle_header,
+            "State": self.state,
+        })
+
