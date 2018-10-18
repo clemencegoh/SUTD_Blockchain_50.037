@@ -55,13 +55,15 @@ def broadcastTx(_tx):
     for i in internal_storage["Neighbour_nodes"]:
         if i != self_address:
             # broadcast
-            try:
-                requests.post(i + "/newTx", {
-                    "TX": _tx.data
-                })
-            except:
-                print(i, "no longer present")
-                del i
+            # try:
+            requests.post(i + "/newTx", json.dumps({
+                "TX": _tx.data
+            }))
+
+            # except:
+            #     print()
+            #     print(i, "no longer present")
+            #     del i
 
 
 def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
@@ -205,7 +207,7 @@ def payTo():
 # receive new Tx from broadcast
 @app.route('/newTx', methods=["POST"])
 def newTx():
-    tx = request.get_json()["TX"]
+    tx = request.get_json(force=True)["TX"]
     print(tx)
     t = transaction.Transaction(
         _sender_public_key=tx["Sender"],
@@ -231,17 +233,32 @@ def newTx():
 @app.route('/newBlock', methods=["POST"])
 def newBlock():
     global interruptQueue
-    recv_block = request.get_json()
+    recv_block = request.get_json(force=True)
     print(recv_block)
     rb = recv_block["Block"]
+
+    # create Transaction
+    incoming_list = []
+    for tx in rb["Tx_list"]:
+        incoming_list.append(transaction.Transaction(
+            _sender_public_key=tx["Sender"],
+            _receiver_public_key=tx["Receiver"],
+            _amount=tx["Amount"],
+            _comment=tx["Comment"],
+            _reward=tx["Reward"],
+            _signature=tx["Signature"]
+        ))
+
     # create block from data
-    b = block.Block(_transaction_list=rb["tx_list"],
-                    _prev_header=rb["prev_header"],
-                    _prev_block=rb["prev_block"],
-                    _difficulty=rb["difficulty"],
-                    _current_header=rb["current_header"],
-                    _nonce=rb["nonce"],
-                    _state=rb["state"])
+    b = block.Block(_transaction_list=incoming_list,
+                    _prev_header=rb["Prev_header"],
+                    _prev_block=None,
+                    _difficulty=rb["Difficulty"],
+                    _current_header=rb["Header"],
+                    _nonce=rb["Nonce"],
+                    _state=rb["State"],
+                    _timestamp=rb["Timestamp"],
+                    _merkle_header=rb["Merkle_header"])
     # validate
     if b.validate():
         # interrupt and add block

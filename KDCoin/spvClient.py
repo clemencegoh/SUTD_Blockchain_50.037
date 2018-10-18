@@ -30,7 +30,7 @@ class SPVClient:
         # not sure if this is needed
         blockchain = response.json()
 
-        balance = blockchain["current_block"]["state"]["Balance"][self.publickey]
+        balance = blockchain.current_block["state"]["Balance"][self.publickey]
         return balance
 
     def getMiners(self, _trusted_server):

@@ -27,15 +27,17 @@ def createTreeFromTx(_transaction_list):
 # Only leave _prev empty for genisys block creation
 ##########################
 class Block:
-    def __init__(self, _transaction_list, _prev_header="", _prev_block=None, _difficulty=3, _current_header="", _nonce="", _state=None):
+    def __init__(self, _transaction_list, _prev_header="", _prev_block=None,
+                 _difficulty=3, _current_header="", _nonce="", _state=None,
+                 _timestamp=str(time.time()), _merkle_header=""):
         # to create
         self.header = _current_header
         self.nonce = _nonce
 
         # variables included in hash
         self.prev_header = _prev_header  # hash of previous header
-        self.timestamp = str(time.time())  # timestamp of block
-        self.merkle_header = ""
+        self.timestamp = _timestamp  # timestamp of block
+        self.merkle_header = _merkle_header
 
         # pointers
         self.merkle_tree = None
@@ -54,7 +56,6 @@ class Block:
         self.difficulty = _difficulty
 
         if _prev_header is not None:
-            self.nonce = None  # random number needed to generate PoW
             self.prev_header = _prev_header  # header has to be created after nonce is found
 
         if _prev_block is not None:
@@ -154,12 +155,27 @@ class Block:
         self.prev_block = _block
 
     def getData(self):
-        return json.dumps({
+        final_list = []
+        final_pool = []
+        for tx in self.tx_list:
+            final_list.append(tx.data)
+        for tx in self.state["Tx_pool"]:
+            final_pool.append(tx.data)
+
+        final_state = {
+            "Balance": self.state["Balance"],
+            "Tx_pool": final_pool,
+            "Blockchain_length": self.state["Blockchain_length"],
+        }
+
+        return {
             "Header": self.header,
             "Nonce": self.nonce,
             "Prev_header": self.prev_header,
             "Timestamp": self.timestamp,
             "Merkle_header": self.merkle_header,
-            "State": self.state,
-        })
+            "Tx_list": final_list,
+            "State": final_state,
+            "Difficulty": self.difficulty,
+        }
 

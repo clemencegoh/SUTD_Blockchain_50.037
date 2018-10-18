@@ -126,6 +126,7 @@ class Miner:
             self.blockchain.addBlock(_incoming_block=newBlock)
 
         to_broadcast = self.blockchain.current_block.getData()
+        print("Trying to broadcast this data:\n", to_broadcast)
 
         self.broadcastBlock(to_broadcast, _neighbours, _self_addr)  # inform the rest that you have created a block first
         self.tx_pool = self.tx_pool[10:]  # truncate of the first 10 transactions from tx_pool
@@ -138,15 +139,16 @@ class Miner:
         for neighbour in _neighbours:
             if neighbour != _self_addr:
                 # broadcast
-                try:
-                    # successful
-                    print("sending block:", _block_data)
-                    print("to:", neighbour)
-                    requests.post(neighbour + "/newBlock", data={
-                        "Block": _block_data
-                    })
-                except:  # neighbour no longer present
-                    print(neighbour, "no longer present")
+                # try:
+                # successful
+                print("sending block:", _block_data)
+                print("to:", neighbour)
+                requests.post(neighbour + "/newBlock", data=json.dumps({
+                    "Block": _block_data
+                }))
+
+                # except:  # neighbour no longer present
+                #     print(neighbour, "no longer present")
 
 
 
