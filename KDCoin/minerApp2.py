@@ -56,6 +56,8 @@ def broadcastTx(_tx):
         if i != self_address:
             # broadcast
             # try:
+            print(_tx)
+            print(_tx.data)
             requests.post(i + "/newTx", json.dumps({
                 "TX": _tx.data
             }))

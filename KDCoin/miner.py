@@ -139,16 +139,16 @@ class Miner:
         for neighbour in _neighbours:
             if neighbour != _self_addr:
                 # broadcast
-                # try:
+                try:
                 # successful
-                print("sending block:", _block_data)
-                print("to:", neighbour)
-                requests.post(neighbour + "/newBlock", data=json.dumps({
-                    "Block": _block_data
-                }))
+                    print("sending block:", _block_data)
+                    print("to:", neighbour)
+                    requests.post(neighbour + "/newBlock", data=json.dumps({
+                        "Block": _block_data
+                    }))
 
-                # except:  # neighbour no longer present
-                #     print(neighbour, "no longer present")
+                except:  # neighbour no longer present
+                    print(neighbour, "no longer present")
 
 
 

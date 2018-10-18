@@ -16,7 +16,7 @@ class SPVClient:
         transaction_tobemade = Transaction(self.publickey, receiver_public_key,
                                                    amount, comment)
         transaction_tobemade.sign(self.privatekey)
-        print(transaction_tobemade.data)
+        print("New transaction:", transaction_tobemade.data)
         return transaction_tobemade
 
     # Check acc balance of specified spvclient

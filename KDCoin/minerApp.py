@@ -47,7 +47,6 @@ def getNeighbours(_self_addr):
 
 def requestLatestBlockchain():
     req = requests.get(internal_storage["Neighbour_nodes"][0] + "/blockchain")
-    print(req.json())
     return req.json()
 
 
