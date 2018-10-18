@@ -70,7 +70,9 @@ class Block:
         tx_list = []
         for tx in _transaction_list:
             # invalid transactions will be lost here
+
             if tx.validate and self.changeState(tx):
+
                 tx_list.append(tx)
             else:
                 print("lost:\n", tx)
