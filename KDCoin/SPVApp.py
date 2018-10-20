@@ -33,7 +33,7 @@ def createTransaction():
 
     if request.headers['Content-Type'] == 'application/json':
         #Receive data regarding transaction
-        json_received = request.json
+        json_received = request.json()
         transaction_data = json.loads(json_received)
         print(transaction_data)
 
@@ -43,17 +43,18 @@ def createTransaction():
                         comment=transaction_data["Comment"]
                         )
 
-        miners_list = user.getMiners(miner_server + '/updateSPVMinerList')
+        miners_list = user.getMiners(miner_server)
 
         # broadcast to all known miners
         for miner in miners_list:
             # execute post request to broadcast transaction
-            broadcast_endpoint = miner + "/newTransaction"
+            broadcast_endpoint = miner + "/newTx"
             requests.post(
                 url=broadcast_endpoint,
-                json=transaction.to_json()
+                data=json.dumps({
+                    "TX": transaction.data
+                })
             )
-
     else:
         return 'wrong format of transaction sent'
 
