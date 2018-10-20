@@ -40,10 +40,13 @@ class Blockchain:
     def addBlock(self, _incoming_block, _prev_block_header):
         # adds block to chain
         for k, _ in self.block_heads.items():
+            count = self.block_heads[k]
+            top_count = count
             while k is not None:
-                count = self.block_heads[k]
                 if k.header == _prev_block_header:
                     _incoming_block.setPrevBlock(k)
+                    if top_count == count:
+                        del self.block_heads[k]
                     self.block_heads[_incoming_block] = count + 1
                     return self.resolve()
                 else:
@@ -58,8 +61,10 @@ class Blockchain:
         new_head_block = None
         longest_chain = 0
 
+        print(self.block_heads)
+
         for key, _ in self.block_heads.items():
-            chain_length = self.checkChainLength(key)
+            chain_length = self.block_heads[key]
             if longest_chain <= chain_length:
                 new_head_block = key
                 longest_chain = chain_length

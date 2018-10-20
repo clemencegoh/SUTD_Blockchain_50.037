@@ -45,12 +45,18 @@ class Block:
 
         # static variables
         self.tx_list = _transaction_list  # transactions verified within this block
+
+        # catching wrong inits
         if _state is None:
-            self.state = {
-                "Balance": {},
-                "Tx_pool": [],
-                "Blockchain_length": 0
-            }
+            if _prev_block is None:
+                self.state = {
+                    "Balance": {},
+                    "Tx_pool": [],
+                    "Blockchain_length": 1
+                }
+            else:
+                self.state = _prev_block.state
+                self.state["Blockchain_length"] += 1
         else:
             self.state = _state
 
@@ -136,6 +142,8 @@ class Block:
     # This should take up the longest time
     # This must be called manually
     def build(self, _found, _interrupt):
+
+        print("Prev header:", self.prev_header)
 
         first_half = self.prev_header \
                      + str(self.timestamp) \

@@ -26,6 +26,7 @@ def createInitialBlockchain():
     p.start()
     p.join()
     nonce = q_find.get()
+    print("Nonce1:", nonce)
     b.completeBlockWithNonce(nonce)
 
     bc = blockChain.Blockchain(_block=b)
@@ -56,6 +57,7 @@ def createSecondBlock(priv, pub, b):
     b2 = block.Block(
         _transaction_list=[t2, t3],
         _prev_block=b,
+        _prev_header=b.header,
         _state=b.state,
     )
     p2 = b2.build(q5, q6)
@@ -63,6 +65,7 @@ def createSecondBlock(priv, pub, b):
     p2.join()
 
     nonce2 = q5.get()
+    print("Nonce2:", nonce2)
     b2.completeBlockWithNonce(nonce2)
     return b2
 
@@ -91,6 +94,7 @@ def createThirdBlock(priv, pub, b):
     b2 = block.Block(
         _transaction_list=[t2, t3],
         _prev_block=b,
+        _prev_header=b.header,
         _state=b.state,
     )
     p2 = b2.build(q3, q4)
@@ -111,11 +115,14 @@ class TestBlockchain(unittest.TestCase):
         self.assertEqual(bc.chain_length, 1, "Chain length is supposed to be 1")
 
         b2 = createSecondBlock(priv, pub, b)
+        print("b2 stats:")
+        print(b2.header)
+        print(b2.state)
+        print(b2.nonce)
         bc.addBlock(b2, b.header)
 
         self.assertEqual(bc.current_block, b2, "Current block is not at b2")
-        self.assertTrue(bc.current_block.validate(), "Block cannot be validated")
-        print(bc.current_block.state)
+        self.assertTrue(bc.current_block.validate(), "Block 2 cannot be validated")
 
     def test_resolve_fork(self):
         priv, pub, b, bc = createInitialBlockchain()
