@@ -53,7 +53,9 @@ class Blockchain:
                     count -= 1
                     k = k.prev_block
 
-        return "Not found"
+        # totally new
+        self.block_heads[_incoming_block] = 1
+        return self.resolve()
 
     # In case of forking, choose current block to work on based on longest chain
     def resolve(self):

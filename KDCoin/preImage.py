@@ -65,7 +65,7 @@ def findPreimage(_target, _message, _found, _interrupt):
         if not _interrupt.empty():
             print("Interrupted")
             _interrupt.get()
-            break
+            return ""
 
         # generate until a new string not tried before has been found
         while random_string in strings_done:

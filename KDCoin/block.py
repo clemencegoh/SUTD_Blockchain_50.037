@@ -44,7 +44,8 @@ class Block:
         self.prev_block = _prev_block
 
         # static variables
-        self.tx_list = _transaction_list  # transactions verified within this block
+        self.tx_list = []  # transactions used in this block
+        self.txs = []
 
         # catching wrong inits
         if _state is None:
@@ -63,19 +64,29 @@ class Block:
         self.difficulty = _difficulty
         self.filterTxFromPool(_transaction_list)
 
+    def executeChange(self):
+        while self.txs:
+            tx = self.txs.pop(0)
+            self.changeState(tx)
+
     # filter and verify transaction from the tx_list given
-    def filterTxFromPool(self, _transaction_list):
+    def filterTxFromPool(self, _transaction_list=[]):
         tx_list = []
         if not _transaction_list:
             print("HIGHLIGHTING ERROR HERE, EMPTY TX LIST")
             return ""
-        for tx in _transaction_list:
+        while _transaction_list:
+            tx = _transaction_list.pop(0)
             # invalid transactions will be lost here
-            if tx.validate and self.changeState(tx):
+            if tx.validate():
                 tx_list.append(tx)
             else:
                 print("lost:\n", tx)
-            del tx
+
+        for tx in tx_list:
+            self.tx_list.append(tx.data)
+        print("After filtering:", self.tx_list)
+        self.txs = tx_list
 
         # build merkle tree from transaction list
         self.merkle_tree = createTreeFromTx(tx_list)
@@ -128,12 +139,6 @@ class Block:
                             + self.merkle_header \
                             + self.nonce
         minimum_pow = simpleLOD(self.difficulty)
-
-        print(self.difficulty)
-
-        print("min:      :", minimum_pow)
-        print("actual pow:", int(getDigest(validating_string.encode()), 16))
-
         # verify proof of work is more than minimum requirement
         # this requires digest <= minimum proof of work
         return minimum_pow >= int(getDigest(validating_string.encode()), 16)

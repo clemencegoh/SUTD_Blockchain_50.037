@@ -41,6 +41,8 @@ class TestBlockMethods(unittest.TestCase):
         print("tx_list:", b.tx_list)
         print("state:", b.state)
 
+        print("from getData:", b.getData())
+
         self.assertEqual(b.state["Tx_pool"], [], "TX pool should be empty")
         self.assertEqual(b.state["Balance"],
                          {pub.to_string().hex(): 90,

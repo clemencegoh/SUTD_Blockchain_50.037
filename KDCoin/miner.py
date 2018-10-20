@@ -1,5 +1,4 @@
-from keyPair import GenerateKeyPair
-from KDCoin import blockChain, block, transaction, spvClient
+from KDCoin import blockChain, block, transaction, spvClient, keyPair
 from multiprocessing import Queue
 import json
 import ecdsa
@@ -20,16 +19,23 @@ class Miner:
     def __init__(self, _pub="", _priv=""):
         # create new miner with fields:
         # _pub and _priv are in hex, convert to object
-        pub_key = ecdsa.VerifyingKey.from_string(bytes.fromhex(_pub))
-        priv_key = ecdsa.SigningKey.from_string(bytes.fromhex(_priv))
 
-        self.client = spvClient.SPVClient(publickey=pub_key, privatekey=priv_key)  # client
+        self.client = None
+
+        if _pub != "" and _priv != "":
+            pub_key = ecdsa.VerifyingKey.from_string(bytes.fromhex(_pub))
+            priv_key = ecdsa.SigningKey.from_string(bytes.fromhex(_priv))
+
+            self.client = spvClient.SPVClient(publickey=pub_key, privatekey=priv_key)  # client
+
         self.blockchain = None  # current valid blockchain
-        self.wip_block = None  # to be built
         self.tx_pool = []  # tx_pool held by miner
-        self.chains = {self.blockchain: 0}  # contains dict of chains in case of forks
 
-    # todo: determine amount to give as reward for blockd
+    def createNewAccount(self):
+        priv, pub = keyPair.GenerateKeyPair()
+        self.client = spvClient.SPVClient(privatekey=priv, publickey=pub)
+        return priv, pub
+
     def createRewardTransaction(self, _private_key):
         reward = 100
         t = transaction.Transaction(
@@ -43,38 +49,26 @@ class Miner:
 
         return t
 
-    def verifyTransaction(self):
-        pass
-
-    def sortChain(self, _block, _chain):
-        current = _chain.current_block
-        count = _chain.chain_length
-        while current.prev_block is not None:
-            if current.header == _block.prev_header:
-                _block.prev_block = current  # set prev block for incoming
-                self.chains[blockChain.Blockchain(_block, count)] = count  # create new blockchain
-                return 1
-
-            current = current.prev_block
-            count -= 1
-        return 0
-
+    # call this on interrupt
     def handleBroadcastedBlock(self, _block):
-        longest_chains = []
-        longest_length = 0
-        if len(self.chains) == 1:
-            # just replace
-            self.chains = {blockChain.Blockchain(_block): 1}
+        if _block.validate():  # valid block
+            # create if None
+            if self.blockchain is None:
+                self.blockchain = blockChain.Blockchain(_block)
+            else:
+                self.blockchain.addBlock(_block, _block.prev_header)
+            # use other person's tx pool
+            self.tx_pool = _block.state["Tx_pool"]
+            return True
+        return False
 
-        # Find and add to chain
-        for chain, _ in self.chains.items():
-            if self.sortChain(_block, chain) == 1:
-                break
-
-    def mineBlock(self, _neighbours, _self_addr):
+    def mineBlock(self):
+        print("Mining...")
+        time.sleep(1)
         # wait till tx_pool is not empty
-        while not self.tx_pool and self.blockchain is not None:
-            time.sleep(1)
+        if self.blockchain is not None:
+            while not self.tx_pool:
+                time.sleep(1)
 
         # While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
         interruptQueue = Queue(1)
@@ -84,63 +78,76 @@ class Miner:
         # if this is ever invoked, it must be the first block
         # of the first miner
         if self.blockchain is None:
-            # create new blockchain with empty data
-            # balance = self.blockchain.current_block.state["Balance"]
             tx = self.createRewardTransaction(self.client.privatekey)
-            firstBlock = block.Block(
+            first_block = block.Block(
                     _transaction_list=[tx],
-                    _difficulty=1
-                )
+            )
+            first_block.executeChange()
 
-            p = firstBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
+            p = first_block.build(_found=nonceQueue, _interrupt=interruptQueue)
             p.start()
-
             p.join()
-            firstBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
-            firstBlock.tx_list = [tx.data]
+            nonce_found = nonceQueue.get()
+            if nonce_found == "":
+                print("interrupted!")
+                self.mineBlock()  # interrupted, expect block
 
-            self.blockchain = blockChain.Blockchain(_block=firstBlock)
+            first_block.completeBlockWithNonce(_nonce=nonce_found)
+            first_block.tx_list = [tx.data]
+
+            self.blockchain = blockChain.Blockchain(_block=first_block)
 
         else:
             # validate the transactions
             temp_pool = []
 
             print("Getting from tx_pool...-->", self.tx_pool)
+            print("Current:", self.blockchain.current_block.state)
 
-            for item in self.tx_pool:
-                if len(temp_pool) >= 9:
-                    break
-                if item.validate:
-                    temp_pool.append(item)
-                del item
+            while len(self.tx_pool) > 0 and len(temp_pool) <= 10:
+                item = self.tx_pool.pop(0)
+
+                # create transaction
+                t = transaction.Transaction(
+                    item["Sender"],
+                    item["Receiver"],
+                    item["Amount"],
+                    item["Comment"],
+                    item["Reward"],
+                    item["Signature"]
+                )
+                temp_pool.append(t)
 
             temp_pool.append(
                 self.createRewardTransaction(self.client.privatekey))
 
             print("----> TEMP POOL:", temp_pool)
-
             newBlock = block.Block(
-                    # choose first 10 transactions in tx_pool
                     _transaction_list=temp_pool,
                     _prev_header=self.blockchain.current_block.header,
-                    _difficulty=1
+                    _prev_block=self.blockchain.current_block,
                 )
+            newBlock.executeChange()
+
             print("newBlock--->", newBlock.state, newBlock.tx_list)
 
             p = newBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
             p.start()
-
             p.join()
-            newBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
-            self.blockchain.addBlock(_incoming_block=newBlock)
 
-        print("Currently on block:", self.blockchain.current_block)
+            nonce_found = nonceQueue.get()
+            if nonce_found == "":
+                print("No nonce?")
+                self.mineBlock()
+            newBlock.completeBlockWithNonce(_nonce=nonce_found)
+            self.blockchain.addBlock(
+                _incoming_block=newBlock,
+                _prev_block_header=newBlock.prev_header
+            )
+
         to_broadcast = self.blockchain.current_block.getData()
-        print("Trying to broadcast this data:\n", to_broadcast)
 
-        self.broadcastBlock(to_broadcast, _neighbours, _self_addr)  # inform the rest that you have created a block first
-        self.handleBroadcastedBlock(self.blockchain.current_block)
-        yield "Done Mining"
+        yield to_broadcast
 
     # takes in the block data, and a list of neighbours to broadcast to
     def broadcastBlock(self, _block_data, _neighbours, _self_addr):
@@ -149,7 +156,6 @@ class Miner:
             if neighbour != _self_addr:
                 # broadcast
                 try:
-                # successful
                     print("sending block:", _block_data)
                     print("to:", neighbour)
                     requests.post(neighbour + "/newBlock", data=json.dumps({
