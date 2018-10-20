@@ -39,11 +39,10 @@ class Transaction:
             _data["Signature"] = _data["Signature"].hex()
         return json.dumps(_data)
 
-    @classmethod
-    def from_json(cls, _data):
-        # Instantiates/Deserializes object from JSON string
-        hex_data = json.loads(_data)
-        hex_data["Signature"] = bytes.fromhex(hex_data["Signature"])
+    def from_json(self):
+        # reverts Signature from created Transaction object
+        self.data["Signature"] = bytes.fromhex(self.data["Signature"])
+        return self.data
 
     def sign(self, _private_key):
         # Sign object with private key passed
@@ -51,7 +50,7 @@ class Transaction:
         sig = signWithPrivateKey(_message=json.dumps(self.data), sk=_private_key)
 
         # add signature to existing data
-        self.data["Signature"] = sig
+        self.data["Signature"] = sig.hex()
         return self.data, sig
 
     def getVKFromData(self):
@@ -62,13 +61,13 @@ class Transaction:
         # Validate transaction correctness.
         # Can be called within from_json()
         # remove signature
-        sig = self.data["Signature"]
+        sig = bytes.fromhex(self.data["Signature"])
         self.data["Signature"] = ""
 
         # verify data without signature in it
         vk = self.getVKFromData()
         result = verifyExisting(_message=self.to_json(self.data), _public_key=vk, _sig=sig)
-        self.data["Signature"] = sig
+        self.data["Signature"] = sig.hex()
         return result
 
     def __eq__(self, other):

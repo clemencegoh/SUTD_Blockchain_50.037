@@ -1,160 +1,141 @@
 import unittest
 import time
-from multiprocessing import Queue
-from blockChain import Blockchain
-from block import Block
-from keyPair import GenerateKeyPair
-from transaction import Transaction
+from multiprocessing import Manager
+from KDCoin import transaction, block, blockChain, keyPair
+
+
+manager = Manager()
+
+
+def createInitialBlockchain():
+    priv, pub = keyPair.GenerateKeyPair()
+    t = transaction.Transaction(
+        _sender_public_key=pub,
+        _receiver_public_key=pub,
+        _amount=100,
+        _comment="Reward",
+        _reward=True
+    )
+    t.sign(priv)
+
+    b = block.Block([t])
+    q_find = manager.Queue()
+    q2 = manager.Queue()
+
+    p = b.build(q_find, q2)
+    p.start()
+    p.join()
+    nonce = q_find.get()
+    b.completeBlockWithNonce(nonce)
+
+    bc = blockChain.Blockchain(_block=b)
+    return priv, pub, b, bc
+
+
+def createSecondBlock(priv, pub, b):
+    q5 = manager.Queue()
+    q6 = manager.Queue()
+
+    t2 = transaction.Transaction(
+        _sender_public_key=pub,
+        _receiver_public_key="Random",
+        _amount=10,
+        _comment="giving",
+    )
+    t2.sign(priv)
+
+    t3 = transaction.Transaction(
+        _sender_public_key=pub,
+        _receiver_public_key=pub,
+        _amount=100,
+        _comment="Reward for mining",
+        _reward=True
+    )
+    t3.sign(priv)
+
+    b2 = block.Block(
+        _transaction_list=[t2, t3],
+        _prev_block=b,
+        _state=b.state,
+    )
+    p2 = b2.build(q5, q6)
+    p2.start()
+    p2.join()
+
+    nonce2 = q5.get()
+    b2.completeBlockWithNonce(nonce2)
+    return b2
+
+
+def createThirdBlock(priv, pub, b):
+    q3 = manager.Queue()
+    q4 = manager.Queue()
+
+    t2 = transaction.Transaction(
+        _sender_public_key=pub,
+        _receiver_public_key="Random",
+        _amount=100,
+        _comment="giving",
+    )
+    t2.sign(priv)
+
+    t3 = transaction.Transaction(
+        _sender_public_key=pub,
+        _receiver_public_key=pub,
+        _amount=100,
+        _comment="Reward for mining",
+        _reward=True
+    )
+    t3.sign(priv)
+
+    b2 = block.Block(
+        _transaction_list=[t2, t3],
+        _prev_block=b,
+        _state=b.state,
+    )
+    p2 = b2.build(q3, q4)
+    p2.start()
+    p2.join()
+
+    nonce2 = q3.get()
+    b2.completeBlockWithNonce(nonce2)
+    return b2
 
 
 class TestBlockchain(unittest.TestCase):
-    def test_SimpleE2E(self):
-        # create parties
-        sender_priv, sender_pub = GenerateKeyPair()
-        recv_priv, recv_pub = GenerateKeyPair()
-        difficulty = 1
+    def test_create_blockchain_add_block(self):
+        priv, pub, b, bc = createInitialBlockchain()
 
-        # init with 20 coins each
-        tx0 = Transaction(
-            sender_pub,
-            sender_pub,
-            20,
-            "First transaction",
-            True
-        )
-        tx0.sign(sender_priv)
-        tx1 = Transaction(
-            recv_pub,
-            recv_pub,
-            10,
-            "First transaction",
-            True
-        )
-        tx1.sign(recv_priv)
-        tx2 = Transaction(
-            sender_pub,
-            recv_pub,
-            10,
-            "Sending money"
-        )
-        tx2.sign(sender_priv)
-        tx3 = Transaction(
-            recv_pub,
-            sender_pub,
-            5,
-            "Return Transaction"
-        )
-        tx3.sign(recv_priv)
+        self.assertTrue(bc.current_block.validate(), "Block cannot be validated")
+        self.assertEqual(bc.current_block, b, "Blocks are not the same")
+        self.assertEqual(bc.chain_length, 1, "Chain length is supposed to be 1")
 
-        tx_list = [tx0, tx1, tx2, tx3]
+        b2 = createSecondBlock(priv, pub, b)
+        bc.addBlock(b2, b.header)
 
-        # create block from tx_list
-        # this should be the longest step
-        b = Block(tx_list, _difficulty=difficulty)
-        q = Queue(1)
-        interrupt = Queue(1)
+        self.assertEqual(bc.current_block, b2, "Current block is not at b2")
+        self.assertTrue(bc.current_block.validate(), "Block cannot be validated")
+        print(bc.current_block.state)
 
-        process = b.build(q, interrupt)
-        process.start()
+    def test_resolve_fork(self):
+        priv, pub, b, bc = createInitialBlockchain()
 
-        # wait for block to finish building
-        process.join()
+        b2 = createSecondBlock(priv, pub, b)
+        print("B2:", b2.state)
+        bc.addBlock(b2, b.header)
 
-        # finish building block
-        b.completeBlockWithNonce(q.get())
+        b3 = createThirdBlock(priv, pub, b2)
+        bc.addBlock(b3, b2.header)
 
-        # NEW BLOCK
-        bc = Blockchain(b)
+        b4_fork = createSecondBlock(priv, pub, b2)
+        bc.addBlock(b4_fork, b2.header)
 
-        prev_block = b
-        for i in range(3):
-            b1 = Block(_transaction_list=tx_list,
-                       _prev_block=prev_block,
-                       _prev_header=prev_block.header)
-
-            process = b1.build(q, interrupt)
-            process.start()
-
-            process.join()
-
-            b1.completeBlockWithNonce(q.get())
-
-            bc.addBlock(_incoming_block=b1, _prev_block=prev_block)
-
-            prev_block = b1
-
-        # verify
-        res = bc.validate()
-
-        self.assertEqual(
-            bc.checkChainLength(bc.current_block),
-            4,
-            "Chain length is not 4"
-        )
-
-        self.assertTrue(res, "Validation is not True")
-
-    def test_blockchainInterrupt(self):
-        # create parties
-        sender_priv, sender_pub = GenerateKeyPair()
-        recv_priv, recv_pub = GenerateKeyPair()
-        difficulty = 1
-
-        # init with 20 coins each
-        tx0 = Transaction(
-            sender_pub,
-            sender_pub,
-            20,
-            "First transaction",
-            True
-        )
-        tx0.sign(sender_priv)
-        tx1 = Transaction(
-            recv_pub,
-            recv_pub,
-            10,
-            "First transaction",
-            True
-        )
-        tx1.sign(recv_priv)
-        tx2 = Transaction(
-            sender_pub,
-            recv_pub,
-            10,
-            "Sending money"
-        )
-        tx2.sign(sender_priv)
-        tx3 = Transaction(
-            recv_pub,
-            sender_pub,
-            5,
-            "Return Transaction"
-        )
-        tx3.sign(recv_priv)
-
-        tx_list = [tx0, tx1, tx2, tx3]
-
-        # create block from tx_list
-        # this should be the longest step
-        b = Block(tx_list, _difficulty=6)
-        q = Queue(1)
-        interrupt = Queue(1)
-
-        process = b.build(q, interrupt)
-        process.start()
-
-        # test interrupt
-        time.sleep(1)
-        interrupt.put(1)
-
-        # wait for block to finish building
-        process.join()
-
-        nonce = q.get()
-        print("Nonce:", nonce)  # not sure but this should not work
-
-        # finish building block
-        # b.completeBlockWithNonce(nonce)
+        self.assertTrue(b.validate(), "Validate block 1")
+        self.assertTrue(b2.validate(), "Validate block 2")
+        self.assertTrue(b3.validate(), "Validate block 3")
+        self.assertTrue(b4_fork.validate(), "Validate block 4")
+        self.assertEqual(bc.chain_length, 3, "Chain length must be 3")
+        self.assertEqual(len(bc.block_heads), 2, "There must be 2 forks")
 
 
 if __name__ == "__main__":

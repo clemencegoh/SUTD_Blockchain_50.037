@@ -4,6 +4,7 @@ from multiprocessing import Queue
 import json
 import ecdsa
 import requests
+import time
 
 
 # todo: Idea is for every miner to have its own flask app
@@ -71,6 +72,10 @@ class Miner:
                 break
 
     def mineBlock(self, _neighbours, _self_addr):
+        # wait till tx_pool is not empty
+        while not self.tx_pool and self.blockchain is not None:
+            time.sleep(1)
+
         # While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
         interruptQueue = Queue(1)
         nonceQueue = Queue(1)
@@ -81,15 +86,7 @@ class Miner:
         if self.blockchain is None:
             # create new blockchain with empty data
             # balance = self.blockchain.current_block.state["Balance"]
-            # todo: this is left here until implementation of finding block holds
-            tx = transaction.Transaction(
-                            _sender_public_key=self.client.publickey,
-                            _receiver_public_key=self.client.publickey,
-                            _amount=100,
-                            _comment="Init Tx",
-                            _reward=True,
-                        )
-            tx.sign(self.client.privatekey)
+            tx = self.createRewardTransaction(self.client.privatekey)
             firstBlock = block.Block(
                     _transaction_list=[tx],
                     _difficulty=1
@@ -100,23 +97,35 @@ class Miner:
 
             p.join()
             firstBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
+            firstBlock.tx_list = [tx.data]
 
             self.blockchain = blockChain.Blockchain(_block=firstBlock)
 
         else:
             # validate the transactions
             temp_pool = []
-            counter = 0
-            while len(temp_pool) < 9:
-                if self.tx_pool[counter].validate:
-                    temp_pool.append(self.tx_pool[counter])
+
+            print("Getting from tx_pool...-->", self.tx_pool)
+
+            for item in self.tx_pool:
+                if len(temp_pool) >= 9:
+                    break
+                if item.validate:
+                    temp_pool.append(item)
+                del item
+
+            temp_pool.append(
+                self.createRewardTransaction(self.client.privatekey))
+
+            print("----> TEMP POOL:", temp_pool)
+
             newBlock = block.Block(
                     # choose first 10 transactions in tx_pool
-                    _transaction_list=temp_pool.append(
-                        self.createRewardTransaction(self.client.privatekey)),
+                    _transaction_list=temp_pool,
                     _prev_header=self.blockchain.current_block.header,
                     _difficulty=1
                 )
+            print("newBlock--->", newBlock.state, newBlock.tx_list)
 
             p = newBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
             p.start()
@@ -125,11 +134,11 @@ class Miner:
             newBlock.completeBlockWithNonce(_nonce=nonceQueue.get())
             self.blockchain.addBlock(_incoming_block=newBlock)
 
+        print("Currently on block:", self.blockchain.current_block)
         to_broadcast = self.blockchain.current_block.getData()
         print("Trying to broadcast this data:\n", to_broadcast)
 
         self.broadcastBlock(to_broadcast, _neighbours, _self_addr)  # inform the rest that you have created a block first
-        self.tx_pool = self.tx_pool[10:]  # truncate of the first 10 transactions from tx_pool
         self.handleBroadcastedBlock(self.blockchain.current_block)
         yield "Done Mining"
 

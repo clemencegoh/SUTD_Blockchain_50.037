@@ -24,26 +24,29 @@ interruptQueue = Queue(1)
 
 def getNeighbours(_self_addr):
     global internal_storage
-    req = requests.get(trusted_server_addr)
-    miner_list = req.json()['miners_list']
+    try:
+        req = requests.get(trusted_server_addr)
+        miner_list = req.json()['miners_list']
 
-    if self_address in miner_list:
+        if self_address in miner_list:
+            internal_storage["Neighbour_nodes"] = miner_list
+            return True
+
+        requests.post(trusted_server_addr + "/add", {
+            "miner": self_address
+        })
+        print("Posted:", {
+            "miner": self_address
+        })
+
+        req = requests.get(trusted_server_addr)
+        miner_list = req.json()['miners_list']
         internal_storage["Neighbour_nodes"] = miner_list
-        return True
 
-    requests.post(trusted_server_addr + "/add", {
-        "miner": self_address
-    })
-    print("Posted:", {
-        "miner": self_address
-    })
+        return False
 
-    req = requests.get(trusted_server_addr)
-    miner_list = req.json()['miners_list']
-    internal_storage["Neighbour_nodes"] = miner_list
-
-    return False
-
+    except:
+        return False
 
 def requestLatestBlockchain():
     req = requests.get(internal_storage["Neighbour_nodes"][0] + "/blockchain")
@@ -55,6 +58,8 @@ def broadcastTx(_tx):
         if i != self_address:
             # broadcast
             # try:
+            # convert sig to hex
+            # _tx.data["Signature"] = _tx.data["Signature"].hex()
             requests.post(i + "/newTx", json.dumps({
                 "TX": _tx.data
             }))
@@ -68,12 +73,13 @@ def broadcastTx(_tx):
 def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
     tx = internal_storage["Miner"].client.\
         createTransaction(_recv_pub, _amount, _comment)
+    print("CREATING TX...", tx)
+    # tx["Signature"] = tx["Signature"].hex()
     broadcastTx(tx)
     internal_storage["Miner"].tx_pool.append(tx)
 
     # debug:
     print("Complete")
-    print(internal_storage["Miner"].tx_pool)
 
 
 @app.route('/')
@@ -96,7 +102,7 @@ def homePage():
 
 @app.route('/login', methods=['POST'])
 def loginAPI():
-    global internal_storage
+    global internal_storage, interruptQueue
     pub_hex = request.values.get("pub_key")
     pub_key = pub_hex #Might want to change it to a key object in the future
     internal_storage["Public_key"] = pub_key
@@ -207,14 +213,15 @@ def payTo():
 @app.route('/newTx', methods=["POST"])
 def newTx():
     tx = request.get_json(force=True)["TX"]
-    print(tx)
+    print("Getting:", tx)
+    # tx = json.loads(tx)
     t = transaction.Transaction(
         _sender_public_key=tx["Sender"],
         _receiver_public_key=tx["Receiver"],
         _amount=tx["Amount"],
         _comment=tx["Comment"],
+        _signature=bytes.fromhex(tx["Signature"]),
     )
-    t.data["Signature"] = tx["Signature"]
 
     if t in internal_storage["Miner"].tx_pool:
         # don't do anything
@@ -311,11 +318,12 @@ def getState():
     state = internal_storage["Miner"].blockchain.current_block.state
     pool = []
     for tx in state["Tx_pool"]:
-        pool.append(tx.to_json())
+        pool.append(json.dumps(tx.data))
 
     return "Balance: " + json.dumps(state["Balance"]) + "<br>" \
-           + "Pool" + str(pool) + "<br>" \
-           + "Length" + str(state["Blockchain_length"])
+           + "Pool: " + str(pool) + "<br>" \
+           + "Length: " + str(state["Blockchain_length"]) + "<br>" \
+           + "minerpool: " + str(internal_storage["Miner"].tx_pool)
 
 
 @app.route('/update')
