@@ -1,5 +1,4 @@
-from transaction import Transaction
-from keyPair import GenerateKeyPair
+from KDCoin import transaction
 import requests
 import json
 
@@ -13,33 +12,36 @@ class SPVClient:
 
     # Creates transaction and sign with private key
     def createTransaction(self, receiver_public_key, amount, comment):
-        transaction_tobemade = Transaction(self.publickey, receiver_public_key,
-                                                   amount, comment)
+        transaction_tobemade = transaction.Transaction(
+            self.publickey,
+            receiver_public_key,
+            amount,
+            comment)
         transaction_tobemade.sign(self.privatekey)
-        print(transaction_tobemade.data)
+
         return transaction_tobemade
+
+    def broadcastTransaction(self, _tx, _address):
+        requests.post(_address,
+                     data=json.dumps({
+                         "TX": _tx
+                     }))
 
     # Check acc balance of specified spvclient
     def checkBalance(self, _address):
-        # get blockchain from miner
-        blockchain = ""
+        # get block from miner
+        block = None
 
-        response = requests.get(_address + '/blockchain',
-                     headers={'Content-Type': 'application/json'}, json=blockchain)
+        response = requests.get(_address + '/block',
+                     headers={'Content-Type': 'application/json'})
 
         # not sure if this is needed
-        blockchain = response.json()
+        block = response.json()["Block"]
 
-        balance = blockchain.current_block["state"]["Balance"][self.publickey]
+        balance = block["State"]["Balance"][self.publickey]
         return balance
 
     def getMiners(self, _trusted_server):
         response = requests.get(_trusted_server)
         return response.json()["miners_list"]
 
-# sender_privatekey , sender_publickey = GenerateKeyPair()
-# newclient = SPVClient(sender_privatekey , sender_publickey)
-# #Send Transaction
-# newclient.createTransaction(100,'demo')
-# #Check Balance
-# newclient.checkBalance()

@@ -22,59 +22,82 @@ trusted_server_addr = "http://localhost:8080"
 interruptQueue = Queue(1)
 
 
+def createBlockFromDict(tx_list, block_data):
+    return block.Block(
+        _transaction_list=tx_list,
+        _current_header=block_data['Header'],
+        _nonce=block_data["Nonce"],
+        _prev_header=block_data['Prev_header'],
+        _timestamp=block_data["Timestamp"],
+        _merkle_header=block_data["Merkle_header"],
+        _difficulty=block_data["Difficulty"],
+        _state=block_data["State"]
+    )
+
+
+def createTxFromDict(tx):
+    return transaction.Transaction(
+        tx["Sender"],
+        tx["Receiver"],
+        tx["Amount"],
+        tx["Comment"],
+        tx["Reward"],
+        tx["Signature"],
+    )
+
+
 def getNeighbours(_self_addr):
     global internal_storage
-    req = requests.get(trusted_server_addr)
-    miner_list = req.json()['miners_list']
+    try:
+        req = requests.get(trusted_server_addr)
+        miner_list = req.json()['miners_list']
 
-    if self_address in miner_list:
+        if self_address in miner_list:
+            internal_storage["Neighbour_nodes"] = miner_list
+            return True
+
+        requests.post(trusted_server_addr + "/add", {
+            "miner": self_address
+        })
+        print("Posted:", {
+            "miner": self_address
+        })
+
+        req = requests.get(trusted_server_addr)
+        miner_list = req.json()['miners_list']
         internal_storage["Neighbour_nodes"] = miner_list
-        return True
 
-    requests.post(trusted_server_addr + "/add", {
-        "miner": self_address
-    })
-    print("Posted:", {
-        "miner": self_address
-    })
+        return False
 
-    req = requests.get(trusted_server_addr)
-    miner_list = req.json()['miners_list']
-    internal_storage["Neighbour_nodes"] = miner_list
-
-    return False
+    except:
+        return False
 
 
-def requestLatestBlockchain():
-    req = requests.get(internal_storage["Neighbour_nodes"][0] + "/blockchain")
-    print(req.json())
+# not expected to use this
+def requestLatestBlock():
+    req = requests.get(internal_storage["Neighbour_nodes"][0] + "/block")
     return req.json()
 
 
 def broadcastTx(_tx):
+    global internal_storage
     for i in internal_storage["Neighbour_nodes"]:
         if i != self_address:
-            # broadcast
-            # try:
-            requests.post(i + "/newTx", json.dumps({
-                "TX": _tx.data
-            }))
-
-            # except:
-            #     print()
-            #     print(i, "no longer present")
-            #     del i
+            internal_storage["Miner"].client.broadcastTransaction(
+                _tx=_tx,
+                _address=i + "/newTx",
+            )
 
 
 def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
-    tx = internal_storage["Miner"].client.\
-        createTransaction(_recv_pub, _amount, _comment)
-    broadcastTx(tx)
-    internal_storage["Miner"].tx_pool.append(tx)
+    tx = internal_storage["Miner"].client.createTransaction(
+        _recv_pub, _amount, _comment)
+    print("CREATING TX...", tx.data)
+    broadcastTx(tx.data)
+    internal_storage["Miner"].tx_pool.append(tx.data)
 
     # debug:
     print("Complete")
-    print(internal_storage["Miner"].tx_pool)
 
 
 @app.route('/')
@@ -97,31 +120,29 @@ def homePage():
 
 @app.route('/login', methods=['POST'])
 def loginAPI():
-    global internal_storage
+    global internal_storage, interruptQueue
     pub_hex = request.values.get("pub_key")
-    pub_key = pub_hex #Might want to change it to a key object in the future
+    pub_key = pub_hex
     internal_storage["Public_key"] = pub_key
 
     priv_hex = request.values.get("priv_key")
-    priv_key = priv_hex #Might want to change it to a key object in the future
+    priv_key = priv_hex
     internal_storage["Private_key"] = priv_key
 
     if getNeighbours(self_address):
         # not the first one
-        # request latest block
-        current_blockchain = requestLatestBlockchain()
-        current_block = current_blockchain['current_block']
+        # request latest block as json
+        current_block = requestLatestBlock()
+
+        data = json.loads(current_block)
+        tx_list = []
+        for tx in data['Tx_list']:
+            tx_list.append(createTxFromDict(tx))
+        # build block
+        b = createBlockFromDict(tx_list, data)
 
         # update state
-        create_block = block.Block( #Is this still needed since in miner class when it init, block is created.
-            _transaction_list=current_block['tx_list'],
-            _prev_header=current_block['prev_header'],
-            _prev_block=None,
-            _current_header=current_block['current_header'],
-            _nonce=current_block['nonce'],
-            _difficulty=current_block['difficulty'],
-        )
-        bc = blockChain.Blockchain(_block=create_block)
+        bc = blockChain.Blockchain(_block=b)
         internal_storage["Miner"] = miner.Miner(
             _blockchain=bc,
             _pub=pub_key,
@@ -133,12 +154,17 @@ def loginAPI():
         internal_storage["Miner"] = miner.Miner(_blockchain=None,
                                                 _pub=pub_key,
                                                 _priv=priv_key)
-        generator = internal_storage["Miner"].mineBlock(
-            _neighbours=internal_storage["Neighbour_nodes"],
-            _self_addr=self_address
-        )
-        interruptQueue = next(generator)
-        next(generator)
+        generator = internal_storage["Miner"].mineBlock()
+        try:
+            interruptQueue = next(generator)
+            block_data = next(generator)
+            internal_storage["Miner"].broadcastBlock(
+                _block_data=block_data,
+                _neighbours=internal_storage["Neighbour_nodes"],
+                _self_addr=self_address,
+            )
+        except StopIteration:
+            print("MinerApp Interrupted")
 
     # re-routes back to homepage
     return homePage()
@@ -146,7 +172,7 @@ def loginAPI():
 
 @app.route('/new')
 def newUser():
-    global internal_storage
+    global internal_storage, interruptQueue
     priv, pub = keyPair.GenerateKeyPair()
     internal_storage["Private_key"] = priv.to_string().hex()
     internal_storage["Public_key"] = pub.to_string().hex()
@@ -167,20 +193,32 @@ def newUser():
 
     # announce yourself
     getNeighbours(self_address)
-    generator = internal_storage["Miner"].mineBlock(
-        _neighbours=internal_storage["Neighbour_nodes"],
-        _self_addr=self_address
-    )
-    next(generator)
-    next(generator)
+    generator = internal_storage["Miner"].mineBlock()
+
+    try:
+        interruptQueue = next(generator)
+        block_data = next(generator)
+        internal_storage["Miner"].broadcastBlock(
+            _block_data=block_data,
+            _neighbours=internal_storage["Neighbour_nodes"],
+            _self_addr=self_address,
+        )
+    except StopIteration:
+        print("MinerApp New Interrupted")
 
     return info + newUser
 
 
-@app.route('/blockchain')
-def getCurrentBlockchain():
+@app.route('/block')
+def getCurrentBlock():
     # this API is here for other miners joining in to request the current blockchain
-    return internal_storage["User"].blockchain
+    data = internal_storage["Miner"].blockchain.current_block.getData()
+    response = app.response_class(
+        response=json.dumps(data),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 
 @app.route('/pay', methods=["GET", "POST"])
@@ -208,24 +246,17 @@ def payTo():
 @app.route('/newTx', methods=["POST"])
 def newTx():
     tx = request.get_json(force=True)["TX"]
-    print(tx)
-    t = transaction.Transaction(
-        _sender_public_key=tx["Sender"],
-        _receiver_public_key=tx["Receiver"],
-        _amount=tx["Amount"],
-        _comment=tx["Comment"],
-    )
-    t.data["Signature"] = tx["Signature"]
+    print("Getting:", tx)
 
-    if t in internal_storage["Miner"].tx_pool:
+    if tx in internal_storage["Miner"].tx_pool:
         # don't do anything
         return ""
     else:
         # add to pool
-        internal_storage["Miner"].tx_pool.append(t)
+        internal_storage["Miner"].tx_pool.append(tx)
 
         # broadcast to the rest
-        broadcastTx(t)
+        broadcastTx(tx)
         return "Transaction received"
 
 
@@ -234,40 +265,30 @@ def newTx():
 def newBlock():
     global interruptQueue
     recv_block = request.get_json(force=True)
-    print(recv_block)
+    print("New block posted to me:", recv_block)
     rb = recv_block["Block"]
-
-    # create Transaction
-    incoming_list = []
-    for tx in rb["Tx_list"]:
-        incoming_list.append(transaction.Transaction(
-            _sender_public_key=tx["Sender"],
-            _receiver_public_key=tx["Receiver"],
-            _amount=tx["Amount"],
-            _comment=tx["Comment"],
-            _reward=tx["Reward"],
-            _signature=tx["Signature"]
-        ))
-
+    data = rb
+    tx_list = []
+    for tx in data['Tx_list']:
+        tx_list.append(createTxFromDict(tx))
     # create block from data
-    b = block.Block(_transaction_list=incoming_list,
-                    _prev_header=rb["Prev_header"],
-                    _prev_block=None,
-                    _difficulty=rb["Difficulty"],
-                    _current_header=rb["Header"],
-                    _nonce=rb["Nonce"],
-                    _state=rb["State"],
-                    _timestamp=rb["Timestamp"],
-                    _merkle_header=rb["Merkle_header"])
+    b = createBlockFromDict(
+        tx_list=tx_list,
+        block_data=rb)
+
     # validate
     if b.validate():
         # interrupt and add block
         interruptQueue.put(1)
         current_chain = internal_storage["Miner"].blockchain
-        current_chain.addBlock(
-            _prev_block=current_chain.current_block,
-            _incoming_block=b
+        current_block = current_chain.addBlock(
+            _incoming_block=b,
+            _prev_block_header=b.prev_header,
         )
+
+        # update miner
+        internal_storage["Miner"].blockchain.current_block = current_block
+        internal_storage["Miner"].tx_pool = current_block.state["Tx_pool"]
 
     return ""
 
@@ -285,25 +306,20 @@ def mineAPI():
 @app.route('/mining')
 def miningPage():
     global internal_storage, interruptQueue
-    # mining = "Currently Mining ...!<br>" \
-    #         "Statistics:<br><br>" \
-    #         "Currently logged in as: {}<br>" \
-    #         "Neighbour nodes registered: {}<br>" \
-    #         "".format(
-    #     internal_storage["Public_key"],
-    #     internal_storage["Neighbour_nodes"])
-    # miningPage = open("Mining.html").read()
     while True:
         if len(internal_storage["Miner"].tx_pool) >= 1:
-            generator = internal_storage["Miner"].mineBlock(
-                _neighbours=internal_storage["Neighbour_nodes"],
-                _self_addr=self_address
-            )
-            interruptQueue = next(generator)
-            print(next(generator))
+            generator = internal_storage["Miner"].mineBlock()
+            try:
+                interruptQueue = next(generator)
+                block_data = next(generator)
+                internal_storage["Miner"].broadcastBlock(
+                    _block_data=block_data,
+                    _neighbours=internal_storage["Neighbour_nodes"],
+                    _self_addr=self_address,
+                )
+            except StopIteration:
+                print("Mining interrupted, MinerApp")
         time.sleep(1)
-
-    # return mining + miningPage
 
 
 @app.route('/state')
@@ -311,11 +327,11 @@ def getState():
     state = internal_storage["Miner"].blockchain.current_block.state
     pool = []
     for tx in state["Tx_pool"]:
-        pool.append(tx.to_json())
+        pool.append(json.dumps(tx.data))
 
     return "Balance: " + json.dumps(state["Balance"]) + "<br>" \
-           + "Pool" + str(pool) + "<br>" \
-           + "Length" + str(state["Blockchain_length"])
+           + "Pool: " + str(pool) + "<br>" \
+           + "minerpool: " + str(internal_storage["Miner"].tx_pool)
 
 
 @app.route('/update')
