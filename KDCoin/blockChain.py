@@ -11,7 +11,6 @@ class Blockchain:
         # current leading block to be worked on
         self.current_block = _block
         self.chain_length = _length
-        self.block_heads = {_block: _length}
 
     # checkChainLength meant to be used to check the chain's length
     # starts from current block and keeps counting backwards
@@ -35,27 +34,13 @@ class Blockchain:
         # validates current block, should be called when broadcasted by miner
         return self.current_block.validate()
 
-    # WARNING: This should be called as a decoration.
-    # Blocks should be initialised with prev block in mind already
-    def addBlock(self, _incoming_block, _prev_block_header):
-        # adds block to chain
-        for k, _ in self.block_heads.items():
-            count = self.block_heads[k]
-            top_count = count
-            while k is not None:
-                if k.header == _prev_block_header:
-                    _incoming_block.setPrevBlock(k)
-                    if top_count == count:
-                        del self.block_heads[k]
-                    self.block_heads[_incoming_block] = count + 1
-                    return self.resolve()
-                else:
-                    count -= 1
-                    k = k.prev_block
-
-        # totally new
-        self.block_heads[_incoming_block] = 1
-        return self.resolve()
+    # adds a new block
+    # has option to add a new block to a certain block along the chain
+    def addBlock(self, _incoming_block, _prev_block=None):
+        # set current block
+        _incoming_block.setPrevBlock(self.current_block)
+        self.current_block = _incoming_block
+        self.chain_length += 1
 
     # In case of forking, choose current block to work on based on longest chain
     def resolve(self):
@@ -63,10 +48,8 @@ class Blockchain:
         new_head_block = None
         longest_chain = 0
 
-        print(self.block_heads)
-
         for key, _ in self.block_heads.items():
-            chain_length = self.block_heads[key]
+            chain_length = self.checkChainLength(key)
             if longest_chain <= chain_length:
                 new_head_block = key
                 longest_chain = chain_length
@@ -74,7 +57,19 @@ class Blockchain:
         self.current_block = new_head_block
         self.chain_length = longest_chain
 
-        return self.current_block
 
-
+# if __name__ == '__main__':
+#     sender_private_key = ecdsa.SigningKey.generate(curve=ecdsa.NIST192p)
+#     sender_public_key = sender_private_key.get_verifying_key()
+#
+#     receiver_private_key = ecdsa.SigningKey.generate(curve=ecdsa.NIST192p)
+#     receiver_public_key = receiver_private_key.get_verifying_key()
+#
+#     amount = 10000
+#     comment = "testRun"
+#
+#
+#     bc = Blockchain()
+#     bc.addTransaction(sender_public_key, receiver_public_key, 200, "TestAmount")
+#     print(bc.current_block.root)
 

@@ -78,7 +78,6 @@ def createTransaction():
     if user is None:
         return "Please login"
 
-<<<<<<< HEAD
     if (request.method == 'GET'):
         createTransactionPage = open("SPVAppCreateTransaction.html").read()
         return createTransactionPage
@@ -94,13 +93,6 @@ def createTransaction():
     #     json_received = request.json
     #     transaction_data = json.loads(json_received)
     #     print(transaction_data)
-=======
-    if request.headers['Content-Type'] == 'application/json':
-        #Receive data regarding transaction
-        json_received = request.json()
-        transaction_data = json.loads(json_received)
-        print(transaction_data)
->>>>>>> 05c343effb78ecb93ed517e28b3831adc6db0503
 
         transaction = user.createTransaction(
                         receiver_public_key=Receiver_PublicKey,
@@ -108,24 +100,16 @@ def createTransaction():
                         comment=Comment
                         )
 
-        miners_list = user.getMiners(miner_server)
+        miners_list = user.getMiners(miner_server + '/updateSPVMinerList')
 
         # broadcast to all known miners
         for miner in miners_list:
-<<<<<<< HEAD
              # execute post request to broadcast transaction
             broadcast_endpoint = miner + "/newTransaction"
-=======
-            # execute post request to broadcast transaction
-            broadcast_endpoint = miner + "/newTx"
->>>>>>> 05c343effb78ecb93ed517e28b3831adc6db0503
             requests.post(
                 url=broadcast_endpoint,
-                data=json.dumps({
-                    "TX": transaction.data
-                })
+                json=transaction.to_json()
             )
-<<<<<<< HEAD
         info = "Transaction Successfully sent to Miners <br>"
         createTransactionPage = open("SPVAppCreateTransaction.html").read()
         return info + createTransactionPage
@@ -133,10 +117,6 @@ def createTransaction():
     #
     # else:
     #     return 'wrong format of transaction sent'
-=======
-    else:
-        return 'wrong format of transaction sent'
->>>>>>> 05c343effb78ecb93ed517e28b3831adc6db0503
 
 
 # Check with any miner on acc balance (Based on public key received)

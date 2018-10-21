@@ -44,53 +44,38 @@ class Block:
         self.prev_block = _prev_block
 
         # static variables
-        self.tx_list = []  # transactions used in this block
-        self.txs = []
-
-        # catching wrong inits
+        self.tx_list = _transaction_list  # transactions verified within this block
         if _state is None:
-            if _prev_block is None:
-                self.state = {
-                    "Balance": {},
-                    "Tx_pool": [],
-                }
-            else:
-                self.state = _prev_block.state
+            self.state = {
+                "Balance": {},
+                "Tx_pool": [],
+                "Blockchain_length": 0
+            }
         else:
             self.state = _state
-
         self.difficulty = _difficulty
+
+        if _prev_header is not None:
+            self.prev_header = _prev_header  # header has to be created after nonce is found
+
+        if _prev_block is not None:
+            # init state from prev
+            self.state["Balance"] = _prev_block.state["Balance"]
+            self.state["Blockchain_length"] = _prev_block.state["Blockchain_length"]
+
         self.filterTxFromPool(_transaction_list)
 
-    def executeChange(self):
-        while self.txs:
-            tx = self.txs.pop(0)
-            self.changeState(tx)
-
     # filter and verify transaction from the tx_list given
-    def filterTxFromPool(self, _transaction_list=[]):
+    def filterTxFromPool(self, _transaction_list):
         tx_list = []
-        if not _transaction_list:
-            print("HIGHLIGHTING ERROR HERE, EMPTY TX LIST")
-            return ""
-        while _transaction_list:
-            tx = _transaction_list.pop(0)
+        for tx in _transaction_list:
             # invalid transactions will be lost here
-<<<<<<< HEAD
 
             if tx.validate and self.changeState(tx):
 
-=======
-            if tx.validate():
->>>>>>> 05c343effb78ecb93ed517e28b3831adc6db0503
                 tx_list.append(tx)
             else:
                 print("lost:\n", tx)
-
-        for tx in tx_list:
-            self.tx_list.append(tx.data)
-        print("After filtering:", self.tx_list)
-        self.txs = tx_list
 
         # build merkle tree from transaction list
         self.merkle_tree = createTreeFromTx(tx_list)
@@ -98,8 +83,8 @@ class Block:
 
     # changes state based off transaction
     def changeState(self, _tx):
-        sendr_addr = _tx.data["Sender"]
-        amount = int(_tx.data["Amount"])
+        sendr_addr = _tx.data["Receiver"]
+        amount = _tx.data["Amount"]
 
         balance = self.state["Balance"]
 
@@ -109,8 +94,6 @@ class Block:
 
         # cannot send from someone non-existent if not reward
         if sendr_addr not in balance:
-            print("WARNING: {} NOT FOUND".format(sendr_addr))
-            balance[sendr_addr] = 0
             return False
 
         # if less than amount
@@ -122,9 +105,9 @@ class Block:
 
     # completes transaction, assumes everything is correct
     def completeTransaction(self, _transaction, _reward=False):
-        sendr_addr = _transaction.data["Sender"]
+        sendr_addr = _transaction.data["Receiver"]
         recv_addr = _transaction.data["Receiver"]
-        amount = int(_transaction.data["Amount"])
+        amount = _transaction.data["Amount"]
 
         balance = self.state["Balance"]
 
@@ -143,6 +126,7 @@ class Block:
                             + self.merkle_header \
                             + self.nonce
         minimum_pow = simpleLOD(self.difficulty)
+
         # verify proof of work is more than minimum requirement
         # this requires digest <= minimum proof of work
         return minimum_pow >= int(getDigest(validating_string.encode()), 16)
@@ -151,8 +135,6 @@ class Block:
     # This should take up the longest time
     # This must be called manually
     def build(self, _found, _interrupt):
-
-        print("Prev header:", self.prev_header)
 
         first_half = self.prev_header \
                      + str(self.timestamp) \
@@ -173,19 +155,19 @@ class Block:
 
     def setPrevBlock(self, _block):
         self.prev_block = _block
-        self.prev_header = _block.header
 
     def getData(self):
         final_list = []
         final_pool = []
-        for tx_data in self.tx_list:
-            final_list.append(tx_data)
-        for tx_data in self.state["Tx_pool"]:
-            final_pool.append(tx_data)
+        for tx in self.tx_list:
+            final_list.append(tx.data)
+        for tx in self.state["Tx_pool"]:
+            final_pool.append(tx.data)
 
         final_state = {
             "Balance": self.state["Balance"],
             "Tx_pool": final_pool,
+            "Blockchain_length": self.state["Blockchain_length"],
         }
 
         return {

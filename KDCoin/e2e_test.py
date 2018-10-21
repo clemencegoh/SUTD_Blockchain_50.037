@@ -36,11 +36,11 @@ class FullTests(unittest.TestCase):
         resp2 = self.miner2["Session"].get(self.miner2["Address"] + "/new")
         self.miner2["Pub"], self.miner2["Priv"] = extractFromText(resp2.text)
 
-    # def test_register(self):
-    #     self.neighbourArray = self.trustedSession.get("http://localhost:8080").json()["miners_list"]
-    #     self.assertNotEqual(self.neighbourArray, [], "list should not be empty now")
-    #     self.assertEqual(len(self.neighbourArray), 2, "Array should contain all miners")
-    #     print(self.neighbourArray)
+    def test_register(self):
+        self.neighbourArray = self.trustedSession.get("http://localhost:8080").json()["miners_list"]
+        self.assertNotEqual(self.neighbourArray, [], "list should not be empty now")
+        self.assertEqual(len(self.neighbourArray), 2, "Array should contain all miners")
+        print(self.neighbourArray)
 
     def test_newTransaction(self):
         # retrieve private/public key

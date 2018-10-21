@@ -6,13 +6,11 @@ from KDCoin import keyPair
 class TestKeyPair(unittest.TestCase):
     def test_conversion(self):
         priv, pub = keyPair.GenerateKeyPair()
-        pubHex = pub.to_string().hex()
-        privHex = priv.to_string().hex()
-        print(pubHex)
-        print(privHex)
+        print(pub.to_string().hex())
+        print(priv.to_string().hex())
 
-        nextA = ecdsa.SigningKey.from_string(bytes.fromhex(privHex))
-        nextB = ecdsa.VerifyingKey.from_string(bytes.fromhex(pubHex))
+        nextA = ecdsa.SigningKey.from_string(priv.to_string())
+        nextB = ecdsa.VerifyingKey.from_string(pub.to_string())
 
         print(nextA.to_string().hex())
         print(nextB.to_string().hex())
