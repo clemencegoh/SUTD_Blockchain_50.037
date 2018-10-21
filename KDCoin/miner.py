@@ -90,7 +90,7 @@ class Miner:
             nonce_found = nonceQueue.get()
             if nonce_found == "":
                 print("interrupted!")
-                return ""
+                return
 
             first_block.completeBlockWithNonce(_nonce=nonce_found)
             first_block.tx_list = [tx.data]
@@ -128,7 +128,6 @@ class Miner:
                     _prev_block=self.blockchain.current_block,
                 )
 
-
             print("newBlock--->", newBlock.state, newBlock.tx_list)
 
             p = newBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
@@ -137,7 +136,7 @@ class Miner:
 
             nonce_found = nonceQueue.get()
             if nonce_found == "":
-                return ""  # stop here
+                return   # stop here
             newBlock.completeBlockWithNonce(_nonce=nonce_found)
             newBlock.executeChange()
             self.blockchain.addBlock(

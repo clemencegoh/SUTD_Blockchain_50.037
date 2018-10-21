@@ -1,37 +1,43 @@
 import unittest
 import requests
 import time
+import re
 import json
+import sys, os
 from KDCoin import transaction, keyPair
 
 
+def extractBalanceFromState(_response_text):
+    pattern = re.compile('Balance: (.*)<br>Pool')
+    balance = pattern.match(_response_text).group(1)
+
+    # extract data:
+    data = json.loads(balance)
+    return data
+
+
 class TestMinerApp(unittest.TestCase):
-    address = "http://localhost:8082"
 
-    def test_add_block(self):
+    def test_single_miner(self):
+        # define variables
+        miner1_address = "http://localhost:8082"
+
         # create new miner
-        print("calling...")
-        s = requests.session()
-        s.get(self.address + "/new")
+        miner1 = requests.session()
+        miner1.get(miner1_address + "/new")
 
-        time.sleep(5)  # let the miner build the block
+        # allow up to 4 seconds to finish
+        time.sleep(4)
 
-        priv, pub = keyPair.GenerateKeyPair()
-        # create new transaction
-        t = transaction.Transaction(pub, pub,
-                                    10, _comment="Reward",
-                                    _reward=True)
-        t.sign(priv)
-        print("Trying to send:", t.data)
+        response = miner1.get(miner1_address + "/state")
+        current_balance = extractBalanceFromState(response.text)
 
-        s.post(self.address + "/newTx",
-                      data=json.dumps({
-                          "TX": t.data
-                      }))
+        # verify initial balance is correct
+        for k, v in current_balance.items():
+            self.assertEqual(v, 100, "Balance should be 100")
 
-        # check state
-        req = s.get(self.address + "/state")
-        print(req.text)
+        # create transaction
+        miner1.post(miner1_address + "/pay?pub_key=clemence")
 
 
 if __name__ == '__main__':
