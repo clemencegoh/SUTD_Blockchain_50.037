@@ -90,7 +90,7 @@ class Miner:
             nonce_found = nonceQueue.get()
             if nonce_found == "":
                 print("interrupted!")
-                self.mineBlock()  # interrupted, expect block
+                return ""
 
             first_block.completeBlockWithNonce(_nonce=nonce_found)
             first_block.tx_list = [tx.data]
@@ -137,8 +137,7 @@ class Miner:
 
             nonce_found = nonceQueue.get()
             if nonce_found == "":
-                print("No nonce?")
-                self.mineBlock()
+                return ""  # stop here
             newBlock.completeBlockWithNonce(_nonce=nonce_found)
             self.blockchain.addBlock(
                 _incoming_block=newBlock,
