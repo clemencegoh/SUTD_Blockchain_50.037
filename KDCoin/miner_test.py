@@ -121,7 +121,7 @@ class TestMiner(unittest.TestCase):
         self.assertEqual(m.blockchain.chain_length, 1, "chain length should be 1")
         self.assertEqual(b.getData(), block_data, "Block data do not match")
         self.assertEqual(len(b.tx_list), 1, "Single reward only")
-        print(m.blockchain.current_block.state)
+        print("Initial state:", m.blockchain.current_block.state)
 
         # build block
         prev_header = m.blockchain.current_block.header
@@ -139,13 +139,15 @@ class TestMiner(unittest.TestCase):
             _prev_header=prev_header,
             _prev_block=m.blockchain.current_block,
         )
-        b2.executeChange()
         q1 = Queue()
         q2 = Queue()
         p = b2.build(q1, q2)
         p.start()
         p.join()
-        b2.completeBlockWithNonce(q1.get())
+        b2.completeBlockWithNonce(q1.get())  # completed block
+        b2.executeChange()
+
+        print("Block 2 state:", b2.state)
 
         r_tx = m.client.createTransaction(
             receiver_public_key="random",
@@ -158,7 +160,7 @@ class TestMiner(unittest.TestCase):
             interrupt = next(generator)
             interrupt.put(1)
             block_data = next(generator)
-            m.handleBroadcastedBlock(b2)
+            self.fail("Should not reach here")
         except StopIteration:
             print("This should happen")
             m.handleBroadcastedBlock(b2)
@@ -168,6 +170,7 @@ class TestMiner(unittest.TestCase):
             tx_list.append(createTxFromDict(tx))
 
         b = createBlockFromDict(tx_list, block_data)
+        print(m.blockchain.chain_length)
         self.assertEqual(m.blockchain.chain_length, 2, "Chain length did not increase")
         self.assertNotEqual(m.blockchain.current_block.getData(),
                             b.getData(),
@@ -177,6 +180,7 @@ class TestMiner(unittest.TestCase):
                          "b2 should have been added")
 
         print(m.blockchain.current_block.state)
+        print("This will be broadcasted:", m.blockchain.current_block.getData())
 
 
 if __name__ == '__main__':

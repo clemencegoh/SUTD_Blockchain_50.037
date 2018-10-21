@@ -53,11 +53,9 @@ class Block:
                 self.state = {
                     "Balance": {},
                     "Tx_pool": [],
-                    "Blockchain_length": 1
                 }
             else:
                 self.state = _prev_block.state
-                self.state["Blockchain_length"] += 1
         else:
             self.state = _state
 
@@ -182,7 +180,6 @@ class Block:
         final_state = {
             "Balance": self.state["Balance"],
             "Tx_pool": final_pool,
-            "Blockchain_length": self.state["Blockchain_length"],
         }
 
         return {

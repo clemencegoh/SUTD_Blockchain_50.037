@@ -127,7 +127,7 @@ class Miner:
                     _prev_header=self.blockchain.current_block.header,
                     _prev_block=self.blockchain.current_block,
                 )
-            newBlock.executeChange()
+
 
             print("newBlock--->", newBlock.state, newBlock.tx_list)
 
@@ -139,6 +139,7 @@ class Miner:
             if nonce_found == "":
                 return ""  # stop here
             newBlock.completeBlockWithNonce(_nonce=nonce_found)
+            newBlock.executeChange()
             self.blockchain.addBlock(
                 _incoming_block=newBlock,
                 _prev_block_header=newBlock.prev_header
