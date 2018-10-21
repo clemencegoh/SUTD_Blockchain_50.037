@@ -74,5 +74,7 @@ class Blockchain:
         self.current_block = new_head_block
         self.chain_length = longest_chain
 
+        return self.current_block
+
 
 

@@ -93,7 +93,7 @@ class Block:
     # changes state based off transaction
     def changeState(self, _tx):
         sendr_addr = _tx.data["Sender"]
-        amount = _tx.data["Amount"]
+        amount = int(_tx.data["Amount"])
 
         balance = self.state["Balance"]
 
@@ -118,7 +118,7 @@ class Block:
     def completeTransaction(self, _transaction, _reward=False):
         sendr_addr = _transaction.data["Sender"]
         recv_addr = _transaction.data["Receiver"]
-        amount = _transaction.data["Amount"]
+        amount = int(_transaction.data["Amount"])
 
         balance = self.state["Balance"]
 

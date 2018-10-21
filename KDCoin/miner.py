@@ -29,7 +29,7 @@ class Miner:
             self.client = spvClient.SPVClient(publickey=pub_key, privatekey=priv_key)  # client
 
         self.blockchain = None  # current valid blockchain
-        self.tx_pool = []  # tx_pool held by miner
+        self.tx_pool = []  # tx_pool held by miner, in json
 
     def createNewAccount(self):
         priv, pub = keyPair.GenerateKeyPair()

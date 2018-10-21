@@ -1,5 +1,6 @@
 from KDCoin import transaction
 import requests
+import json
 
 
 # Single Client
@@ -19,6 +20,12 @@ class SPVClient:
         transaction_tobemade.sign(self.privatekey)
 
         return transaction_tobemade
+
+    def broadcastTransaction(self, _tx, _address):
+        requests.post(_address,
+                     data=json.dumps({
+                         "TX": _tx
+                     }))
 
     # Check acc balance of specified spvclient
     def checkBalance(self, _address):
