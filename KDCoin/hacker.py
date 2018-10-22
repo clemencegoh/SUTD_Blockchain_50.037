@@ -113,7 +113,8 @@ class Hacker:
             print("Getting from tx_pool...-->", self.tx_pool)
             print("Current:", self.blockchain.current_block.state)
 
-            while len(self.tx_pool) > 0 and len(temp_pool) <= 10:
+            # takes only 1
+            while len(self.tx_pool) > 0 and len(temp_pool) <= 1:
                 item = self.tx_pool.pop(0)
 
                 # create transaction
@@ -143,6 +144,7 @@ class Hacker:
             p.join()
 
             nonce_found = nonceQueue.get()
+            # hacker not meant to stop
             if nonce_found == "":
                 return   # stop here
             newBlock.completeBlockWithNonce(_nonce=nonce_found)

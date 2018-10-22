@@ -74,7 +74,7 @@ class Blockchain:
 
         self.current_block = new_head_block
         self.chain_length = longest_chain
-
+        print("Resolved:", self.current_block.state)
         return self.current_block
 
 

@@ -277,7 +277,8 @@ def newBlock():
     # create block from data
     b = createBlockFromDict(
         tx_list=tx_list,
-        block_data=rb)
+        block_data=rb
+    )
 
     # validate
     if b.validate():
@@ -287,9 +288,9 @@ def newBlock():
             return ""
 
         # interrupt and add block
-        interruptQueue.put(1)
         m = internal_storage["Miner"]
-        m.handleBroadcastedBlock(b)
+        print(m.handleBroadcastedBlock(b))
+        interruptQueue.put(1)
 
     return ""
 

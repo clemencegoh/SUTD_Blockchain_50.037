@@ -92,6 +92,7 @@ class Block:
         # build merkle tree from transaction list
         self.merkle_tree = createTreeFromTx(tx_list)
         self.merkle_header = self.merkle_tree.root.data["Transaction"]
+        print("Block created")
 
     # changes state based off transaction
     def changeState(self, _tx):

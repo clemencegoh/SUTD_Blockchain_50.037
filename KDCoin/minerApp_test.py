@@ -179,7 +179,7 @@ class TestMinerApp(unittest.TestCase):
                     persons[i], amount[i], comment[i]
                 ))
 
-        time.sleep(60)
+        time.sleep(10)
         res = miner1.get(miner1_address + "/state")
         current_balance = extractBalanceFromState(res.text)
 

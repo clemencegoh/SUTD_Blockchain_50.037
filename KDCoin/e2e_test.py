@@ -59,6 +59,26 @@ def startMiners(_number):
         yield miner_address, pub, miner, current_balance
 
 
+def startHackers(_number):
+    for i in range(_number):
+        # define variables
+        hacker_address = "http://localhost:809{}".format(i)
+
+        # create new miner
+        hacker = requests.session()
+        hacker.get(hacker_address)
+        pub = extractPubFromText(
+            hacker.get(hacker_address + "/new").text
+        )
+
+        # allow up to 4 seconds to finish
+        time.sleep(2)
+
+        current_balance = checkCurrentBalance(hacker, hacker_address)
+
+        yield hacker_address, pub, hacker, current_balance
+
+
 # normal tests require block difficulty to be set at 4
 # these tests have to be run after starting servers
 class FullTests(unittest.TestCase):
@@ -186,10 +206,84 @@ class FullTests(unittest.TestCase):
         client_amount = client1.get(client_addr+"/clientCheckBalance").text
         self.assertEqual(client_amount, 90, "Client should have 90 by now")
 
-
-    # requires 2 miners, 1 set at difficulty 3, 1 set at difficulty 5
+    # requires 1 miner (difficulty 4) and 1 hacker (difficulty 2)
     def test_selfish_mining(self):
-        pass
+        generator = startMiners(1)
+        miner1_address, miner1_pub, miner1, current_balance = next(generator)
+
+        g2 = startHackers(1)
+        hacker_address, hacker_pub, hacker, h_current = next(g2)
+
+        self.assertEqual(current_balance[miner1_pub], 0, "Current balance for all should be 0")
+        self.assertEqual(h_current[hacker_pub], 0, "Current balance for 2 should also be 0")
+
+        # update both miners
+        miner1.get(miner1_address + "/update")
+        hacker.get(hacker_address + "/update")
+
+        p = Process(target=startMining,
+                    args=(miner1, miner1_address + "/mine"))
+        p.daemon = True
+
+        p2 = Process(target=startMining,
+                     args=(hacker, hacker_address + "/mine"))
+        p2.daemon = True
+
+        p.start()
+        p2.start()
+
+        giveMinerMoney(miner1, miner1_address)
+        time.sleep(5)
+
+        # most likely the hacker will finish everything quickly
+        giveMinerMoney(hacker, hacker_address)
+        time.sleep(5)
+
+        # both should have their state updated
+        try:
+            miner1_balance = checkCurrentBalance(miner1, miner1_address)[miner1_pub]
+            print("Miner is in!")
+            hacker_balance = checkCurrentBalance(hacker, hacker_address)[hacker_pub]
+            print("Hacker is in!")
+
+            print("Miner1:", miner1_balance)
+            print("Hacker:", hacker_balance)
+            total = miner1_balance + hacker_balance
+            print("Total:", total)
+            print("Miner1:", checkCurrentBalance(miner1, miner1_address))
+            print("Hacker:", checkCurrentBalance(hacker, hacker_address))
+        except KeyError:
+            print("Most likely 1 has everything")
+
+        # create 4 transactions on hacker
+        # create transaction
+        print("Creating transactions...")
+        persons = ["random1", "random2", "random3", "random4"]
+        amount = [10, 10, 10, 10]
+        comment = ["First", "Second", "Third", "Last"]
+        for i in range(len(persons)):
+            hacker.post(
+                hacker_address +
+                "/pay?pub_key={}&amount={}&comment={}".format(
+                    persons[i], amount[i], comment[i]
+                ))
+            time.sleep(2)
+
+        time.sleep(60)
+
+        res = hacker.get(hacker_address + "/state")
+        res2 = miner1.get(miner1_address+"/state")
+        hacker_state = extractBalanceFromState(res.text)
+        miner_state = extractBalanceFromState(res2.text)
+
+        print("miner state:", miner_state)
+        print("hacker state:", hacker_state)
+
+        self.assertEqual(hacker_state["random1"], 10, "random1 should have been given 10")
+        self.assertEqual(hacker_state["random2"], 10, "random2 should have been given 10")
+        self.assertEqual(hacker_state["random3"], 10, "random3 should have been given 10")
+        self.assertEqual(hacker_state["random4"], 10, "random4 should have 10")
+        self.assertEqual(miner_state, hacker_state, "They should resolve to the same")
 
     # again, requires 2 miners at different difficulty
     # miner spends money, forks from previous block to create new

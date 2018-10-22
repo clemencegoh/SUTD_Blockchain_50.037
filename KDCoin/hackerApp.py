@@ -17,6 +17,7 @@ internal_storage = {
     "Miner": None,  # Miner Object
 }
 
+waiting_blocks = []
 self_address = "http://localhost:8090"
 trusted_server_addr = "http://localhost:8080"
 interruptQueue = Queue(1)
@@ -90,6 +91,7 @@ def broadcastTx(_tx):
 
 
 def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
+    global internal_storage
     tx = internal_storage["Miner"].client.createTransaction(
         _recv_pub, _amount, _comment)
     print("CREATING TX...", tx.data)
@@ -211,6 +213,7 @@ def newUser():
 
 @app.route('/block')
 def getCurrentBlock():
+    global internal_storage
     # this API is here for other miners joining in to request the current blockchain
     data = internal_storage["Miner"].blockchain.current_block.getData()
     response = app.response_class(
@@ -245,6 +248,7 @@ def payTo():
 # receive new Tx from broadcast
 @app.route('/newTx', methods=["POST"])
 def newTx():
+    global internal_storage
     tx = request.get_json(force=True)["TX"]
     print("Getting:", tx)
 
@@ -263,7 +267,7 @@ def newTx():
 # receive new Block from broadcast
 @app.route('/newBlock', methods=["POST"])
 def newBlock():
-    global interruptQueue, internal_storage
+    global interruptQueue, internal_storage, waiting_blocks
     recv_block = request.get_json(force=True)
     print("New block posted to me:", recv_block)
     rb = recv_block["Block"]
@@ -278,15 +282,23 @@ def newBlock():
 
     # validate
     if b.validate():
-
+        print("Valid block received")
         if internal_storage["Miner"] is None:
             # ignore until done
             return ""
 
         # interrupt and add block
-        interruptQueue.put(1)
         m = internal_storage["Miner"]
         m.handleBroadcastedBlock(b)
+
+    # immediately broadcasts any blocks
+    while waiting_blocks:
+        block_data = waiting_blocks.pop(0)
+        internal_storage["Miner"].broadcastBlock(
+            _block_data=block_data,
+            _neighbours=internal_storage["Neighbour_nodes"],
+            _self_addr=self_address,
+        )
 
     return ""
 
@@ -303,7 +315,8 @@ def mineAPI():
 
 @app.route('/mining')
 def miningPage():
-    global internal_storage, interruptQueue
+    global internal_storage, interruptQueue, waiting_blocks
+    count = 0
     while True:
         if len(internal_storage["Miner"].tx_pool) >= 1:
             generator = internal_storage["Miner"].mineBlock()
@@ -312,19 +325,33 @@ def miningPage():
                 # this should be getData() from block obj
                 block_data = next(generator)
                 block_data["State"]["Tx_pool"] = internal_storage["Miner"].tx_pool
-                internal_storage["Miner"].broadcastBlock(
-                    _block_data=block_data,
-                    _neighbours=internal_storage["Neighbour_nodes"],
-                    _self_addr=self_address,
-                )
+                curr_balance = internal_storage["Miner"].blockchain.current_block.state["Balance"]
+                print("!====!===>", curr_balance[internal_storage["Public_key"]])
+
+                # add to waiting list
+                waiting_blocks.append(block_data)
             except StopIteration:
-                print("Mining interrupted, MinerApp")
+                print("Mining interrupted, HackerApp")
+
         time.sleep(1)
-        print("Continuing to mine...")
+        print("Currently waiting:", waiting_blocks)
+
+        if len(waiting_blocks) > 0:
+            count += 1
+            if count >= 4:
+                if waiting_blocks:
+                    block_data = waiting_blocks.pop(0)
+                    internal_storage["Miner"].broadcastBlock(
+                        _block_data=block_data,
+                        _neighbours=internal_storage["Neighbour_nodes"],
+                        _self_addr=self_address,
+                    )
+
 
 
 @app.route('/state')
 def getState():
+    global internal_storage
     state = internal_storage["Miner"].blockchain.current_block.state
     pool = []
     for tx in state["Tx_pool"]:
