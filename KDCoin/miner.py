@@ -78,11 +78,18 @@ class Miner:
         # if this is ever invoked, it must be the first block
         # of the first miner
         if self.blockchain is None:
-            tx = self.createRewardTransaction(self.client.privatekey)
+            tx = transaction.Transaction(
+                _sender_public_key=self.client.publickey,
+                _receiver_public_key=self.client.publickey,
+                _comment="Hello world",
+                _amount=0,
+                _reward=True
+            )
+            tx.sign(self.client.privatekey)
+
             first_block = block.Block(
                     _transaction_list=[tx],
             )
-            first_block.executeChange()
 
             p = first_block.build(_found=nonceQueue, _interrupt=interruptQueue)
             p.start()
@@ -94,6 +101,7 @@ class Miner:
 
             first_block.completeBlockWithNonce(_nonce=nonce_found)
             first_block.tx_list = [tx.data]
+            first_block.executeChange()
 
             self.blockchain = blockChain.Blockchain(_block=first_block)
 
@@ -139,6 +147,7 @@ class Miner:
                 return   # stop here
             newBlock.completeBlockWithNonce(_nonce=nonce_found)
             newBlock.executeChange()
+
             self.blockchain.addBlock(
                 _incoming_block=newBlock,
                 _prev_block_header=newBlock.prev_header

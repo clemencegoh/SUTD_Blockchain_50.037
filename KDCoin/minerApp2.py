@@ -263,7 +263,7 @@ def newTx():
 # receive new Block from broadcast
 @app.route('/newBlock', methods=["POST"])
 def newBlock():
-    global interruptQueue
+    global interruptQueue, internal_storage
     recv_block = request.get_json(force=True)
     print("New block posted to me:", recv_block)
     rb = recv_block["Block"]
@@ -278,6 +278,11 @@ def newBlock():
 
     # validate
     if b.validate():
+
+        if internal_storage["Miner"] is None:
+            # ignore until done
+            return ""
+
         # interrupt and add block
         interruptQueue.put(1)
         current_chain = internal_storage["Miner"].blockchain
@@ -327,7 +332,7 @@ def getState():
     state = internal_storage["Miner"].blockchain.current_block.state
     pool = []
     for tx in state["Tx_pool"]:
-        pool.append(json.dumps(tx.data))
+        pool.append(json.dumps(tx))
 
     return "Balance: " + json.dumps(state["Balance"]) + "<br>" \
            + "Pool: " + str(pool) + "<br>" \
@@ -338,6 +343,7 @@ def getState():
 def updateNeighbours():
     getNeighbours(self_address)
     return homePage()
+
 
 @app.route('/allStates')
 def getAllStates():

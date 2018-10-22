@@ -44,7 +44,9 @@ class Block:
         self.prev_block = _prev_block
 
         # static variables
-        self.tx_list = []  # transactions used in this block
+        # transactions used in this block
+        # self.tx_list is in json
+        self.tx_list = []
         self.txs = []
 
         # catching wrong inits
@@ -60,6 +62,7 @@ class Block:
             self.state = _state
 
         self.difficulty = _difficulty
+        # _transaction_list is a transaction object []
         self.filterTxFromPool(_transaction_list)
 
     def executeChange(self):
