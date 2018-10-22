@@ -164,6 +164,14 @@ class Miner:
                 except:  # neighbour no longer present
                     print(neighbour, "no longer present")
 
+    def getAllBlockStates(self):
+        state_dict = {}
+        count=1
+        for block, _ in self.blockchain.block_heads.items():
+            state_dict[str(count)] = block.getData()
+            count += 1
+
+        return json.dumps(state_dict)
 
 
 

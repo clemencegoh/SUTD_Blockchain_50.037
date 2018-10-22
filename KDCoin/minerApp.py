@@ -339,6 +339,11 @@ def updateNeighbours():
     getNeighbours(self_address)
     return homePage()
 
+@app.route('/allStates')
+def getAllStates():
+    global internal_storage
+    return internal_storage["Miner"].getAllBlockStates()
+
 
 if __name__ == '__main__':
     machine_IP = ""
