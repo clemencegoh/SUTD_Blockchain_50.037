@@ -5,6 +5,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/teaching" afterPath="$PROJECT_DIR$/teaching" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/KDCoin/block.py" afterPath="$PROJECT_DIR$/KDCoin/block.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/KDCoin/blockChain.py" afterPath="$PROJECT_DIR$/KDCoin/blockChain.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/KDCoin/miner.py" afterPath="$PROJECT_DIR$/KDCoin/miner.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/KDCoin/minerApp.py" afterPath="$PROJECT_DIR$/KDCoin/minerApp.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/KDCoin/minerApp2.py" afterPath="$PROJECT_DIR$/KDCoin/minerApp2.py" />
@@ -18,27 +19,15 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.47689465">
+    <splitter split-orientation="horizontal" split-proportion="0.39987677">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-          <file leaf-file-name="trustedServer.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="trustedServer.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/KDCoin/trustedServer.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="369">
-                  <caret line="24" column="28" lean-forward="false" selection-start-line="24" selection-start-column="28" selection-end-line="24" selection-end-column="28" />
+                <state relative-caret-position="281">
+                  <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
                   <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="miner.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/KDCoin/miner.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1667">
-                  <caret line="147" column="19" lean-forward="false" selection-start-line="147" selection-start-column="19" selection-end-line="147" selection-end-column="19" />
-                  <folding>
-                    <element signature="e#0#69#0" expanded="true" />
-                  </folding>
                 </state>
               </provider>
             </entry>
@@ -46,18 +35,20 @@
           <file leaf-file-name="minerApp.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/KDCoin/minerApp.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="120">
-                  <caret line="271" column="26" lean-forward="true" selection-start-line="271" selection-start-column="26" selection-end-line="271" selection-end-column="26" />
-                  <folding />
+                <state relative-caret-position="285">
+                  <caret line="314" column="13" lean-forward="true" selection-start-line="314" selection-start-column="13" selection-end-line="314" selection-end-column="13" />
+                  <folding>
+                    <element signature="e#0#12#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="minerApp2.py" pinned="false" current-in-tab="false">
+          <file leaf-file-name="minerApp2.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/KDCoin/minerApp2.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="285">
-                  <caret line="353" column="26" lean-forward="true" selection-start-line="353" selection-start-column="26" selection-end-line="353" selection-end-column="26" />
+                <state relative-caret-position="352">
+                  <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -67,11 +58,23 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+          <file leaf-file-name="miner.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/KDCoin/miner.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="249">
+                  <caret line="148" column="36" lean-forward="false" selection-start-line="148" selection-start-column="36" selection-end-line="148" selection-end-column="36" />
+                  <folding>
+                    <element signature="e#0#57#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file leaf-file-name="minerApp_test.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/KDCoin/minerApp_test.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="351">
-                  <caret line="146" column="21" lean-forward="true" selection-start-line="146" selection-start-column="21" selection-end-line="146" selection-end-column="21" />
+                <state relative-caret-position="245">
+                  <caret line="183" column="26" lean-forward="false" selection-start-line="183" selection-start-column="26" selection-end-line="183" selection-end-column="26" />
                   <folding>
                     <element signature="e#0#15#0" expanded="true" />
                   </folding>
@@ -79,11 +82,31 @@
               </provider>
             </entry>
           </file>
+          <file leaf-file-name="miner_test.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/KDCoin/miner_test.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="324">
+                  <caret line="165" column="27" lean-forward="true" selection-start-line="165" selection-start-column="27" selection-end-line="165" selection-end-column="27" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="blockChain.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/KDCoin/blockChain.py">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="201">
+                  <caret line="68" column="51" lean-forward="false" selection-start-line="68" selection-start-column="51" selection-end-line="68" selection-end-column="51" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
           <file leaf-file-name="block.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/KDCoin/block.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="501">
-                  <caret line="70" column="32" lean-forward="true" selection-start-line="70" selection-start-column="32" selection-end-line="70" selection-end-column="32" />
+                <state relative-caret-position="187">
+                  <caret line="182" column="23" lean-forward="true" selection-start-line="182" selection-start-column="23" selection-end-line="182" selection-end-column="23" />
                   <folding />
                 </state>
               </provider>
@@ -103,23 +126,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>mining</find>
-      <find>current:</find>
-      <find>creating</find>
-      <find>stop</find>
-      <find>gene</find>
-      <find>pay</find>
-      <find>temp</find>
-      <find>newTx</find>
-      <find>Creating</find>
-      <find>sending</find>
-      <find>newBlock</find>
-      <find>change</find>
-      <find>pop</find>
-      <find>broadcast</find>
-      <find>for i in</find>
-      <find>for i in</find>
-      <find>for i</find>
       <find>for i in range</find>
       <find>mine</find>
       <find>/mine</find>
@@ -131,8 +137,25 @@
       <find>createRe</find>
       <find>/new</find>
       <find>tx.data</find>
-      <find>/newTx</find>
+      <find>for</find>
+      <find>miner</find>
+      <find>newTx</find>
+      <find>complete</find>
+      <find>/pay</find>
+      <find>after</find>
+      <find>After</find>
+      <find>after</find>
+      <find>Block</find>
+      <find>getDat</find>
+      <find>interr</find>
+      <find>newBlock</find>
+      <find>handle</find>
+      <find>try</find>
       <find>/newBlock</find>
+      <find>mining</find>
+      <find>getData</find>
+      <find>/newTx</find>
+      <find>mineBlock</find>
     </findStrings>
     <replaceStrings>
       <replace>hexdigest</replace>
@@ -192,15 +215,15 @@
         <option value="$PROJECT_DIR$/KDCoin/transaction.py" />
         <option value="$PROJECT_DIR$/KDCoin/preImage.py" />
         <option value="$PROJECT_DIR$/KDCoin/miner_test.py" />
-        <option value="$PROJECT_DIR$/KDCoin/blockChain.py" />
         <option value="$PROJECT_DIR$/KDCoin/spvClient.py" />
         <option value="$PROJECT_DIR$/KDCoin/start_servers.sh" />
         <option value="$PROJECT_DIR$/KDCoin/start_single_miner.sh" />
+        <option value="$PROJECT_DIR$/KDCoin/blockChain.py" />
         <option value="$PROJECT_DIR$/KDCoin/block.py" />
         <option value="$PROJECT_DIR$/KDCoin/miner.py" />
-        <option value="$PROJECT_DIR$/KDCoin/minerApp_test.py" />
         <option value="$PROJECT_DIR$/KDCoin/minerApp.py" />
         <option value="$PROJECT_DIR$/KDCoin/minerApp2.py" />
+        <option value="$PROJECT_DIR$/KDCoin/minerApp_test.py" />
       </list>
     </option>
   </component>
@@ -389,9 +412,9 @@
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" />
-        <item index="1" class="java.lang.String" itemvalue="Python.trustedServer" />
+        <item index="1" class="java.lang.String" itemvalue="Python.minerApp2" />
         <item index="2" class="java.lang.String" itemvalue="Python.minerApp" />
-        <item index="3" class="java.lang.String" itemvalue="Python.minerApp2" />
+        <item index="3" class="java.lang.String" itemvalue="Python.trustedServer" />
         <item index="4" class="java.lang.String" itemvalue="Python tests.Unittests for minerApp_test.TestMinerApp.test_single_miner_multiple_payments" />
       </list>
     </recent_temporary>
@@ -410,35 +433,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 14h 51m 21s.xml">
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 30m 14s.xml">
       <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 14h 59m 38s.xml">
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 33m 40s.xml">
       <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 01m 16s.xml">
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 41m 09s.xml">
       <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 02m 48s.xml">
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 43m 46s.xml">
       <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 03m 52s.xml">
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 45m 34s.xml">
       <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 11m 34s.xml">
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 52m 11s.xml">
       <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_single_miner_multiple_payments - 2018.10.22 at 15h 06m 45s.xml">
-      <configuration name="Unittests for minerApp_test.TestMinerApp.test_single_miner_multiple_payments" configurationId="tests" />
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 15h 58m 12s.xml">
+      <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_single_miner_with_payment - 2018.10.22 at 15h 05m 19s.xml">
-      <configuration name="Unittests for minerApp_test.TestMinerApp.test_single_miner_with_payment" configurationId="tests" />
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 16h 00m 25s.xml">
+      <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_single_miner_with_payment - 2018.10.22 at 15h 05m 37s.xml">
-      <configuration name="Unittests for minerApp_test.TestMinerApp.test_single_miner_with_payment" configurationId="tests" />
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 16h 09m 43s.xml">
+      <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_single_miner_with_payment - 2018.10.22 at 15h 06m 16s.xml">
-      <configuration name="Unittests for minerApp_test.TestMinerApp.test_single_miner_with_payment" configurationId="tests" />
+    <history-entry file="Unittests_for_minerApp_test_TestMinerApp_test_double_miners_resolve - 2018.10.22 at 16h 10m 55s.xml">
+      <configuration name="Unittests for minerApp_test.TestMinerApp.test_double_miners_resolve" configurationId="tests" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -452,7 +475,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32915717" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -461,7 +483,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31321186" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30865604" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30410022" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="FAQ Robot" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1283566" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -790,70 +812,72 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/KDCoin/blockChain.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="589">
-          <caret line="41" column="12" lean-forward="false" selection-start-line="41" selection-start-column="12" selection-end-line="41" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/KDCoin/miner_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1255">
-          <caret line="112" column="0" lean-forward="true" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
+        <state relative-caret-position="324">
+          <caret line="165" column="27" lean-forward="true" selection-start-line="165" selection-start-column="27" selection-end-line="165" selection-end-column="27" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/KDCoin/block.py">
+    <entry file="file://$PROJECT_DIR$/KDCoin/blockChain.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="501">
-          <caret line="70" column="32" lean-forward="true" selection-start-line="70" selection-start-column="32" selection-end-line="70" selection-end-column="32" />
+        <state relative-caret-position="201">
+          <caret line="68" column="51" lean-forward="false" selection-start-line="68" selection-start-column="51" selection-end-line="68" selection-end-column="51" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/KDCoin/miner.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1667">
-          <caret line="147" column="19" lean-forward="false" selection-start-line="147" selection-start-column="19" selection-end-line="147" selection-end-column="19" />
+        <state relative-caret-position="249">
+          <caret line="148" column="36" lean-forward="false" selection-start-line="148" selection-start-column="36" selection-end-line="148" selection-end-column="36" />
           <folding>
-            <element signature="e#0#69#0" expanded="true" />
+            <element signature="e#0#57#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/KDCoin/minerApp2.py">
+    <entry file="file://$PROJECT_DIR$/KDCoin/block.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="353" column="26" lean-forward="true" selection-start-line="353" selection-start-column="26" selection-end-line="353" selection-end-column="26" />
+        <state relative-caret-position="187">
+          <caret line="182" column="23" lean-forward="true" selection-start-line="182" selection-start-column="23" selection-end-line="182" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/KDCoin/trustedServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="20" column="0" lean-forward="true" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/KDCoin/minerApp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="271" column="26" lean-forward="true" selection-start-line="271" selection-start-column="26" selection-end-line="271" selection-end-column="26" />
-          <folding />
+        <state relative-caret-position="285">
+          <caret line="314" column="13" lean-forward="true" selection-start-line="314" selection-start-column="13" selection-end-line="314" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/KDCoin/minerApp_test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="146" column="21" lean-forward="true" selection-start-line="146" selection-start-column="21" selection-end-line="146" selection-end-column="21" />
+        <state relative-caret-position="245">
+          <caret line="183" column="26" lean-forward="false" selection-start-line="183" selection-start-column="26" selection-end-line="183" selection-end-column="26" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/KDCoin/trustedServer.py">
+    <entry file="file://$PROJECT_DIR$/KDCoin/minerApp2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="24" column="28" lean-forward="false" selection-start-line="24" selection-start-column="28" selection-end-line="24" selection-end-column="28" />
+        <state relative-caret-position="352">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
           <folding />
         </state>
       </provider>

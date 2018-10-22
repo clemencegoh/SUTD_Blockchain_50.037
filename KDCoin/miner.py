@@ -1,4 +1,4 @@
-from KDCoin import blockChain, block, transaction, spvClient, keyPair
+import blockChain, block, transaction, spvClient, keyPair
 from multiprocessing import Queue
 import json
 import ecdsa
@@ -89,6 +89,7 @@ class Miner:
 
             first_block = block.Block(
                     _transaction_list=[tx],
+                    _difficulty=1,
             )
 
             p = first_block.build(_found=nonceQueue, _interrupt=interruptQueue)
@@ -136,8 +137,6 @@ class Miner:
                     _prev_block=self.blockchain.current_block,
                 )
 
-            print("newBlock--->", newBlock.state, newBlock.tx_list)
-
             p = newBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
             p.start()
             p.join()
@@ -147,6 +146,7 @@ class Miner:
                 return   # stop here
             newBlock.completeBlockWithNonce(_nonce=nonce_found)
             newBlock.executeChange()
+            print("newBlock--->", newBlock.state, newBlock.tx_list)
 
             self.blockchain.addBlock(
                 _incoming_block=newBlock,

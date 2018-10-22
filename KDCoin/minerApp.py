@@ -256,7 +256,7 @@ def newTx():
         internal_storage["Miner"].tx_pool.append(tx)
 
         # broadcast to the rest
-        broadcastTx(tx)
+        # broadcastTx(tx)
         return "Transaction received"
 
 
@@ -285,15 +285,8 @@ def newBlock():
 
         # interrupt and add block
         interruptQueue.put(1)
-        current_chain = internal_storage["Miner"].blockchain
-        current_block = current_chain.addBlock(
-            _incoming_block=b,
-            _prev_block_header=b.prev_header,
-        )
-
-        # update miner
-        internal_storage["Miner"].blockchain.current_block = current_block
-        internal_storage["Miner"].tx_pool = current_block.state["Tx_pool"]
+        m = internal_storage["Miner"]
+        m.handleBroadcastedBlock(b)
 
     return ""
 
@@ -316,7 +309,10 @@ def miningPage():
             generator = internal_storage["Miner"].mineBlock()
             try:
                 interruptQueue = next(generator)
+                # this should be getData() from block obj
                 block_data = next(generator)
+                block_data["State"]["Tx_pool"] = internal_storage["Miner"].tx_pool
+                print("/mining: ==>", block_data)
                 internal_storage["Miner"].broadcastBlock(
                     _block_data=block_data,
                     _neighbours=internal_storage["Neighbour_nodes"],
@@ -325,6 +321,7 @@ def miningPage():
             except StopIteration:
                 print("Mining interrupted, MinerApp")
         time.sleep(1)
+        print("Continuing to mine...")
 
 
 @app.route('/state')

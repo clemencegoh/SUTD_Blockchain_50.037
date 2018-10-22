@@ -28,7 +28,7 @@ def createTreeFromTx(_transaction_list):
 ##########################
 class Block:
     def __init__(self, _transaction_list, _prev_header="", _prev_block=None,
-                 _difficulty=3, _current_header="", _nonce="", _state=None,
+                 _difficulty=4, _current_header="", _nonce="", _state=None,
                  _timestamp=str(time.time()), _merkle_header=""):
         # to create
         self.header = _current_header

@@ -143,6 +143,17 @@ class TestMinerApp(unittest.TestCase):
         miner1.get(miner1_address + "/update")
         miner2.get(miner2_address + "/update")
 
+        p = Process(target=startMining,
+                    args=(miner1, miner1_address + "/mine"))
+        p.daemon = True
+
+        p2 = Process(target=startMining,
+                     args=(miner2, miner2_address+"/mine"))
+        p2.daemon = True
+
+        p.start()
+        p2.start()
+
         giveMinerMoney(miner1, miner1_address)
         time.sleep(5)
 
@@ -150,8 +161,33 @@ class TestMinerApp(unittest.TestCase):
         time.sleep(5)
 
         # both should have their state updated
-        print(checkCurrentBalance(miner1, miner1_address))
-        print(checkCurrentBalance(miner2, miner2_address))
+        miner1_balance = checkCurrentBalance(miner1, miner1_address)
+        miner2_balance = checkCurrentBalance(miner2, miner2_address)
+        print("Miner1:", miner1_balance)
+        self.assertEqual(miner1_balance, miner2_balance, "Both should show the same state")
+
+        # create 3 transactions on miner
+        # create transaction
+        print("Creating transactions...")
+        persons = ["random1", "random2", "random3"]
+        amount = [10, 10, 10]
+        comment = ["First", "Second", "Last"]
+        for i in range(3):
+            miner1.post(
+                miner1_address +
+                "/pay?pub_key={}&amount={}&comment={}".format(
+                    persons[i], amount[i], comment[i]
+                ))
+
+        time.sleep(60)
+        res = miner1.get(miner1_address + "/state")
+        current_balance = extractBalanceFromState(res.text)
+
+        print(current_balance)
+
+        self.assertEqual(current_balance["random1"], 10, "random1 should have been given 10")
+        self.assertEqual(current_balance["random2"], 10, "random2 should have been given 10")
+        self.assertEqual(current_balance["random3"], 10, "random3 should have been given 10")
 
 
 if __name__ == '__main__':
