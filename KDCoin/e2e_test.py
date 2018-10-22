@@ -59,8 +59,10 @@ def startMiners(_number):
         yield miner_address, pub, miner, current_balance
 
 
+# normal tests require block difficulty to be set at 4
 # these tests have to be run after starting servers
 class FullTests(unittest.TestCase):
+    # This test requires block difficulty to be set at 4 instead of 5
     def test_one_miner_one_client(self):
         # start 1 miner
         generator = startMiners(1)
@@ -107,6 +109,7 @@ class FullTests(unittest.TestCase):
         res = client1.get(client_addr+"/clientCheckBalance")
         self.assertEqual(res.text, '100', "Client should have 100")
 
+    # This test requires block difficulty to be set at 4 instead of 5
     def test_two_miners_one_client(self):
         # start 2 miners
         generator = startMiners(2)
@@ -145,12 +148,15 @@ class FullTests(unittest.TestCase):
         giveMinerMoney(miner1, miner1_address)
         time.sleep(10)
         giveMinerMoney(miner2, miner2_address)
-        time.sleep(10)
+        time.sleep(20)
 
-        miner1_balance = checkCurrentBalance(miner1, miner1_address)
-        miner2_balance = checkCurrentBalance(miner2, miner2_address)
-        self.assertEqual(miner1_balance[miner1_pub], 100, "Miner1 should have 100 by now")
-        self.assertEqual(miner2_balance[miner2_pub], 100, "Miner2 should have 100")
+        miner1_balance = checkCurrentBalance(miner1, miner1_address)[miner1_pub]
+        miner2_balance = checkCurrentBalance(miner2, miner2_address)[miner2_pub]
+        total = miner1_balance + miner2_balance
+        print("Balance for:\nMiner1: {}\nMiner2: {}".format(
+            miner1_balance, miner2_balance
+        ))
+        self.assertEqual(total, 200, "total 200 should have been generated")
 
         # create transaction
         print("Creating transactions...")
@@ -177,7 +183,18 @@ class FullTests(unittest.TestCase):
 
         # wait for miners
         time.sleep(20)
-        print(client1.get(client_addr+"/clientCheckBalance").text)
+        client_amount = client1.get(client_addr+"/clientCheckBalance").text
+        self.assertEqual(client_amount, 90, "Client should have 90 by now")
+
+
+    # requires 2 miners, 1 set at difficulty 3, 1 set at difficulty 5
+    def test_selfish_mining(self):
+        pass
+
+    # again, requires 2 miners at different difficulty
+    # miner spends money, forks from previous block to create new
+    def test_double_spending(self):
+        pass
 
 
 if __name__ == '__main__':

@@ -17,7 +17,7 @@ internal_storage = {
     "Miner": None,  # Miner Object
 }
 
-self_address = "http://localhost:8083"
+self_address = "http://localhost:8090"
 trusted_server_addr = "http://localhost:8080"
 interruptQueue = Queue(1)
 
@@ -90,7 +90,6 @@ def broadcastTx(_tx):
 
 
 def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
-    global internal_storage
     tx = internal_storage["Miner"].client.createTransaction(
         _recv_pub, _amount, _comment)
     print("CREATING TX...", tx.data)
@@ -212,7 +211,6 @@ def newUser():
 
 @app.route('/block')
 def getCurrentBlock():
-    global internal_storage
     # this API is here for other miners joining in to request the current blockchain
     data = internal_storage["Miner"].blockchain.current_block.getData()
     response = app.response_class(
@@ -247,7 +245,6 @@ def payTo():
 # receive new Tx from broadcast
 @app.route('/newTx', methods=["POST"])
 def newTx():
-    global internal_storage
     tx = request.get_json(force=True)["TX"]
     print("Getting:", tx)
 
@@ -328,7 +325,6 @@ def miningPage():
 
 @app.route('/state')
 def getState():
-    global internal_storage
     state = internal_storage["Miner"].blockchain.current_block.state
     pool = []
     for tx in state["Tx_pool"]:
@@ -355,4 +351,4 @@ if __name__ == '__main__':
     machine_IP = ""
     if machine_IP == "":
         machine_IP = "localhost"
-    app.run(host=machine_IP, port=8083)
+    app.run(host=machine_IP, port=8090)

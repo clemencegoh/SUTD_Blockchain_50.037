@@ -1,4 +1,4 @@
-import blockChain, block, transaction, spvClient, keyPair
+from KDCoin import blockChain, block, transaction, spvClient, keyPair
 from multiprocessing import Queue
 import json
 import ecdsa
@@ -15,7 +15,7 @@ import time
 # - Ability to broadcast new block/ interrupt if broadcast received
 # - Keeping track of balance is done either through UTXO or account balance
 # - How to verify transaction?
-class Miner:
+class Hacker:
     def __init__(self, _pub="", _priv="", _blockchain=None):
         # create new miner with fields:
         # _pub and _priv are in hex, convert to object
@@ -135,6 +135,7 @@ class Miner:
                     _transaction_list=temp_pool,
                     _prev_header=self.blockchain.current_block.header,
                     _prev_block=self.blockchain.current_block,
+                    _difficulty=2,
                 )
 
             p = newBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
