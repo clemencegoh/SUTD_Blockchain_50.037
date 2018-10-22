@@ -1,7 +1,7 @@
 import requests
 import json
 from flask import Flask, request
-import spvClient
+from KDCoin import spvClient,keyPair
 
 
 app = Flask(__name__)
@@ -15,6 +15,18 @@ miner_server = 'http://127.0.0.1:8080'
 def homepage():
     return "This is the homepage of SPV Clients"
 
+@app.route('/new')
+def createNew():
+    global user, miners_list
+    priv, pub = keyPair.GenerateKeyPair()
+    user = spvClient.SPVClient(privatekey=priv,
+                               publickey=pub)
+    miners_list = user.getMiners(miner_server)
+    return "Public Key: {}<br>Private Key: {}".format(
+        pub.to_string().hex(),
+        priv.to_string().hex()
+    )
+
 
 # todo: create endpoint which provides frontend for creation of transaction
 @app.route('/login/<pub>/<priv>')
@@ -22,6 +34,7 @@ def login(pub, priv):
     # temporary
     global user
     user = spvClient.SPVClient(privatekey=priv, publickey=pub)
+    miners_list = user.getMiners(miner_server)
     return homepage()
 
 

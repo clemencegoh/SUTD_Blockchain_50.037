@@ -2,65 +2,110 @@ import requests
 import ecdsa
 import unittest
 import re
-from KDCoin import transaction
+import time
+import json
+from multiprocessing import Process
+from KDCoin import transaction, miner, spvClient
 
 
-def extractFromText(_text):
-    pattern = re.compile("Public Key: (.*)<br>Private Key: (.*)<br>")
-    match = pattern.match(_text)
-    # public, private
-    return match.group(1), match.group(2)
+def extractBalanceFromState(_response_text):
+    pattern = re.compile('Balance: (.*)<br>Pool')
+    balance = pattern.match(_response_text).group(1)
+
+    # extract data:
+    data = json.loads(balance)
+    return data
+
+
+def startMining(_session, _addr):
+    return _session.get(_addr)
+
+
+def extractPubFromText(_text):
+    pattern = re.compile('Public Key: (.*)<br>Private Key:')
+    pub = pattern.match(_text).group(1)
+
+    return pub
+
+
+def giveMinerMoney(_session, _addr):
+    return _session.post(
+        _addr + "/pay?pub_key=random&amount=0&comment=getMoney")
+
+
+def checkCurrentBalance(_session, _addr):
+    response = _session.get(_addr+"/state")
+    current_balance = extractBalanceFromState(response.text)
+    return current_balance
+
+
+def startMiners(_number):
+    for i in range(_number):
+        # define variables
+        miner_address = "http://localhost:808{}".format(2 + i)
+
+        # create new miner
+        miner = requests.session()
+        miner.get(miner_address)
+        pub = extractPubFromText(
+            miner.get(miner_address + "/new").text
+        )
+
+        # allow up to 4 seconds to finish
+        time.sleep(2)
+
+        current_balance = checkCurrentBalance(miner, miner_address)
+
+        yield miner_address, pub, miner, current_balance
 
 
 # these tests have to be run after starting servers
 class FullTests(unittest.TestCase):
-    def setUp(self):
-        self.trustedSession = requests.session()
-        self.allArray = self.trustedSession.get("http://localhost:8080").json()["miners_list"]
+    def test_one_miner_one_client(self):
+        # start 1 miner
+        generator = startMiners(1)
+        miner1_address, miner1_pub, miner1, balance = next(generator)
 
-        self.miner1 = {
-            "Session": requests.session(),
-            "Pub": "",
-            "Priv": "",
-            "Address": "http://localhost:8082"
-        }
-        resp1 = self.miner1["Session"].get(self.miner1["Address"] + "/new")
-        self.miner1["Pub"], self.miner1["Priv"] = extractFromText(resp1.text)
+        self.assertEqual(balance[miner1_pub], 0, "Current balance for all should be 0")
 
-        self.miner2 = {
-            "Session": requests.session(),
-            "Pub": "",
-            "Priv": "",
-            "Address": "http://localhost:8083"
-        }
-        resp2 = self.miner2["Session"].get(self.miner2["Address"] + "/new")
-        self.miner2["Pub"], self.miner2["Priv"] = extractFromText(resp2.text)
+        # start 1 client
+        client_addr = "http://localhost:8081"
+        client1 = requests.session()
+        client1.get(client_addr)
+        client1_pub = extractPubFromText(
+            client1.get(client_addr+"/new").text
+        )
 
-    # def test_register(self):
-    #     self.neighbourArray = self.trustedSession.get("http://localhost:8080").json()["miners_list"]
-    #     self.assertNotEqual(self.neighbourArray, [], "list should not be empty now")
-    #     self.assertEqual(len(self.neighbourArray), 2, "Array should contain all miners")
-    #     print(self.neighbourArray)
+        # start mining
+        p = Process(target=startMining,
+                    args=(miner1, miner1_address + "/mine"))
+        p.daemon = True
+        p.start()
 
-    def test_newTransaction(self):
-        # retrieve private/public key
-        t = transaction.Transaction(self.miner1["Pub"], self.miner2["Pub"], 10, "test")
-        priv = ecdsa.SigningKey.from_string(bytes.fromhex(self.miner1["Priv"]))
-        t.sign(priv)
+        # give miner moneys
+        giveMinerMoney(miner1, miner1_address)
+        time.sleep(20)
 
-        # broadcast transaction
-        for i in self.allArray:
-            print("Sending to:", i)
-            self.miner1["Session"].post(i + "/newTx", json={
-                "TX": t.to_json()
-            })
-        sender = t.data["Sender"]
-        recv = t.data["Receiver"]
-        self.assertEqual(sender, self.miner1["Pub"], "sender is not miner1")
-        self.assertEqual(recv, self.miner2["Pub"], "receipent is not miner2")
+        miner1_balance = checkCurrentBalance(miner1, miner1_address)
+        self.assertEqual(miner1_balance[miner1_pub], 100, "Miner1 should have 100 by now")
 
-        # check miner2 tx_list is not empty
-        print(self.miner2["Session"].get(self.miner2["Address"] + "/state").text)
+        # create transaction
+        print("Creating transactions...")
+        persons = [client1_pub]
+        amount = [100]
+        comment = ["Give all moneys"]
+        for i in range(len(persons)):
+            miner1.post(
+                miner1_address +
+                "/pay?pub_key={}&amount={}&comment={}".format(
+                    persons[i], amount[i], comment[i]
+                ))
+
+        # most time taken here for miner to find block
+        time.sleep(30)
+
+        res = client1.get(client_addr+"/clientCheckBalance")
+        self.assertEqual(res.text, '100', "Client should have 100")
 
 
 if __name__ == '__main__':

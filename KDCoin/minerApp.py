@@ -312,7 +312,6 @@ def miningPage():
                 # this should be getData() from block obj
                 block_data = next(generator)
                 block_data["State"]["Tx_pool"] = internal_storage["Miner"].tx_pool
-                print("/mining: ==>", block_data)
                 internal_storage["Miner"].broadcastBlock(
                     _block_data=block_data,
                     _neighbours=internal_storage["Neighbour_nodes"],

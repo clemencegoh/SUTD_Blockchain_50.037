@@ -7,6 +7,7 @@ import json
 # Functionalities: i) Create Transactions, ii) Verify transactions validated
 class SPVClient:
     def __init__(self, privatekey, publickey):
+        # these are objects
         self.privatekey = privatekey
         self.publickey = publickey
 
@@ -36,10 +37,10 @@ class SPVClient:
                      headers={'Content-Type': 'application/json'})
 
         # not sure if this is needed
-        block = response.json()["Block"]
+        block = response.json()
 
-        balance = block["State"]["Balance"][self.publickey]
-        return balance
+        balance = block["State"]["Balance"][self.publickey.to_string().hex()]
+        return str(balance)
 
     def getMiners(self, _trusted_server):
         response = requests.get(_trusted_server)
