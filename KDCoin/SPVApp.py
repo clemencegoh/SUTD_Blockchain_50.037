@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 miners_list = []
 user = None
-miner_server = 'http://127.0.0.1:8080'
+miner_server = 'http://localhost:8080'
 
 
 @app.route('/')
@@ -41,35 +41,36 @@ def login(pub, priv):
 # When Transaction created, Broadcast to all miners done here
 @app.route('/createTransaction', methods=['POST'])
 def createTransaction():
+    global miners_list
     if user is None:
         return "Please login"
 
-    if request.headers['Content-Type'] == 'application/json':
-        #Receive data regarding transaction
-        json_received = request.json()
-        transaction_data = json.loads(json_received)
-        print(transaction_data)
+    # Receive data regarding transaction
+    pub_key = request.values.get("pub_key")
+    amount = request.values.get("amount")
+    comment = request.values.get("comment")
 
-        transaction = user.createTransaction(
-                        receiver_public_key=transaction_data["recv"],
-                        amount=transaction_data["Amount"],
-                        comment=transaction_data["Comment"]
-                        )
+    transaction = user.createTransaction(
+                    receiver_public_key=pub_key,
+                    amount=amount,
+                    comment=comment
+                    )
 
-        miners_list = user.getMiners(miner_server)
+    miners_list = user.getMiners(miner_server)
 
-        # broadcast to all known miners
-        for miner in miners_list:
-            # execute post request to broadcast transaction
-            broadcast_endpoint = miner + "/newTx"
-            requests.post(
-                url=broadcast_endpoint,
-                data=json.dumps({
-                    "TX": transaction.data
-                })
-            )
-    else:
-        return 'wrong format of transaction sent'
+    print("Will broadcast:", transaction.data)
+
+    # broadcast to all known miners
+    for miner in miners_list:
+        # execute post request to broadcast transaction
+        broadcast_endpoint = miner + "/newTx"
+        requests.post(
+            url=broadcast_endpoint,
+            data=json.dumps({
+                "TX": transaction.data
+            })
+        )
+    return ""
 
 
 # Check with any miner on acc balance (Based on public key received)

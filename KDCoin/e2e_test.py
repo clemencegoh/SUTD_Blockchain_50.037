@@ -107,6 +107,78 @@ class FullTests(unittest.TestCase):
         res = client1.get(client_addr+"/clientCheckBalance")
         self.assertEqual(res.text, '100', "Client should have 100")
 
+    def test_two_miners_one_client(self):
+        # start 2 miners
+        generator = startMiners(2)
+        miner1_address, miner1_pub, miner1, balance = next(generator)
+        miner2_address, miner2_pub, miner2, miner2_balance = next(generator)
+
+        self.assertEqual(balance[miner1_pub], 0, "Current balance for all should be 0")
+        self.assertEqual(miner2_balance[miner2_pub], 0,
+                         "Current balance for all should be 0")
+
+        # start 1 client
+        client_addr = "http://localhost:8081"
+        client1 = requests.session()
+        client1.get(client_addr)
+        client1_pub = extractPubFromText(
+            client1.get(client_addr + "/new").text
+        )
+
+        # update miners
+        miner1.get(miner1_address+"/update")
+        miner2.get(miner2_address+"/update")
+
+        # start mining
+        p = Process(target=startMining,
+                    args=(miner1, miner1_address + "/mine"))
+        p.daemon = True
+
+        p2 = Process(target=startMining,
+                     args=(miner2, miner2_address + "/mine"))
+        p2.daemon = True
+
+        p.start()
+        p2.start()
+
+        # give miner moneys
+        giveMinerMoney(miner1, miner1_address)
+        time.sleep(10)
+        giveMinerMoney(miner2, miner2_address)
+        time.sleep(10)
+
+        miner1_balance = checkCurrentBalance(miner1, miner1_address)
+        miner2_balance = checkCurrentBalance(miner2, miner2_address)
+        self.assertEqual(miner1_balance[miner1_pub], 100, "Miner1 should have 100 by now")
+        self.assertEqual(miner2_balance[miner2_pub], 100, "Miner2 should have 100")
+
+        # create transaction
+        print("Creating transactions...")
+        persons = [client1_pub]
+        amount = [100]
+        comment = ["Give all moneys"]
+        for i in range(len(persons)):
+            miner1.post(
+                miner1_address +
+                "/pay?pub_key={}&amount={}&comment={}".format(
+                    persons[i], amount[i], comment[i]
+                ))
+
+        print("Sleeping...")
+        # most time taken here for miner to find block
+        time.sleep(20)
+
+        res = client1.get(client_addr + "/clientCheckBalance")
+        self.assertEqual(res.text, '100', "Client should have 100")
+
+        client1.post(client_addr +
+                     "/createTransaction?pub_key={}&amount={}&comment={}".
+                     format("random_other_client", 10, "test payment"))
+
+        # wait for miners
+        time.sleep(20)
+        print(client1.get(client_addr+"/clientCheckBalance").text)
+
 
 if __name__ == '__main__':
     unittest.main()
