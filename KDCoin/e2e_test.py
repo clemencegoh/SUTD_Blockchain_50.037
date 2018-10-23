@@ -224,7 +224,8 @@ class FullTests(unittest.TestCase):
         # wait for miners
         time.sleep(20)
         client_amount = client1.get(client_addr+"/clientCheckBalance").text
-        self.assertEqual(client_amount, 90, "Client should have 90 by now")
+        int_client_amount = int(client_amount)
+        self.assertEqual(int_client_amount, 90, "Client should have 90 by now")
 
     # requires 1 miner (difficulty 4) and 1 hacker (difficulty 2)
     def test_selfish_mining(self):

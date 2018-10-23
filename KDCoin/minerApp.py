@@ -259,7 +259,7 @@ def newTx():
         internal_storage["Miner"].tx_pool.append(tx)
 
         # broadcast to the rest
-        # broadcastTx(tx)
+        broadcastTx(tx)
         return "Transaction received"
 
 
