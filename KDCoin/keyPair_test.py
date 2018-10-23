@@ -1,6 +1,6 @@
 import unittest
 import ecdsa
-from KDCoin import keyPair
+import keyPair
 
 
 class TestKeyPair(unittest.TestCase):

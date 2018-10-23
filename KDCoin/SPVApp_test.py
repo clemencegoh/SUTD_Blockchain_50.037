@@ -1,4 +1,4 @@
-from KDCoin import SPVApp, spvClient
+import SPVApp, spvClient
 import requests
 import unittest
 import json

@@ -3,7 +3,7 @@ from flask import Flask, request
 import requests
 import json
 import time
-from KDCoin import handlers, attacker, keyPair, spvClient, block, blockChain, transaction
+import handlers, attacker, keyPair, spvClient, block, blockChain, transaction
 from multiprocessing import Queue
 
 

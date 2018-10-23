@@ -1,5 +1,5 @@
 import unittest
-from KDCoin import transaction, keyPair
+import transaction, keyPair
 import json
 
 

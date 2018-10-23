@@ -1,9 +1,9 @@
 import unittest
 import json
 import time
-from KDCoin.helperFunctions import generateRandomString
-from KDCoin.merkleNode import MerkleNode
-from KDCoin.merkleTree import MerkleTree, verify_proof
+from helperFunctions import generateRandomString
+from merkleNode import MerkleNode
+from merkleTree import MerkleTree, verify_proof
 
 
 class TestMerkle(unittest.TestCase):

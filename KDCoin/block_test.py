@@ -1,5 +1,5 @@
 import unittest
-from KDCoin import block, transaction, keyPair
+import block, transaction, keyPair
 from multiprocessing import Queue
 
 

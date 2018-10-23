@@ -1,5 +1,5 @@
 import unittest
-from KDCoin import miner, minerApp, transaction, block, blockChain
+import miner, minerApp, transaction, block, blockChain
 from multiprocessing import Queue
 
 

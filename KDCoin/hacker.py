@@ -1,4 +1,4 @@
-from KDCoin import blockChain, block, transaction, spvClient, keyPair
+import blockChain, block, transaction, spvClient, keyPair
 from multiprocessing import Queue
 import json
 import ecdsa

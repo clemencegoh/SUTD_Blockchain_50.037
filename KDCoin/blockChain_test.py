@@ -1,7 +1,7 @@
 import unittest
 import time
 from multiprocessing import Manager
-from KDCoin import transaction, block, blockChain, keyPair
+import transaction, block, blockChain, keyPair
 
 
 manager = Manager()

@@ -1,4 +1,4 @@
-from KDCoin import transaction
+import transaction
 import requests
 import json
 

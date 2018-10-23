@@ -5,7 +5,7 @@ import re
 import time
 import json
 from multiprocessing import Process
-from KDCoin import transaction, miner, spvClient
+import transaction, miner, spvClient
 
 
 def extractBalanceFromState(_response_text):

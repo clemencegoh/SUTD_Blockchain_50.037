@@ -4,7 +4,7 @@ import time
 import re
 import json
 from multiprocessing import Process
-from KDCoin import transaction, keyPair
+import transaction, keyPair
 
 
 def extractBalanceFromState(_response_text):

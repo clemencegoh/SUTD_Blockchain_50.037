@@ -1,4 +1,4 @@
-from KDCoin import spvClient, keyPair, transaction
+import spvClient, keyPair, transaction
 import unittest
 import json
 import ecdsa
