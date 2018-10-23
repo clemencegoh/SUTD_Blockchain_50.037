@@ -15,7 +15,7 @@ import time
 # - Ability to broadcast new block/ interrupt if broadcast received
 # - Keeping track of balance is done either through UTXO or account balance
 # - How to verify transaction?
-class Miner:
+class Hacker:
     def __init__(self, _pub="", _priv="", _blockchain=None):
         # create new miner with fields:
         # _pub and _priv are in hex, convert to object
@@ -51,26 +51,27 @@ class Miner:
 
     # call this on interrupt
     def handleBroadcastedBlock(self, _block):
-        # create if None
-        if self.blockchain is None:
-            self.blockchain = blockChain.Blockchain(_block)
-        else:
-            self.blockchain.addBlock(_block, _block.prev_header)
+        if _block.validate():  # valid block
+            # create if None
+            if self.blockchain is None:
+                self.blockchain = blockChain.Blockchain(_block)
+            else:
+                self.blockchain.addBlock(_block, _block.prev_header)
+            # save tx
+            saved_tx = []
+            for tx in self.tx_pool:
+                if tx not in _block.state["Tx_pool"]:
+                    saved_tx.append(tx)
 
-        # save tx
-        saved_tx = []
-        for tx in self.tx_pool:
-            if tx not in _block.state["Tx_pool"]:
-                saved_tx.append(tx)
+            # use other person's tx pool
+            self.tx_pool = _block.state["Tx_pool"]
 
-        # use other person's tx pool
-        self.tx_pool = _block.state["Tx_pool"]
+            # re-add
+            for tx in saved_tx:
+                self.tx_pool.append(tx)
 
-        # re-add
-        for tx in saved_tx:
-            self.tx_pool.append(tx)
-
-        return True
+            return True
+        return False
 
     def mineBlock(self):
         print("Mining...")
@@ -81,8 +82,8 @@ class Miner:
                 time.sleep(1)
 
         # While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
-        interruptQueue = Queue()
-        nonceQueue = Queue()
+        interruptQueue = Queue(1)
+        nonceQueue = Queue(1)
         yield interruptQueue
 
         # if this is ever invoked, it must be the first block
@@ -123,7 +124,8 @@ class Miner:
             print("Getting from tx_pool...-->", self.tx_pool)
             print("Current:", self.blockchain.current_block.state)
 
-            while len(self.tx_pool) > 0 and len(temp_pool) <= 10:
+            # takes only 1
+            while len(self.tx_pool) > 0 and len(temp_pool) <= 1:
                 item = self.tx_pool.pop(0)
 
                 # create transaction
@@ -145,6 +147,7 @@ class Miner:
                     _transaction_list=temp_pool,
                     _prev_header=self.blockchain.current_block.header,
                     _prev_block=self.blockchain.current_block,
+                    _difficulty=2,
                 )
 
             p = newBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
@@ -152,6 +155,7 @@ class Miner:
             p.join()
 
             nonce_found = nonceQueue.get()
+            # hacker not meant to stop
             if nonce_found == "":
                 return   # stop here
             newBlock.completeBlockWithNonce(_nonce=nonce_found)

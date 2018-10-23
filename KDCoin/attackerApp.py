@@ -3,7 +3,7 @@ from flask import Flask, request
 import requests
 import json
 import time
-import handlers, miner, keyPair, spvClient, block, blockChain, transaction
+import handlers, attacker, keyPair, spvClient, block, blockChain, transaction
 from multiprocessing import Queue
 
 
@@ -17,9 +17,12 @@ internal_storage = {
     "Miner": None,  # Miner Object
 }
 
-self_address = "http://localhost:8083"
+saved_block = None
+waiting_tx = []
+self_address = "http://localhost:8070"
 trusted_server_addr = "http://localhost:8080"
 interruptQueue = Queue(1)
+attackQueue = Queue()
 
 
 def createBlockFromDict(tx_list, block_data):
@@ -90,7 +93,7 @@ def broadcastTx(_tx):
 
 
 def createTxWithBroadcast(_recv_pub, _amount, _comment=""):
-    global internal_storage
+    global internal_storage, waiting_tx
     tx = internal_storage["Miner"].client.createTransaction(
         _recv_pub, _amount, _comment)
     print("CREATING TX...", tx.data)
@@ -144,7 +147,7 @@ def loginAPI():
 
         # update state
         bc = blockChain.Blockchain(_block=b)
-        internal_storage["Miner"] = miner.Miner(
+        internal_storage["Miner"] = attacker.Attacker(
             _blockchain=bc,
             _pub=pub_key,
             _priv=priv_key
@@ -152,7 +155,7 @@ def loginAPI():
 
     else:
         # create first block
-        internal_storage["Miner"] = miner.Miner(_blockchain=None,
+        internal_storage["Miner"] = attacker.Attacker(_blockchain=None,
                                                 _pub=pub_key,
                                                 _priv=priv_key)
         generator = internal_storage["Miner"].mineBlock()
@@ -173,7 +176,7 @@ def loginAPI():
 
 @app.route('/new')
 def newUser():
-    global internal_storage, interruptQueue
+    global internal_storage, interruptQueue, saved_block
     priv, pub = keyPair.GenerateKeyPair()
     internal_storage["Private_key"] = priv.to_string().hex()
     internal_storage["Public_key"] = pub.to_string().hex()
@@ -190,7 +193,7 @@ def newUser():
     pub_key = internal_storage["Public_key"]
     priv_key = internal_storage["Private_key"]
 
-    internal_storage["Miner"] = miner.Miner(_pub=pub_key, _priv=priv_key)
+    internal_storage["Miner"] = attacker.Attacker(_pub=pub_key, _priv=priv_key)
 
     # announce yourself
     getNeighbours(self_address)
@@ -204,8 +207,12 @@ def newUser():
             _neighbours=internal_storage["Neighbour_nodes"],
             _self_addr=self_address,
         )
+        if saved_block is None:
+            print("Saving Block...")
+            saved_block = block_data
+
     except StopIteration:
-        print("MinerApp New Interrupted")
+        print("AttackerApp New Interrupted")
 
     return info + newUser
 
@@ -247,7 +254,7 @@ def payTo():
 # receive new Tx from broadcast
 @app.route('/newTx', methods=["POST"])
 def newTx():
-    global internal_storage
+    global internal_storage, waiting_tx
     tx = request.get_json(force=True)["TX"]
     print("Getting:", tx)
 
@@ -257,6 +264,7 @@ def newTx():
     else:
         # add to pool
         internal_storage["Miner"].tx_pool.append(tx)
+        waiting_tx.append(tx)
 
         # broadcast to the rest
         # broadcastTx(tx)
@@ -277,7 +285,8 @@ def newBlock():
     # create block from data
     b = createBlockFromDict(
         tx_list=tx_list,
-        block_data=rb)
+        block_data=rb
+    )
 
     # validate
     if b.validate():
@@ -287,9 +296,9 @@ def newBlock():
             return ""
 
         # interrupt and add block
-        interruptQueue.put(1)
         m = internal_storage["Miner"]
-        m.handleBroadcastedBlock(b)
+        print(m.handleBroadcastedBlock(b))
+        interruptQueue.put(1)
 
     return ""
 
@@ -306,7 +315,7 @@ def mineAPI():
 
 @app.route('/mining')
 def miningPage():
-    global internal_storage, interruptQueue
+    global internal_storage, interruptQueue, waiting_tx, saved_block
     while True:
         if len(internal_storage["Miner"].tx_pool) >= 1:
             generator = internal_storage["Miner"].mineBlock()
@@ -320,10 +329,19 @@ def miningPage():
                     _neighbours=internal_storage["Neighbour_nodes"],
                     _self_addr=self_address,
                 )
+                # by this time should be successful
+                a = internal_storage["Miner"]
+                reward_data = a.createRewardTransaction(a.client.privatekey).data
+                waiting_tx.append(reward_data)
+                print("Watiing_tx => Added:", reward_data)
+
             except StopIteration:
                 print("Mining interrupted, MinerApp")
         time.sleep(1)
         print("Continuing to mine...")
+        if not attackQueue.empty():
+            attackQueue.get()
+            return "Done Mining. Letting attack start..."
 
 
 @app.route('/state')
@@ -351,8 +369,124 @@ def getAllStates():
     return internal_storage["Miner"].getAllBlockStates()
 
 
+def selfMine(tx, starting_block):
+    global internal_storage
+    nq = Queue()
+    int_q = Queue(1)
+    t = transaction.Transaction(
+        tx["Sender"],
+        tx["Receiver"],
+        tx["Amount"],
+        tx["Comment"],
+        tx["Reward"],
+        tx["Signature"]
+    )
+    a = internal_storage["Miner"]
+
+    newBlock = block.Block(
+        _transaction_list=[t],
+        _prev_header=starting_block["Header"],
+        _state=starting_block["State"],
+        _difficulty=2,
+    )
+
+    p = newBlock.build(_found=nq, _interrupt=int_q)
+    p.start()
+    p.join()
+
+    nonce_found = nq.get()
+    newBlock.completeBlockWithNonce(_nonce=nonce_found)
+    newBlock.executeChange()
+    print("<== Changed Block ==>")
+    print(newBlock.getData())
+    print("<== Changed Block ==>")
+
+    a.blockchain.addBlock(
+        _incoming_block=newBlock,
+        _prev_block_header=newBlock.prev_header
+    )
+
+    # broadcast block
+    a.broadcastBlock(
+        _block_data=newBlock.getData(),
+        _self_addr=self_address,
+        _neighbours=internal_storage["Neighbour_nodes"]
+    )
+    return newBlock
+
+
+# attack endpoint, works the same as /newTx
+@app.route('/attack', methods=["POST"])
+def attack():
+    global internal_storage, saved_block, attackQueue
+    tx = request.get_json(force=True)["TX"]
+    print("Entering attacker mode with:", tx)
+    attackQueue.put(1)
+    print("Current tx in memory:", waiting_tx)
+    a = internal_storage["Miner"]
+    starting_block = saved_block
+
+    # make sure attacker has money
+    t_attack = transaction.Transaction(
+        _sender_public_key=internal_storage["Public_key"],
+        _receiver_public_key=internal_storage["Public_key"],
+        _amount=100,
+        _comment="Ensure enough",
+        _reward=True
+    )
+    t_attack.sign(a.client.privatekey)
+    print("!====> 1:", starting_block)
+    newBlock = selfMine(t_attack.data, starting_block)
+    starting_block = newBlock.getData()
+    print("!====> 2:", starting_block)
+
+    # create tx for merchant 2
+    t = transaction.Transaction(
+        _sender_public_key=internal_storage["Public_key"],
+        _receiver_public_key=tx["Receiver"],
+        _amount=tx["Amount"],
+        _comment=tx["Comment"]
+    )
+    t.sign(a.client.privatekey)
+    newBlock = selfMine(t.data, starting_block)
+    starting_block = newBlock.getData()
+    print("!====> 3:", starting_block)
+
+    # give miner back his money
+    for addr, balance in a.blockchain.current_block.state["Balance"].items():
+        if addr != "merchant1" and addr != internal_storage["Public_key"]:
+            print("<== !! ==>")
+            print("Giving {} to {}".format(balance, addr))
+            t = transaction.Transaction(
+                _sender_public_key=internal_storage["Public_key"],
+                _receiver_public_key=addr,
+                _amount=balance,
+                _comment="generated",
+                _reward=True
+            )
+            t.sign(a.client.privatekey)
+            newBlock = selfMine(t.data, starting_block)
+            starting_block = newBlock.getData()
+
+    # start mining blocks and adding to starting block
+    for i in range(len(waiting_tx)):
+        # create tx and manually mine
+        t = transaction.Transaction(
+            _sender_public_key=internal_storage["Public_key"],
+            _receiver_public_key=internal_storage["Public_key"],
+            _amount=0,
+            _comment="generated",
+            _reward=True
+        )
+        t.sign(a.client.privatekey)
+        newBlock = selfMine(t.data, starting_block)
+        starting_block = newBlock.getData()
+
+    return "Attack Complete!"
+
+
 if __name__ == '__main__':
     machine_IP = ""
     if machine_IP == "":
         machine_IP = "localhost"
-    app.run(host=machine_IP, port=8083)
+    app.run(host=machine_IP, port=8070)

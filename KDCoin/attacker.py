@@ -15,7 +15,7 @@ import time
 # - Ability to broadcast new block/ interrupt if broadcast received
 # - Keeping track of balance is done either through UTXO or account balance
 # - How to verify transaction?
-class Miner:
+class Attacker:
     def __init__(self, _pub="", _priv="", _blockchain=None):
         # create new miner with fields:
         # _pub and _priv are in hex, convert to object
@@ -81,8 +81,8 @@ class Miner:
                 time.sleep(1)
 
         # While there is no new block that is of a longer len than this miner's blockchain, keep mining till completed.
-        interruptQueue = Queue()
-        nonceQueue = Queue()
+        interruptQueue = Queue(1)
+        nonceQueue = Queue(1)
         yield interruptQueue
 
         # if this is ever invoked, it must be the first block
@@ -92,7 +92,7 @@ class Miner:
                 _sender_public_key=self.client.publickey,
                 _receiver_public_key=self.client.publickey,
                 _comment="Hello world",
-                _amount=0,
+                _amount=100,
                 _reward=True
             )
             tx.sign(self.client.privatekey)
@@ -145,6 +145,7 @@ class Miner:
                     _transaction_list=temp_pool,
                     _prev_header=self.blockchain.current_block.header,
                     _prev_block=self.blockchain.current_block,
+                    _difficulty=4,
                 )
 
             p = newBlock.build(_found=nonceQueue, _interrupt=interruptQueue)
@@ -191,6 +192,15 @@ class Miner:
             count += 1
 
         return json.dumps(state_dict)
+
+    def getShortestChain(self):
+        shortest = self.blockchain.chain_length
+        shortest_chain_block = None
+        for block, chain_length in self.blockchain.block_heads.items():
+            if chain_length <= shortest:
+                shortest = chain_length
+                shortest_chain_block = block
+        return shortest_chain_block
 
 
 

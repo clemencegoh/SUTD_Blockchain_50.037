@@ -1,19 +1,31 @@
 import requests
 import json
 from flask import Flask, request
-import spvClient
+import spvClient,keyPair
 
 
 app = Flask(__name__)
 
 miners_list = []
 user = None
-miner_server = 'http://127.0.0.1:8080'
+miner_server = 'http://localhost:8080'
 
 
 @app.route('/')
 def homepage():
     return "This is the homepage of SPV Clients"
+
+@app.route('/new')
+def createNew():
+    global user, miners_list
+    priv, pub = keyPair.GenerateKeyPair()
+    user = spvClient.SPVClient(privatekey=priv,
+                               publickey=pub)
+    miners_list = user.getMiners(miner_server)
+    return "Public Key: {}<br>Private Key: {}".format(
+        pub.to_string().hex(),
+        priv.to_string().hex()
+    )
 
 
 # todo: create endpoint which provides frontend for creation of transaction
@@ -22,40 +34,43 @@ def login(pub, priv):
     # temporary
     global user
     user = spvClient.SPVClient(privatekey=priv, publickey=pub)
+    miners_list = user.getMiners(miner_server)
     return homepage()
 
 
 # When Transaction created, Broadcast to all miners done here
 @app.route('/createTransaction', methods=['POST'])
 def createTransaction():
+    global miners_list
     if user is None:
         return "Please login"
 
-    if request.headers['Content-Type'] == 'application/json':
-        #Receive data regarding transaction
-        json_received = request.json
-        transaction_data = json.loads(json_received)
-        print(transaction_data)
+    # Receive data regarding transaction
+    pub_key = request.values.get("pub_key")
+    amount = request.values.get("amount")
+    comment = request.values.get("comment")
 
-        transaction = user.createTransaction(
-                        receiver_public_key=transaction_data["recv"],
-                        amount=transaction_data["Amount"],
-                        comment=transaction_data["Comment"]
-                        )
+    transaction = user.createTransaction(
+                    receiver_public_key=pub_key,
+                    amount=amount,
+                    comment=comment
+                    )
 
-        miners_list = user.getMiners(miner_server + '/updateSPVMinerList')
+    miners_list = user.getMiners(miner_server)
 
-        # broadcast to all known miners
-        for miner in miners_list:
-            # execute post request to broadcast transaction
-            broadcast_endpoint = miner + "/newTransaction"
-            requests.post(
-                url=broadcast_endpoint,
-                json=transaction.to_json()
-            )
+    print("Will broadcast:", transaction.data)
 
-    else:
-        return 'wrong format of transaction sent'
+    # broadcast to all known miners
+    for miner in miners_list:
+        # execute post request to broadcast transaction
+        broadcast_endpoint = miner + "/newTx"
+        requests.post(
+            url=broadcast_endpoint,
+            data=json.dumps({
+                "TX": transaction.data
+            })
+        )
+    return ""
 
 
 # Check with any miner on acc balance (Based on public key received)
