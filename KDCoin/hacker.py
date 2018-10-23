@@ -57,8 +57,19 @@ class Hacker:
                 self.blockchain = blockChain.Blockchain(_block)
             else:
                 self.blockchain.addBlock(_block, _block.prev_header)
+            # save tx
+            saved_tx = []
+            for tx in self.tx_pool:
+                if tx not in _block.state["Tx_pool"]:
+                    saved_tx.append(tx)
+
             # use other person's tx pool
             self.tx_pool = _block.state["Tx_pool"]
+
+            # re-add
+            for tx in saved_tx:
+                self.tx_pool.append(tx)
+
             return True
         return False
 

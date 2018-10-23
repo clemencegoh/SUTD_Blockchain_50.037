@@ -65,12 +65,11 @@ class Blockchain:
 
         print(self.block_heads)
 
-        for key, _ in self.block_heads.items():
+        for key, value in self.block_heads.items():
             print("State of block_head:", key.state)
-            chain_length = self.block_heads[key]
-            if longest_chain <= chain_length:
+            if longest_chain <= value:
                 new_head_block = key
-                longest_chain = chain_length
+                longest_chain = value
 
         self.current_block = new_head_block
         self.chain_length = longest_chain

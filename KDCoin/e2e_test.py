@@ -79,6 +79,26 @@ def startHackers(_number):
         yield hacker_address, pub, hacker, current_balance
 
 
+def startAttackers(_number):
+    for i in range(_number):
+        # define variables
+        attacker_address = "http://localhost:807{}".format(i)
+
+        # create new miner
+        attacker = requests.session()
+        attacker.get(attacker_address)
+        pub = extractPubFromText(
+            attacker.get(attacker_address + "/new").text
+        )
+
+        # allow up to 4 seconds to finish
+        time.sleep(2)
+
+        current_balance = checkCurrentBalance(attacker, attacker_address)
+
+        yield attacker_address, pub, attacker, current_balance
+
+
 # normal tests require block difficulty to be set at 4
 # these tests have to be run after starting servers
 class FullTests(unittest.TestCase):
@@ -285,10 +305,118 @@ class FullTests(unittest.TestCase):
         self.assertEqual(hacker_state["random4"], 10, "random4 should have 10")
         self.assertEqual(miner_state, hacker_state, "They should resolve to the same")
 
-    # again, requires 2 miners at different difficulty
-    # miner spends money, forks from previous block to create new
+    # again, requires 1 miner, 1 attacker
+    # attacker spends money, forks from previous block to spend same amount
     def test_double_spending(self):
-        pass
+        # same steps as above
+        generator = startMiners(1)
+        miner1_address, miner1_pub, miner1, current_balance = next(generator)
+
+        g2 = startAttackers(1)
+        attacker_address, attacker_pub, attacker, a_current = next(g2)
+
+        # update both miners
+        miner1.get(miner1_address + "/update")
+        attacker.get(attacker_address + "/update")
+
+        p = Process(target=startMining,
+                    args=(miner1, miner1_address + "/mine"))
+        p.daemon = True
+
+        p2 = Process(target=startMining,
+                     args=(attacker, attacker_address + "/mine"))
+        p2.daemon = True
+
+        p.start()
+        p2.start()
+
+        giveMinerMoney(attacker, attacker_address)
+        giveMinerMoney(miner1, miner1_address)
+
+        # both should have their state updated
+        try:
+            miner1_balance = checkCurrentBalance(miner1, miner1_address)[miner1_pub]
+            print("Miner is in!")
+            hacker_balance = checkCurrentBalance(attacker, attacker_address)[attacker_pub]
+            print("Hacker is in!")
+
+            print("Miner1:", miner1_balance)
+            print("Hacker:", hacker_balance)
+            total = miner1_balance + hacker_balance
+            print("Total:", total)
+            print("Miner1:", checkCurrentBalance(miner1, miner1_address))
+            print("Hacker:", checkCurrentBalance(attacker, attacker_address))
+        except KeyError:
+            print("Most likely 1 has everything")
+
+        # create transaction for attacker
+        print("Creating transactions...")
+        attacker.post(
+            attacker_address +
+            "/pay?pub_key={}&amount={}&comment={}".format(
+                "merchant1", 50, "Pay to merch 1"
+            ))
+
+        time.sleep(10)
+
+        # create 4 transactions on miner
+        persons = ["random1", "random2", "random3", "random4"]
+        amount = [10, 10, 10, 10]
+        comment = ["First", "Second", "Third", "Last"]
+        for i in range(len(persons)):
+            miner1.post(
+                miner1_address +
+                "/pay?pub_key={}&amount={}&comment={}".format(
+                    persons[i], amount[i], comment[i]
+                ))
+            time.sleep(5)
+            print("Transaction for {} sent".format(persons[i]))
+
+        print("Done with transactions! Sleeping...")
+        time.sleep(20)
+
+        res = attacker.get(attacker_address + "/state")
+        res2 = miner1.get(miner1_address + "/state")
+        attacker_state = extractBalanceFromState(res.text)
+        miner_state = extractBalanceFromState(res2.text)
+
+        print("miner state:", miner_state)
+        print("attacker state:", attacker_state)
+
+        self.assertEqual(attacker_state["random1"], 10, "random1 should have been given 10")
+        self.assertEqual(attacker_state["random2"], 10, "random2 should have been given 10")
+        self.assertEqual(attacker_state["random3"], 10, "random3 should have been given 10")
+        self.assertEqual(attacker_state["random4"], 10, "random4 should have 10")
+        self.assertEqual(attacker_state["merchant1"], 50, "Merchant1 should have received 50")
+        if miner_state != attacker_state:
+            print("Attacker state != Miner state")
+            print("Moving on...")
+
+        print("Starting attack...")
+        # Different here, pay to merch 2 instead
+        requests.post(attacker_address+"/attack",
+                      json={
+                          "TX": {
+                              "Receiver": "merchant2",
+                              "Amount": 50,
+                              "Comment": "Pay to merch 2"
+                          }
+                      })
+
+        # check state
+        res = attacker.get(attacker_address + "/state")
+        res2 = miner1.get(miner1_address + "/state")
+        attacker_state = extractBalanceFromState(res.text)
+        miner_state = extractBalanceFromState(res2.text)
+        self.assertEqual(attacker_state["random1"], 10, "random1 should have been given 10")
+        self.assertEqual(attacker_state["random2"], 10, "random2 should have been given 10")
+        self.assertEqual(attacker_state["random3"], 10, "random3 should have been given 10")
+        self.assertEqual(attacker_state["random4"], 10, "random4 should have 10")
+        self.assertEqual(miner_state, attacker_state, "They should resolve to the same")
+        # self.assertEqual(attacker_state["merchant2"], 50, "Merchant2 should have received 50")
+        for key, value in attacker_state.items():
+            if key == "merchant1":
+                self.fail("Merchant1 should no longer be in this state")
 
 
 if __name__ == '__main__':

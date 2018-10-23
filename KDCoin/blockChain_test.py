@@ -28,6 +28,7 @@ def createInitialBlockchain():
     nonce = q_find.get()
     print("Nonce1:", nonce)
     b.completeBlockWithNonce(nonce)
+    b.executeChange()
 
     bc = blockChain.Blockchain(_block=b)
     return priv, pub, b, bc
@@ -67,6 +68,8 @@ def createSecondBlock(priv, pub, b):
     nonce2 = q5.get()
     print("Nonce2:", nonce2)
     b2.completeBlockWithNonce(nonce2)
+    b2.executeChange()
+
     return b2
 
 
@@ -79,6 +82,7 @@ def createThirdBlock(priv, pub, b):
         _receiver_public_key="Random",
         _amount=100,
         _comment="giving",
+        _reward=True
     )
     t2.sign(priv)
 
@@ -103,6 +107,8 @@ def createThirdBlock(priv, pub, b):
 
     nonce2 = q3.get()
     b2.completeBlockWithNonce(nonce2)
+    b2.executeChange()
+
     return b2
 
 
@@ -142,6 +148,32 @@ class TestBlockchain(unittest.TestCase):
         self.assertTrue(b3.validate(), "Validate block 3")
         self.assertTrue(b4_fork.validate(), "Validate block 4")
         self.assertEqual(bc.chain_length, 3, "Chain length must be 3")
+        self.assertEqual(len(bc.block_heads), 2, "There must be 2 forks")
+
+    def test_add_to_start(self):
+        priv, pub, b, bc = createInitialBlockchain()
+
+        b2 = createSecondBlock(priv, pub, b)
+        print("B2:", b2.state)
+        bc.addBlock(b2, b.header)
+
+        b3 = createThirdBlock(priv, pub, b2)
+        bc.addBlock(b3, b2.header)
+
+        # at this point chain length should be 4
+        b4 = createSecondBlock(priv, pub, b3)
+        bc.addBlock(b4, b3.header)
+
+        # add back to start
+        b2_alternate = createThirdBlock(priv, pub, b)
+        bc.addBlock(b2_alternate, b.header)
+
+        self.assertTrue(b.validate(), "Validate block 1")
+        self.assertTrue(b2.validate(), "Validate block 2")
+        self.assertTrue(b3.validate(), "Validate block 3")
+        self.assertTrue(b4.validate(), "Validate block 4")
+        self.assertTrue(b2_alternate.validate(), "Validate alternate block 2")
+        self.assertEqual(bc.chain_length, 4, "Chain length must be 4")
         self.assertEqual(len(bc.block_heads), 2, "There must be 2 forks")
 
 
