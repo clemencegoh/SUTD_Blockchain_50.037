@@ -2,18 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e6de4882-100f-4c57-9f41-edf9a7839e00" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Lectures/10_Anonymity_and_Privacy.pdf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Exercises/week10/10_Exercises.md" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Exercises/week10/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Exercises/week9/Opcodes.md" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Exercises/week9/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Exercises/week9/deciphered_code.md" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Exercises/week9/example_code_0.4.0_solidity.md" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Exercises/week9/mystery_code.md" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Exercises/week9/report.md" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Lectures/9_Exercises.md" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Lectures/11_Scalability.pdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Notes/week11.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/teaching" afterPath="$PROJECT_DIR$/teaching" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/Lectures/9_Exercises.md" afterPath="$PROJECT_DIR$/Exercises/week9/9_Exercises.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -23,55 +16,21 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-          <file leaf-file-name="report.md" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/Exercises/week9/report.md">
-              <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-                <state split_layout="FIRST">
-                  <first_editor relative-caret-position="513">
-                    <caret line="52" column="4" lean-forward="true" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
-                    <folding />
-                  </first_editor>
-                  <second_editor />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="deciphered_code.md" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Exercises/week9/deciphered_code.md">
-              <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-                <state split_layout="SECOND">
-                  <first_editor relative-caret-position="330">
-                    <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-                    <folding />
-                  </first_editor>
-                  <second_editor />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-          <file leaf-file-name="10_Exercises.md" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/Exercises/week10/10_Exercises.md">
-              <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-                <state split_layout="SECOND">
-                  <first_editor relative-caret-position="0">
-                    <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-                    <folding />
-                  </first_editor>
-                  <second_editor />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file leaf-file-name="week11.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Notes/week11.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="FIRST">
+              <first_editor relative-caret-position="355">
+                <caret line="36" column="37" lean-forward="false" selection-start-line="36" selection-start-column="37" selection-end-line="36" selection-end-column="37" />
+                <folding />
+              </first_editor>
+              <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -130,7 +89,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Exercises/week4/spvClient.py" />
         <option value="$PROJECT_DIR$/Exercises/week4/SPVApp.py" />
         <option value="$PROJECT_DIR$/Exercises/week3/miner.py" />
         <option value="$PROJECT_DIR$/KDCoin/__init__.py" />
@@ -181,11 +139,12 @@
         <option value="$PROJECT_DIR$/Exercises/week9/deciphered_code.md" />
         <option value="$PROJECT_DIR$/Exercises/week9/example_code_0.4.0_solidity.md" />
         <option value="$PROJECT_DIR$/Exercises/week9/report.md" />
+        <option value="$PROJECT_DIR$/Notes/week11.md" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
+    <option name="x" value="952" />
     <option name="width" value="976" />
     <option name="height" value="1038" />
   </component>
@@ -212,17 +171,6 @@
             <path>
               <item name="SUTD_Blockchain_50.037" type="b2602c69:ProjectViewProjectNode" />
               <item name="SUTD_Blockchain_50.037" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SUTD_Blockchain_50.037" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SUTD_Blockchain_50.037" type="462c0819:PsiDirectoryNode" />
-              <item name="Exercises" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SUTD_Blockchain_50.037" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SUTD_Blockchain_50.037" type="462c0819:PsiDirectoryNode" />
-              <item name="Exercises" type="462c0819:PsiDirectoryNode" />
-              <item name="week10" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="SUTD_Blockchain_50.037" type="b2602c69:ProjectViewProjectNode" />
@@ -257,19 +205,19 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Exercises\week8" />
-      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\KDCoin" />
-      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Lectures" />
-      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037" />
-      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Exercises" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Exercises\week10" />
       <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Lectures" />
+      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Exercises\week10" />
       <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Exercises\week8" />
       <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\KDCoin" />
       <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Exercises\week4" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Exercises\week9" />
+      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Exercises" />
+      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Exercises\week8" />
+      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\KDCoin" />
+      <recent name="D:\desktopStorage\school\SUTD_Blockchain_50.037\Lectures" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -455,6 +403,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32915717" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -465,7 +414,7 @@
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29954442" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="FAQ Robot" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12513426" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12996778" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Project Explorer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Job Explorer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
@@ -496,13 +445,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/KDCoin/testing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="22" lean-forward="false" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Exercises/week3/3_Exercises.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SECOND">
@@ -836,7 +778,6 @@
         <state split_layout="SECOND">
           <first_editor relative-caret-position="1430">
             <caret line="65" column="1" lean-forward="false" selection-start-line="65" selection-start-column="1" selection-end-line="65" selection-end-column="1" />
-            <folding />
           </first_editor>
           <second_editor />
         </state>
@@ -847,13 +788,22 @@
         <state split_layout="SECOND">
           <first_editor relative-caret-position="0">
             <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-            <folding />
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Lectures/9_Exercises.md">
+    <entry file="file://$PROJECT_DIR$/Exercises/week9/9_Exercises.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SECOND">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Exercises/week10/10_Exercises.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SECOND">
           <first_editor relative-caret-position="0">
@@ -867,19 +817,19 @@
     <entry file="file://$PROJECT_DIR$/Exercises/week9/report.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="513">
-            <caret line="52" column="4" lean-forward="true" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
+          <first_editor relative-caret-position="113">
+            <caret line="48" column="28" lean-forward="true" selection-start-line="48" selection-start-column="28" selection-end-line="48" selection-end-column="28" />
             <folding />
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Exercises/week10/10_Exercises.md">
+    <entry file="file://$PROJECT_DIR$/Notes/week11.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SECOND">
-          <first_editor relative-caret-position="0">
-            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="355">
+            <caret line="36" column="37" lean-forward="false" selection-start-line="36" selection-start-column="37" selection-end-line="36" selection-end-column="37" />
             <folding />
           </first_editor>
           <second_editor />
