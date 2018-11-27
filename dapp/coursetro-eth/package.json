@@ -1,0 +1,14 @@
+{
+  "name": "flight_insurance",
+  "version": "1.0.0",
+  "description": "package for flight insurance dapp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Clemence Goh",
+  "license": "ISC",
+  "dependencies": {
+    "web3": "github:ethereum/web3.js"
+  }
+}
