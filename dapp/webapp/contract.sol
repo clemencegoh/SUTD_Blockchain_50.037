@@ -47,18 +47,6 @@ contract FlightInsurance {
 	function getFlight() view public returns(string){
 		return(flightID);
 	}
-
-    function setNumber(uint _number) public {
-        number = _number;
-    }
-
-    function getNumber() view public returns(uint) {
-        return(number);
-    }
-
-    function getOwner() view public returns(address){
-        return(owner);
-    }
 	
 	function checkStatus(uint _timenow) view public returns(bool){
 		if (_timenow >= expiryTime){
