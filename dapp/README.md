@@ -12,3 +12,8 @@ local server at localhost:8545.
 
 Taken from tutorial:
 `https://coursetro.com/posts/code/99/Interacting-with-a-Smart-Contract-through-Web3.js-%28Tutorial%29`
+
+
+Requirements:
+
+
