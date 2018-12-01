@@ -1,0 +1,26 @@
+Change port:
+port = 8545
+
+Commands:
+	sudo chmod +x ganache-1.2.2-x86_64.AppImage 
+	./ganache-1.2.2-x86_64.AppImage 
+
+export PATH=$HOME/.py-solc/solc-v0.4.25/bin:$PATH
+
+Passphrase:
+acid beyond day delay change cat kick cargo talk hawk analyst lens
+
+Private key:
+0x3d78d98F0220820A7b09BD20800ba3aE5CD7ED04
+
+
+Commands:
+1st terminal:
+	export PATH=$HOME/.py-solc/solc-v0.4.25/bin:$PATH
+	./ganache-1.2.2-x86_64.AppImage
+
+
+2nd terminal:
+	cd SUTD_Blockchain_50.037/dapp/12_src/webapp
+	export PATH=$HOME/.py-solc/solc-v0.4.25/bin:$PATH
+	python server.py

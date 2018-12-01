@@ -1,14 +1,23 @@
 pragma solidity ^0.4.24;
 
 contract Lottery {
-
-    address private owner;
+	
+    address private client;
     uint private number;
-
+	uint amount;
 
     constructor() public {
-        owner = msg.sender;
+        client = msg.sender;
+		amount = 0;
     }
+	
+	function addAmount(uint _number) public {
+		amount += _number;
+	}
+	
+	function getAmount() view public returns(uint) {
+		return(amount);
+	}
 
     function setNumber(uint _number) public {
         number = _number;
