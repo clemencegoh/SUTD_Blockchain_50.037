@@ -46,7 +46,7 @@ def createNewContract():
 def loginPage():
     if request.method == 'GET':
         # fresh login, ask for metamask
-        pass
+        return render_template('login_template.html')
     if request.method == 'POST':
         # info passed from frontend, save cookie and sent to main
         # todo: parse info here
