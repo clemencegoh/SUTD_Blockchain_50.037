@@ -39,7 +39,7 @@ def loginPage():
 
 
 # Main page for interacting
-@app.route('/index')
+@app.route('/index', methods=['GET'])
 def hello():
     return render_template('template.html',
                            contractAddress = insurance_contract.address.lower(),
@@ -47,12 +47,13 @@ def hello():
 
 
 # FlightAPI
-@app.route('/flightAPI')
+@app.route('/flightAPI', methods=['GET'])
 def flightAPI():
     pass
 
 
 # currency convert API
+@app.route('/convertCurrencyAPI', methods=['POST'])
 def convertCurrencyAPI():
     pass
 
