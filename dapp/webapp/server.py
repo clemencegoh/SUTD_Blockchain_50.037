@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from web3.auto import w3
 from solc import compile_source
@@ -9,6 +9,9 @@ app = Flask(__name__)
 
 contract_source_code = None
 contract_source_code_file = 'contract.sol'
+
+
+# global mapping of users to
 
 with open(contract_source_code_file, 'r') as file:
     contract_source_code = file.read()
@@ -25,12 +28,33 @@ tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
 # Contract Object
 insurance_contract = w3.eth.contract(address=tx_receipt.contractAddress, abi=contract_interface['abi'])
 
-# Web service initialization
-@app.route('/')
+# Web Login
+@app.route('/', methods=['POST', 'GET'])
+@app.route('/login', methods=['POST', 'GET'])
+def loginPage():
+    if request.method == 'GET':
+        pass
+    if request.method == 'POST':
+        pass
+
+
+# Main page for interacting
 @app.route('/index')
 def hello():
-    return render_template('template.html', contractAddress = insurance_contract.address.lower(),
+    return render_template('template.html',
+                           contractAddress = insurance_contract.address.lower(),
                            contractABI = json.dumps(contract_interface['abi']))
+
+
+# FlightAPI
+@app.route('/flightAPI')
+def flightAPI():
+    pass
+
+
+# currency convert API
+def convertCurrencyAPI():
+    pass
 
 
 if __name__ == '__main__':
