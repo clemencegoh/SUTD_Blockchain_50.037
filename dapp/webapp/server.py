@@ -59,6 +59,7 @@ def loginPage():
 
 # Main page for interacting
 @app.route('/index', methods=['GET'])
+@app.route('/home', methods=['GET'])
 def hello():
     global user_db
     try:
@@ -79,19 +80,6 @@ def hello():
                                contractABI=current_user.contract_abi)
     except:
         return loginPage()
-
-
-
-# FlightAPI
-@app.route('/flightAPI', methods=['GET'])
-def flightAPI():
-    pass
-
-
-# currency convert API
-@app.route('/convertCurrencyAPI', methods=['POST'])
-def convertCurrencyAPI():
-    pass
 
 
 if __name__ == '__main__':
