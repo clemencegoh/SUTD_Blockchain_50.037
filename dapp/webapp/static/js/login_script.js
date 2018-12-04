@@ -1,3 +1,4 @@
+// load and connect to metamask immediately
 window.onload = function(){
                 if (typeof web3 !== 'undefined') {
                     web3 = new Web3(window.web3.currentProvider);
@@ -8,7 +9,8 @@ window.onload = function(){
                         _Connect(callback);
                     }else{
                         // Success
-                        console.log(`Web3 ETH Account: ${web3.eth.defaultAccount}`);
+                        console.log('Web3 ETH Account: ${web3.eth.defaultAccount}');
+
                         callback(false, web3.eth.defaultAccount);
                     }
                 }
