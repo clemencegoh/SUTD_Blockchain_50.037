@@ -16,10 +16,25 @@ user_db = {}
 
 
 class User:
-    def __init__(self, _contract_abi, _contract_address):
-        self.contract_abi = _contract_abi
-        self.contract_address = _contract_address
+    """
+    Class User to store all data related to each user wallet
+    :param _contract_abi: string: First contract's ABI
+    :param _contract_address: string: First contract's address
+    :param _flight_ID: string: flight ID
+    :param _flight_expiry: string: flight departure time
+
+    Claim_status will store the status of the claim: 0,1,2
+    0 indicates fully claimed - nothing left
+    1 indicates partial claim for delay
+    2 indicates not claimed - full amount left
+    """
+    def __init__(self, _contract_abi, _contract_address, _flight_ID, _flight_expiry):
+        self.contract_abi = [_contract_abi]
+        self.contract_address = [_contract_address]
         self.loyalty_points = 0
+        self.flight_ID = [_flight_ID]
+        self.claim_status = [2]
+        self.flight_expiry = [_flight_expiry]
 
 
 def createNewContract():
