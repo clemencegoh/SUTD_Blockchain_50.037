@@ -95,8 +95,16 @@ def buyPage():
 def home():
     global user_db
     user = request.cookies.get('userID')
+    available_contracts = ""
 
-    if user is not None and user not in user_db:
+    if user is None:
+        # this is an anonymous user, either rogue or tester
+        user = "Anon"
+
+        # todo remove this, TESTING ONLY
+        user_db[user].newContract(0, 0, ["SQ", "979"], "2018/11/28", 5)
+
+    if user not in user_db:
         # new person, add to db
         user_db[user] = User()
 
@@ -104,12 +112,23 @@ def home():
         print("New user added to db:", user)
 
     else:
-        # this is an anonymous user, either rogue or tester
-        user = "Anon"
+        # construct contracts here
+        user_obj = user_db[user]
+        fid = user_obj.flight_ID
+        cid = user_obj.claim_status
+        for i in range(len(fid)):
+            flight_name = str(fid[i][0]) + str(fid[i][1]) + "_fid"
+            claim_name = str(cid[i]) + "_cid"
+            available_contracts += render_template('current_contracts.html',
+                                                   flight_refresh_id=flight_name,
+                                                   claim_refresh_id=claim_name)
+            available_contracts += "\n"
+
 
     return render_template('test_template.html',
                            userID=user,
-                           loyalty_points=user_db[user].loyalty_points)
+                           loyalty_points=user_db[user].loyalty_points,
+                           active_contracts=available_contracts)
 
     # insurance_contract, contract_interface = createNewContract()
 

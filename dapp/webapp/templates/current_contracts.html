@@ -1,0 +1,10 @@
+<div id="active-contract" class="active-contract">
+    <p>Contract:</p>
+    <p id="{{flight_refresh_id | safe}}">Flight Details: {{flight_details | safe}}</p>
+
+    <p id="{{claim_refresh_id | safe}}">Claim status: {{claim_status | safe}}</p>
+    <button type="button"
+            class="check_status"
+            id="check_status"
+            onclick="checkAndRefresh('{{flight_refresh_id | safe}}', '{{claim_refresh_id | safe}}')"></button>
+</div>

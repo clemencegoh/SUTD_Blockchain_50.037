@@ -51,10 +51,20 @@ function restAPI(path, params, method){
 
     document.body.appendChild(form);
     form.submit();
-}
+};
 
 function testBuy(){
     restAPI('/buy', {dummy: true});
-}
+};
+
+function checkAndRefresh(_flight_rid, _claim_rid){
+    // todo: change this to call actual API
+
+    //placeholder for flight rid
+    document.getElementById(_flight_rid).innerHTML = "Flight refreshed!";
+
+    // placeholder for claim rid
+    document.getElementById(_claim_rid).innerHTML = "Claim refreshed!";
+};
 
 
