@@ -2,7 +2,7 @@ import json
 
 from flask import Flask, render_template, request, redirect
 
-from web3.auto import w3
+# from web3.auto import w3
 from solc import compile_source
 
 app = Flask(__name__)
@@ -38,26 +38,25 @@ class User:
         self.flight_expiry = [_flight_expiry]
 
 
-def createNewContract():
-    with open(contract_source_code_file, 'r') as file:
-        contract_source_code = file.read()
-
-    contract_compiled = compile_source(contract_source_code)
-    contract_interface = contract_compiled['<stdin>:FlightInsurance']
-    FlightInsurance = w3.eth.contract(abi=contract_interface['abi'],
-                              bytecode=contract_interface['bin'])
-
-    w3.personal.unlockAccount(w3.eth.accounts[0], '')
-    tx_hash = FlightInsurance.constructor().transact({'from':w3.eth.accounts[0]})
-    tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-
-    # Contract Object
-    insurance_contract = w3.eth.contract(address=tx_receipt.contractAddress, abi=contract_interface['abi'])
-    return insurance_contract, contract_interface
+# def createNewContract():
+#     with open(contract_source_code_file, 'r') as file:
+#         contract_source_code = file.read()
+#
+#     contract_compiled = compile_source(contract_source_code)
+#     contract_interface = contract_compiled['<stdin>:FlightInsurance']
+#     FlightInsurance = w3.eth.contract(abi=contract_interface['abi'],
+#                               bytecode=contract_interface['bin'])
+#
+#     w3.personal.unlockAccount(w3.eth.accounts[0], '')
+#     tx_hash = FlightInsurance.constructor().transact({'from':w3.eth.accounts[0]})
+#     tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+#
+#     # Contract Object
+#     insurance_contract = w3.eth.contract(address=tx_receipt.contractAddress, abi=contract_interface['abi'])
+#     return insurance_contract, contract_interface
 
 
 # Web Login
-@app.route('/', methods=['POST', 'GET'])
 @app.route('/login', methods=['POST', 'GET'])
 def loginPage():
     if request.method == 'GET':
@@ -75,25 +74,27 @@ def loginPage():
 
 # Main page for interacting
 @app.route('/index', methods=['GET'])
-@app.route('/home', methods=['GET'])
+@app.route('/', methods=['GET'])
 def hello():
     global user_db
     try:
         user = request.cookies.get('userID')
-        print(user)
+
         if user is None:
             # this is an anonymous user, either rogue or tester
-            return render_template('test_template.html')
-			
+            return render_template('test_template.html',
+                                   loyaltypoints='0')
+
         if user not in user_db:
             # new person, create new contract
-            insurance_contract, contract_interface = createNewContract()
+            # insurance_contract, contract_interface = createNewContract()
 
             # add to db
-            user_db[user] = User(
-                _contract_abi=json.dumps(contract_interface['abi']),
-                _contract_address=insurance_contract.address.lower()
-            )
+            # user_db[user] = User(
+            #     _contract_abi=json.dumps(contract_interface['abi']),
+            #     _contract_address=insurance_contract.address.lower()
+            # )
+            pass
 
         current_user = user_db[user]
         return render_template('template.html',
@@ -104,4 +105,4 @@ def hello():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5001)

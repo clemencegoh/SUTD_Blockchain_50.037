@@ -15,43 +15,75 @@
 		<script src="{{ url_for('static', filename='js/login_script.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/exchangerateAPI.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/flightAPI.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/buy_helpers.js') }}"></script>
+
 
         <script lang="javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script lang="javascript">
 			console.log("hello world! From test_template");
-			console.log(flightAPI('SQ','979','2018/11/28'));
-			console.log(exchangerateAPI("USD",200));
-			
-			function oneWayTrip(){
-				alert('One way trip selected');
-				document.getElementById("payment_amount").innerHTML = "Payment Amount: 50 eth";
-			};
-			
-			function twoWayTrip(){
-				alert('Two way trip selected');
-				document.getElementById("payment_amount").innerHTML = "Payment Amount: 200 eth";
-			
-			};
-			
+
         </script>
     </head>
     <body class="subpage">
         <h1>Welcome Anon! Check out console for logs</h1>
-		<h2> Test template is being be rendered </h2>
+		<h2> Test template is being rendered </h2>
 		<div>
-			<button type='button' onclick="oneWayTrip()"> 1-way trip </button>
-			<button type='button' onclick="twoWayTrip()"> Round trip </button>
-			<br>
-			<p id="payment_amount">Payment Amount: </p>
-			<br>
-			<p> Current Loyalty points: {{loyalty_points | safe}}</p>
-			
-			<form>
-				
-			</form>
+			<div>
+				<p>Please choose the type of trip:</p>
+				<button type='button' onclick="oneWayTrip()"> 1-way trip </button>
+				<button type='button' onclick="twoWayTrip()"> Round trip </button>
+			</div>
+
+			<div id="price-component">
+				<p id="payment_amount">Payment Amount: </p>
+			</div>
+
+			<div id="loyalty-points_component">
+				<p> Current Loyalty points: {{loyalty_points | safe}}</p>
+			</div>
+
+			<div id="flight-status_component">
+				<!-- Checking of flight status -->
+				<p id="flight_status">Flight Availability: Unknown</p>
+
+				<form action="javascript:void(0);">
+					<label for="_flight_company">Company:</label>
+					<input type="text" name="_flight_company" id="_flight_company" value="SQ">
+
+					<label for="_flight_number">Flight Number:</label>
+					<input type="text" name="_flight_number" id="_flight_number" value="979">
+
+					<label for="_flight_date">Flight Date:</label>
+					<input type="text" name="_flight_date" id="_flight_date" value="2018/11/28">
+
+					<input type="submit" value="Check Flight" onclick="checkFlight(
+						_flight_company.value,
+						_flight_number.value,
+						_flight_date.value);">
+				</form>
+			</div>
+
+			<div id="payment-method_component">
+				<!-- Payment method selection -->
+				<p>Please select payment method:</p>
+				<span id="payment-method_selected" style="display: none;"></span>
+				<p id="selected-option_display">Selected Option: None</p>
+
+				<button type='button' onclick="setPaymentOption('ETH')"> ETH </button>
+				<button type='button' onclick="setPaymentOption('Points')"> Loyalty Points </button>
+
+			</div>
+
+			<button type="submit">Submit Insurance!</button>
+
 		</div>
+		<hr style="border: 4px solid blue;" />
 		<div>
-			
+			<h3>Active Contracts</h3>
+			<div id="active-contracts">
+				{{active_contracts | safe}}
+			</div>
 		</div>
+
     </body>
 </html>
