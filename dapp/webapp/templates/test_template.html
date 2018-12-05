@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>blockchain</title>
+        <meta charset="utf-8" />
+    		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
+        <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='assets/js/skel.min.js') }}"></script>
+		<script src="{{ url_for('static', filename='assets/js/util.js') }}"></script>
+		<script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+			
+			
+		<script src="{{ url_for('static', filename='js/login_script.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/exchangerateAPI.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/flightAPI.js') }}"></script>
+
+        <script lang="javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script lang="javascript">
+			console.log("hello world! From login_template");
+			console.log(flightAPI('SQ','979','2018/11/28'));
+			console.log(exchangerateAPI("USD"));
+        </script>
+    </head>
+    <body class="subpage">
+      <h1>Welcome Anon! Check out console for logs</h1>
+		<h2> Test template will be rendered </h2>
+    </body>
+</html>

@@ -6,6 +6,7 @@ from web3.auto import w3
 from solc import compile_source
 
 app = Flask(__name__)
+app.static_url_path='static/'
 
 contract_source_code = None
 contract_source_code_file = 'contract.sol'
@@ -79,6 +80,11 @@ def hello():
     global user_db
     try:
         user = request.cookies.get('userID')
+        print(user)
+        if user is None:
+            # this is an anonymous user, either rogue or tester
+            return render_template('test_template.html')
+			
         if user not in user_db:
             # new person, create new contract
             insurance_contract, contract_interface = createNewContract()

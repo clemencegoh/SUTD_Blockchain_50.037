@@ -11,12 +11,12 @@
     <script src="{{ url_for('static', filename='assets/js/util.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
 
-    <script src="{{ url_for('static', filename='static/js/login_script.js') }}"></script>
-    <script src="{{ url_for('static', filename='static/js/exchangerateAPI.js') }}"></script>
-    <script src="{{ url_for('static', filename='static/js/flightAPI.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/login_script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/exchangerateAPI.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/flightAPI.js') }}"></script>
 
-    <script lang="javascript">
-        console.log("hello world");
+    <script type="text/javascript">
+        console.log("hello world! From login_template");
         console.log(flightAPI('SQ','979','2018/11/28'));
         console.log(exchangerateAPI("USD"));
 
