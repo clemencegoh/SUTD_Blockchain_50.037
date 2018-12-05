@@ -3,7 +3,7 @@
     <head>
         <title>blockchain</title>
         <meta charset="utf-8" />
-    		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
         <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
@@ -30,8 +30,16 @@
     </head>
     <body class="subpage">
 		<div id="buy-wrapper" class="buy-wrapper">
-			<h1>Welcome Anon! Check out console for logs</h1>
+			<h1>Welcome {{userID | safe}}! Check out console for logs</h1>
 			<h2> Test template is being rendered </h2>
+
+			<!-- For testing ONLY -->
+			<form action="/login" method="post">
+				Trial login functionality:
+				<input type="text" name="test-login" id="test-login" value="">
+			</form>
+
+
 			<div id="buy-new-contract_wrapper" class="buy-new-contract_wrapper">
 				<div>
 					<p>Please choose the type of trip:</p>
@@ -79,7 +87,7 @@
 
 				</div>
 
-				<button type="submit">Submit Insurance!</button>
+				<button type="submit" onclick="testBuy()">Submit Insurance!</button>
 
 			</div>
 			<hr style="border: 4px solid blue;" />

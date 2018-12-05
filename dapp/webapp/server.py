@@ -12,10 +12,6 @@ contract_source_code = None
 contract_source_code_file = 'contract.sol'
 
 
-# global mapping of user addresses to User class
-user_db = {}
-
-
 class User:
     """
     Class User to store all data related to each user wallet
@@ -29,13 +25,25 @@ class User:
     1 indicates partial claim for delay
     2 indicates not claimed - full amount left
     """
-    def __init__(self, _contract_abi, _contract_address, _flight_ID, _flight_expiry):
-        self.contract_abi = [_contract_abi]
-        self.contract_address = [_contract_address]
+    def __init__(self):
+        self.contract_abi = []
+        self.contract_address = []
         self.loyalty_points = 0
-        self.flight_ID = [_flight_ID]
-        self.claim_status = [2]
-        self.flight_expiry = [_flight_expiry]
+        self.flight_ID = []
+        self.claim_status = []
+        self.flight_expiry = []
+
+    def newContract(self, _contract_abi, _contract_address, _flight_ID, _flight_expiry, _points_gained):
+        self.contract_abi.append(_contract_abi)
+        self.contract_address.append(_contract_address)
+        self.loyalty_points += _points_gained
+        self.flight_ID.append(_flight_ID)
+        self.claim_status.append(2)
+        self.flight_expiry.append(_flight_expiry)
+
+
+# global mapping of user addresses to User class
+user_db = {"Anon": User()}
 
 
 # def createNewContract():
@@ -65,43 +73,56 @@ def loginPage():
     if request.method == 'POST':
         # info passed from frontend, save cookie and sent to main
         # todo: parse info here
-        uid = ''
+        print(request.form.get('test-login'))
+
+        uid = request.form.get('test-login')
         redirect_to_index = redirect('/index')
         response = app.make_response(redirect_to_index)
         response.set_cookie('userID', value=uid)
         return response
 
 
+# buy endpoint for creation of new contract
+@app.route('/buy', methods=['POST'])
+def buyPage():
+    print('A dummy has clicked!')
+    return home()
+
+
 # Main page for interacting
 @app.route('/index', methods=['GET'])
 @app.route('/', methods=['GET'])
-def hello():
+def home():
     global user_db
-    try:
-        user = request.cookies.get('userID')
+    user = request.cookies.get('userID')
 
-        if user is None:
-            # this is an anonymous user, either rogue or tester
-            return render_template('test_template.html',
-                                   loyaltypoints='0')
+    if user is not None and user not in user_db:
+        # new person, add to db
+        user_db[user] = User()
 
-        if user not in user_db:
-            # new person, create new contract
-            # insurance_contract, contract_interface = createNewContract()
+        # todo: remove debug
+        print("New user added to db:", user)
 
-            # add to db
-            # user_db[user] = User(
-            #     _contract_abi=json.dumps(contract_interface['abi']),
-            #     _contract_address=insurance_contract.address.lower()
-            # )
-            pass
+    else:
+        # this is an anonymous user, either rogue or tester
+        user = "Anon"
 
-        current_user = user_db[user]
-        return render_template('template.html',
-                               contractAddress=current_user.contract_address,
-                               contractABI=current_user.contract_abi)
-    except:
-        return loginPage()
+    return render_template('test_template.html',
+                           userID=user,
+                           loyalty_points=user_db[user].loyalty_points)
+
+    # insurance_contract, contract_interface = createNewContract()
+
+    # add to db
+    # user_db[user] = User(
+    #     _contract_abi=json.dumps(contract_interface['abi']),
+    #     _contract_address=insurance_contract.address.lower()
+    # )
+
+    # current_user = user_db[user]
+    # return render_template('template.html',
+    #                        contractAddress=current_user.contract_address,
+    #                        contractABI=current_user.contract_abi)
 
 
 if __name__ == '__main__':
