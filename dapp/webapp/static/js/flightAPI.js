@@ -12,24 +12,32 @@ flightAPI = function(airlineID,flightID,date){
 
     var response = xhttp.responseText;
     var json_response = JSON.parse(response);
-    var flight_status = json_response['flightStatuses'];
-    var checkcancelled = flight_status[0]['status'];
-    var operational_times = flight_status[0]['operationalTimes'];
-    var scheduledGateDeparture = operational_times['scheduledGateDeparture'];
-    var actualGateDeparture = operational_times['actualGateDeparture'];
-    // console.log(response);
+    var flightstatuses = json_response['flightStatuses'];
+    var checkcancelled = flightstatuses[0]['status'];
+    var operational_times = flightstatuses[0]['operationalTimes'];
+    var scheduledGateDeparture = new Date(operational_times['scheduledGateDeparture']['dateLocal']);
+    var actualGateDeparture = new Date(operational_times['actualGateDeparture']['dateLocal']);
+    var testdate = new Date(operational_times['scheduledGateDeparture']['dateLocal']);
+    var actualRunwayDeparture = operational_times['actualRunwayDeparture']['dateLocal'];
+    
+    
+    var flightstatus = 0;
 
+    // check flight status
     if (checkcancelled == "C"){
-      return "Cancelled";
+      flightstatus = "Cancelled"
       }
     else if (actualGateDeparture - scheduledGateDeparture > 0){
-      return "Delayed"
+      flightstatus = "Delayed"
       }
     else{
-      return "On-Time"
+      flightstatus = "On-Time"
       }
+      
+      return [flightstatus,actualRunwayDeparture];
+
 };
 
 
 
-// console.log(flightAPI('SQ','979','2018/11/28'));
+console.log(flightAPI('SQ','979','2018/11/28'));

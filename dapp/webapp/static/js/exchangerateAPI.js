@@ -1,5 +1,5 @@
 // Need to add check if invalid currency id
-function exchangerateAPI(currencyID){
+function exchangerateAPI(currencyID,amount){
 
     const url = "https://rest.coinapi.io/v1/exchangerate/ETH/" + currencyID
 
@@ -14,8 +14,9 @@ function exchangerateAPI(currencyID){
     var response = xhttp.responseText;
     var json_response = JSON.parse(response)
     var rate = json_response['rate']
-    // console.log(rate)
-    return (rate)
+    var currencytoeth = 1/rate
+    var eth = currencytoeth * amount
+    return eth;
 }
 
-// console.log(exchangerateAPI("USD"));
+// console.log(exchangerateAPI("USD",200));
