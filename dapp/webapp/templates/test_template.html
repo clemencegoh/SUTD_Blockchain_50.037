@@ -18,13 +18,40 @@
 
         <script lang="javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script lang="javascript">
-			console.log("hello world! From login_template");
+			console.log("hello world! From test_template");
 			console.log(flightAPI('SQ','979','2018/11/28'));
-			console.log(exchangerateAPI("USD"));
+			console.log(exchangerateAPI("USD",200));
+			
+			function oneWayTrip(){
+				alert('One way trip selected');
+				document.getElementById("payment_amount").innerHTML = "Payment Amount: 50 eth";
+			};
+			
+			function twoWayTrip(){
+				alert('Two way trip selected');
+				document.getElementById("payment_amount").innerHTML = "Payment Amount: 200 eth";
+			
+			};
+			
         </script>
     </head>
     <body class="subpage">
-      <h1>Welcome Anon! Check out console for logs</h1>
-		<h2> Test template will be rendered </h2>
+        <h1>Welcome Anon! Check out console for logs</h1>
+		<h2> Test template is being be rendered </h2>
+		<div>
+			<button type='button' onclick="oneWayTrip()"> 1-way trip </button>
+			<button type='button' onclick="twoWayTrip()"> Round trip </button>
+			<br>
+			<p id="payment_amount">Payment Amount: </p>
+			<br>
+			<p> Current Loyalty points: {{loyalty_points | safe}}</p>
+			
+			<form>
+				
+			</form>
+		</div>
+		<div>
+			
+		</div>
     </body>
 </html>
