@@ -1,0 +1,11 @@
+.buy-wrapper {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    align-content: center;
+}
+
+.buy-new-contract_wrapper {
+    width: 80vw;
+    border: 2px solid;
+}
