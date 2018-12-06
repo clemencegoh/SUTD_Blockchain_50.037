@@ -9,10 +9,10 @@ contract FlightInsurance {
 	string private flightID;
 
     constructor() public payable {
-        client = msg.sender;
 		amountState = 2;  // state of claim, should be 2 if unclaimed, 1 if partially claimed, 0 if fully claimed
 	}
 
+	// This is called when client checks on contract
 	function claim(uint _full_amount, uint _part_amount, uint _code) public {
 		/*
 		* Code 1: claim cancelled amount
@@ -20,21 +20,34 @@ contract FlightInsurance {
 		*/
 		if(_code == 1){
 			if(amountState == 2){
-				// give part amount
-				amountState = 1;
-				client.transfer(_part_amount);
+			    if (viewBalance() >= _part_amount){
+    				// give part amount
+    				amountState = 1;
+    				client.transfer(_part_amount);
+			    }else{
+			        // amount too little - not sure what to do
+			    }
 			}
 		}
 		else if(_code == 2){
 			if (amountState == 2){
-				// give full amount
-				amountState = 0;
-				client.transfer(_full_amount);
+			    if (viewBalance() >= _full_amount){
+			        // give full amount
+    				amountState = 0;
+    				client.transfer(_full_amount);
+			    }
+
 			} else if (amountState == 1){
-				// give remaining
-				amountState = 0;
-				client.transfer(_full_amount - _part_amount);
+			    if (viewBalance() >= (_full_amount- _part_amount)){
+			        // give remaining
+    				amountState = 0;
+    				client.transfer(_full_amount - _part_amount);
+			    }
 			}
+		}
+		else{
+		    // Code 0 only, kill contract
+		    killContract();
 		}
 
 	}
@@ -59,6 +72,7 @@ contract FlightInsurance {
 	function () payable public {
 	}
 
+    // call this to set contract owner, sender.Value taken as amount being paid
 	function setOwner() payable public returns(bool success){
         client = msg.sender;
         return true;

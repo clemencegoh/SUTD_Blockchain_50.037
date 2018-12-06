@@ -86,6 +86,10 @@ def loginPage():
 @app.route('/buy', methods=['POST'])
 def buyPage():
     print('A dummy has clicked!')
+
+    # todo: check for multiple contracts of the same flight with the same account
+    #
+
     return home()
 
 
