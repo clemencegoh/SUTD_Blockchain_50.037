@@ -1,10 +1,17 @@
 function oneWayTrip(){
     console.log('One way trip selected');
+
+
+    // SGD$20
     document.getElementById("payment_amount").innerHTML = "Payment Amount: 50 eth";
 };
 
 function twoWayTrip(){
     console.log('Two way trip selected');
+
+    // SGD$30
+
+    //todo: conversionAPI for SGD to eth
     document.getElementById("payment_amount").innerHTML = "Payment Amount: 200 eth";
 
 };
