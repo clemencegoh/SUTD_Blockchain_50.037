@@ -21,6 +21,8 @@ function checkFlight(_company, _flightID, _date){
     console.log(flightAPI(_company, _flightID, _date));
     const status = flightAPI(_company, _flightID, _date);
     var answer = "Flight Availability: ";
+    // maybe need to include check that is available but too far in the future
+    // (No scheduledGateDeparture)
     if (status[1] === "flight status unavailable"){
         if (status[0] === true){
             answer += "Available, further status will be updated";
