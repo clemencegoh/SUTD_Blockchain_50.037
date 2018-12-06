@@ -21,12 +21,15 @@ function checkFlight(_company, _flightID, _date){
     console.log(flightAPI(_company, _flightID, _date));
     const status = flightAPI(_company, _flightID, _date);
     var answer = "Flight Availability: ";
-    if (status[0] === "On-Time"){
-        answer += "Available";
-    }else{
-        answer += "Unavailable";
+    if (status[1] === "flight status unavailable"){
+        if (status[0] === true){
+            answer += "Available, further status will be updated";
+        }else{
+            answer += "Unavailable";
+        }
+    }else if (status[0] === true){
+        answer+= "Available";
     }
-
     document.getElementById('flight_status').innerHTML = answer;
 };
 
