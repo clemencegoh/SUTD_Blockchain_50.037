@@ -26,33 +26,35 @@ flightAPI = function(airlineID,flightID,date){
     
     
     try{
-    console.log('flight status:', flightstatuses)
-    var checkcancelled = flightstatuses[0]['status'];
-    var operational_times = flightstatuses[0]['operationalTimes'];
-    var scheduledGateDeparture = new Date(operational_times['scheduledGateDeparture']['dateLocal']);
-    var actualGateDeparture = new Date(operational_times['actualGateDeparture']['dateLocal']);
-    // var testdate = new Date(operational_times['scheduledGateDeparture']['dateLocal']);
-    var actualRunwayDeparture = operational_times['actualRunwayDeparture']['dateLocal'];
-  }catch(error){
-    return 'flight status unavailable';
-  }
+        console.log('flight status:', flightstatuses)
+        var checkcancelled = flightstatuses[0]['status'];
+        var operational_times = flightstatuses[0]['operationalTimes'];
+        var scheduledGateDeparture = new Date(operational_times['scheduledGateDeparture']['dateLocal']);
+        var actualGateDeparture = new Date(operational_times['actualGateDeparture']['dateLocal']);
+        // var testdate = new Date(operational_times['scheduledGateDeparture']['dateLocal']);
+        var actualRunwayDeparture = operational_times['actualRunwayDeparture']['dateLocal'];
+    }catch(error){
+        console.log("Error caught:", error);
+        return 'flight status unavailable';
+    }
     
     var flightstatus = 0;
     var timediff = actualGateDeparture - scheduledGateDeparture;
 
     if (checkcancelled == "C"){
       flightstatus = "Cancelled"
-      }
-      // if >15 minutes, consider delayed
+    }
+    // if >15 minutes, consider delayed
     else if (actualGateDeparture - scheduledGateDeparture >= 900000){
       flightstatus = "Delayed"
-      }
+    }
     else{
       flightstatus = "On-Time"
-      }
-          
-      return [flightstatus,actualRunwayDeparture];
+    }
 
+    console.log("Returning status:", flightstatus);
+
+    return [flightstatus,actualRunwayDeparture];
 };
 
 
