@@ -97,12 +97,12 @@ def home():
     user = request.cookies.get('userID')
     available_contracts = ""
 
-    if user is None:
+    if user is None or user == "Anon":
         # this is an anonymous user, either rogue or tester
         user = "Anon"
 
         # todo remove this, TESTING ONLY
-        user_db[user].newContract(0, 0, ["SQ", "979"], "2018/11/28", 5)
+        user_db[user].newContract(0, 0, ["SQ", "979", "2018/11/28"], "2018/11/28", 5)
 
     if user not in user_db:
         # new person, add to db
@@ -115,15 +115,34 @@ def home():
         # construct contracts here
         user_obj = user_db[user]
         fid = user_obj.flight_ID
-        cid = user_obj.claim_status
+        cs = user_obj.claim_status
         for i in range(len(fid)):
-            flight_name = str(fid[i][0]) + str(fid[i][1]) + "_fid"
-            claim_name = str(cid[i]) + "_cid"
+            common_name = str(fid[i][0]) + str(fid[i][1])
+            flight_name = common_name + "_fid"
+            claim_name = common_name + "_cid"
+            flight_status_name = common_name + "fsid"
+            flight_details = ""
+
+            for j in range(len(fid[i])):
+                flight_details += fid[i][j]
+                flight_details += " "
+
+            claim_details = "Claim Status: "
+            if cs[i] == 2:
+                claim_details += "unclaimed"
+            elif cs[i] == 1:
+                claim_details += "delay claimed"
+            else:
+                claim_details += "fully claimed"
+
             available_contracts += render_template('current_contracts.html',
                                                    flight_refresh_id=flight_name,
-                                                   claim_refresh_id=claim_name)
+                                                   flight_details_perm=flight_details,
+                                                   flight_details=fid[i],
+                                                   flight_refresh_status_id=flight_status_name,
+                                                   claim_refresh_id=claim_name,
+                                                   claim_details=claim_details)
             available_contracts += "\n"
-
 
     return render_template('test_template.html',
                            userID=user,

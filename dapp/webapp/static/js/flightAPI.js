@@ -12,7 +12,16 @@ flightAPI = function(airlineID,flightID,date){
 
     var response = xhttp.responseText;
     var json_response = JSON.parse(response);
+
+    console.log('json_response: ', json_response)
+
     var flightstatuses = json_response['flightStatuses'];
+
+    if (typeof flightStatuses === 'undefined'){
+        return ['Departed', 'unknown'];
+    }
+
+    console.log('flight status:', flightStatuses)
     var checkcancelled = flightstatuses[0]['status'];
     var operational_times = flightstatuses[0]['operationalTimes'];
     var scheduledGateDeparture = new Date(operational_times['scheduledGateDeparture']['dateLocal']);

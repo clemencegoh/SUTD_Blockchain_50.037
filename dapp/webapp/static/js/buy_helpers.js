@@ -57,14 +57,24 @@ function testBuy(){
     restAPI('/buy', {dummy: true});
 };
 
-function checkAndRefresh(_flight_rid, _claim_rid){
+function checkAndRefresh(_flight_rid,
+                         _flight_details,
+                         _flight_refresh_status_id,
+                         _claim_rid,
+                         _claim_details){
     // todo: change this to call actual API
 
-    //placeholder for flight rid
-    document.getElementById(_flight_rid).innerHTML = "Flight refreshed!";
+    console.log("Received flight details:", _flight_details);
+    console.log("Received claim status:", _claim_details);
 
-    // placeholder for claim rid
-    document.getElementById(_claim_rid).innerHTML = "Claim refreshed!";
+    var flight_status = "Flight Status: "
+    flight_status += flightAPI(_flight_details[0], _flight_details[1], _flight_details[2])[0];
+
+
+    //placeholder for flight status
+    document.getElementById(_flight_refresh_status_id).innerHTML = flight_status;
+
+    document.getElementById(_claim_rid).innerHTML = _claim_details;
 };
 
 
