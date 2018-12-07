@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e6de4882-100f-4c57-9f41-edf9a7839e00" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/dapp/webapp/templates/confirm_buy.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dapp/webapp/server.py" afterPath="$PROJECT_DIR$/dapp/webapp/server.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dapp/webapp/templates/confirm_buy.html" afterPath="$PROJECT_DIR$/dapp/webapp/templates/confirm_buy.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,13 +14,13 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.60049784">
+    <splitter split-orientation="horizontal" split-proportion="0.6402743">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
           <file leaf-file-name="buy_helpers.js" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/dapp/webapp/static/js/buy_helpers.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="286">
+                <state relative-caret-position="1408">
                   <caret line="64" column="35" lean-forward="false" selection-start-line="64" selection-start-column="35" selection-end-line="64" selection-end-column="35" />
                   <folding />
                 </state>
@@ -30,11 +30,19 @@
           <file leaf-file-name="server.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/dapp/webapp/server.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2824">
-                  <caret line="195" column="84" lean-forward="false" selection-start-line="195" selection-start-column="84" selection-end-line="195" selection-end-column="84" />
-                  <folding>
-                    <element signature="e#0#11#0" expanded="true" />
-                  </folding>
+                <state relative-caret-position="-501">
+                  <caret line="174" column="56" lean-forward="false" selection-start-line="174" selection-start-column="56" selection-end-line="174" selection-end-column="56" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="buy_wrapper.css" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/dapp/webapp/static/css/buy_wrapper.css">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="330">
+                  <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -42,8 +50,8 @@
           <file leaf-file-name="confirm_buy.html" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/dapp/webapp/templates/confirm_buy.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="264">
-                  <caret line="12" column="81" lean-forward="false" selection-start-line="12" selection-start-column="81" selection-end-line="12" selection-end-column="81" />
+                <state relative-caret-position="533">
+                  <caret line="62" column="7" lean-forward="true" selection-start-line="62" selection-start-column="7" selection-end-line="62" selection-end-column="7" />
                   <folding />
                 </state>
               </provider>
@@ -76,9 +84,11 @@
           <file leaf-file-name="test_template.html" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/dapp/webapp/templates/test_template.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="286">
-                  <caret line="22" column="31" lean-forward="true" selection-start-line="22" selection-start-column="31" selection-end-line="22" selection-end-column="31" />
+                <state relative-caret-position="1158">
+                  <caret line="128" column="51" lean-forward="true" selection-start-line="128" selection-start-column="51" selection-end-line="128" selection-end-column="51" />
                   <folding>
+                    <element signature="e#2857#2864#1" expanded="true" />
+                    <element signature="n#style#0;n#button#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                     <element signature="n#style#0;n#hr#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                     <element signature="n#style#0;n#hr#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                   </folding>
@@ -89,8 +99,8 @@
           <file leaf-file-name="contract.sol" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/dapp/webapp/contract.sol">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-866">
-                  <caret line="23" column="42" lean-forward="true" selection-start-line="23" selection-start-column="42" selection-end-line="23" selection-end-column="42" />
+                <state relative-caret-position="506">
+                  <caret line="23" column="42" lean-forward="false" selection-start-line="23" selection-start-column="42" selection-end-line="23" selection-end-column="42" />
                   <folding />
                 </state>
               </provider>
@@ -110,7 +120,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>self.tx_pool</find>
       <find>append(</find>
       <find>handleBr</find>
       <find>resolved</find>
@@ -140,6 +149,7 @@
       <find>flight_status</find>
       <find>flight_details_ID</find>
       <find>msg.sender</find>
+      <find>checkFl</find>
     </findStrings>
     <replaceStrings>
       <replace>hexdigest</replace>
@@ -200,13 +210,13 @@
         <option value="$PROJECT_DIR$/dapp/webapp/templates/login_template.html" />
         <option value="$PROJECT_DIR$/dapp/webapp/static/css/buy_wrapper.css" />
         <option value="$PROJECT_DIR$/dapp/webapp/templates/current_contracts.html" />
-        <option value="$PROJECT_DIR$/dapp/webapp/templates/test_template.html" />
         <option value="$PROJECT_DIR$/dapp/webapp/static/js/flightAPI.js" />
         <option value="$PROJECT_DIR$/dapp/webapp/static/js/buy_helpers.js" />
         <option value="$PROJECT_DIR$/dapp/webapp/templates/contract_setup.html" />
         <option value="$PROJECT_DIR$/dapp/webapp/contract.sol" />
-        <option value="$PROJECT_DIR$/dapp/webapp/server.py" />
         <option value="$PROJECT_DIR$/dapp/webapp/static/js/confirm_payment.js" />
+        <option value="$PROJECT_DIR$/dapp/webapp/templates/test_template.html" />
+        <option value="$PROJECT_DIR$/dapp/webapp/server.py" />
         <option value="$PROJECT_DIR$/dapp/webapp/templates/confirm_buy.html" />
       </list>
     </option>
@@ -232,8 +242,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -303,6 +311,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -519,12 +529,12 @@
       <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="DB Execution Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35307518" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35307518" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30637813" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30637813" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="FAQ Robot" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13694951" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13856068" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Project Explorer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Job Explorer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
@@ -844,22 +854,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dapp/webapp/templates/contract_setup.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="4" column="16" lean-forward="false" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dapp/webapp/static/css/buy_wrapper.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="10" column="1" lean-forward="false" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/dapp/webapp/templates/contract_setup.html" />
     <entry file="file://$PROJECT_DIR$/dapp/webapp/static/js/exchangerateAPI.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
@@ -872,7 +867,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
           <caret line="52" column="5" lean-forward="true" selection-start-line="52" selection-start-column="5" selection-end-line="52" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -880,7 +874,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="610">
           <caret line="63" column="24" lean-forward="true" selection-start-line="63" selection-start-column="24" selection-end-line="63" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -894,53 +887,54 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dapp/webapp/contract.sol">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-866">
-          <caret line="23" column="42" lean-forward="true" selection-start-line="23" selection-start-column="42" selection-end-line="23" selection-end-column="42" />
+        <state relative-caret-position="506">
+          <caret line="23" column="42" lean-forward="false" selection-start-line="23" selection-start-column="42" selection-end-line="23" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dapp/webapp/static/js/confirm_payment.js" />
+    <entry file="file://$PROJECT_DIR$/dapp/webapp/static/js/buy_helpers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1408">
+          <caret line="64" column="35" lean-forward="false" selection-start-line="64" selection-start-column="35" selection-end-line="64" selection-end-column="35" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dapp/webapp/templates/test_template.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="22" column="31" lean-forward="true" selection-start-line="22" selection-start-column="31" selection-end-line="22" selection-end-column="31" />
+        <state relative-caret-position="1158">
+          <caret line="128" column="51" lean-forward="true" selection-start-line="128" selection-start-column="51" selection-end-line="128" selection-end-column="51" />
           <folding>
+            <element signature="e#2857#2864#1" expanded="true" />
+            <element signature="n#style#0;n#button#0;n#div#5;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#hr#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#hr#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/dapp/webapp/static/js/confirm_payment.js">
+    <entry file="file://$PROJECT_DIR$/dapp/webapp/static/css/buy_wrapper.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="35" column="3" lean-forward="true" selection-start-line="35" selection-start-column="3" selection-end-line="35" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dapp/webapp/static/js/buy_helpers.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="64" column="35" lean-forward="false" selection-start-line="64" selection-start-column="35" selection-end-line="64" selection-end-column="35" />
+        <state relative-caret-position="330">
+          <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dapp/webapp/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2824">
-          <caret line="195" column="84" lean-forward="false" selection-start-line="195" selection-start-column="84" selection-end-line="195" selection-end-column="84" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-501">
+          <caret line="174" column="56" lean-forward="false" selection-start-line="174" selection-start-column="56" selection-end-line="174" selection-end-column="56" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dapp/webapp/templates/confirm_buy.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="12" column="81" lean-forward="false" selection-start-line="12" selection-start-column="81" selection-end-line="12" selection-end-column="81" />
+        <state relative-caret-position="533">
+          <caret line="62" column="7" lean-forward="true" selection-start-line="62" selection-start-column="7" selection-end-line="62" selection-end-column="7" />
           <folding />
         </state>
       </provider>

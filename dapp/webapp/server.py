@@ -207,7 +207,6 @@ def buyPage():
                                contract_abi=json.dumps(contract_interface['abi']),
                                payment=trip_type_payment
                                )
-	
     print("Somehow was skipped")
     return home()
 
