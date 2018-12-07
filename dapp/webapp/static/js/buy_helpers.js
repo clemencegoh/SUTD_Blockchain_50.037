@@ -1,7 +1,7 @@
 function oneWayTrip(){
     console.log('One way trip selected');
 
-
+    // todo: conversion API here
     // SGD$20
     document.getElementById("payment_amount").innerHTML = "Payment Amount: 50 eth";
 };
@@ -74,16 +74,14 @@ function checkAndRefresh(_flight_rid,
                          _flight_refresh_status_id,
                          _claim_rid,
                          _claim_details){
-    // todo: change this to call actual API
 
     console.log("Received flight details:", _flight_details);
     console.log("Received claim status:", _claim_details);
 
-    var flight_status = "Flight Status: "
-    flight_status += flightAPI(_flight_details[0], _flight_details[1], _flight_details[2])[0];
+    var flight_status = "Flight Status: ";
+    response = flightAPI(_flight_details[0], _flight_details[1], _flight_details[2])[0];
+    flight_status += response[1];
 
-
-    //placeholder for flight status
     document.getElementById(_flight_refresh_status_id).innerHTML = flight_status;
 
     document.getElementById(_claim_rid).innerHTML = _claim_details;

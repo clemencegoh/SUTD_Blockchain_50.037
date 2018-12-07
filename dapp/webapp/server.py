@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, redirect
 from solc import compile_source
 
 app = Flask(__name__)
-app.static_url_path='static/'
+app.static_url_path = 'static/'
 
 contract_source_code = None
 contract_source_code_file = 'contract.sol'
@@ -41,6 +41,11 @@ class User:
         self.claim_status.append(2)
         self.flight_expiry.append(_flight_expiry)
 
+    def checkExistingFlight(self, _flight_ID):
+        if _flight_ID in self.flight_ID:
+            return True
+        return False
+
 
 # global mapping of user addresses to User class
 user_db = {"Anon": User()}
@@ -62,35 +67,6 @@ user_db = {"Anon": User()}
 #     # Contract Object
 #     insurance_contract = w3.eth.contract(address=tx_receipt.contractAddress, abi=contract_interface['abi'])
 #     return insurance_contract, contract_interface
-
-
-# Web Login
-@app.route('/login', methods=['POST', 'GET'])
-def loginPage():
-    if request.method == 'GET':
-        # fresh login, ask for metamask
-        return render_template('login_template.html')
-    if request.method == 'POST':
-        # info passed from frontend, save cookie and sent to main
-        # todo: parse info here
-        print(request.form.get('test-login'))
-
-        uid = request.form.get('test-login')
-        redirect_to_index = redirect('/index')
-        response = app.make_response(redirect_to_index)
-        response.set_cookie('userID', value=uid)
-        return response
-
-
-# buy endpoint for creation of new contract
-@app.route('/buy', methods=['POST'])
-def buyPage():
-    print('A dummy has clicked!')
-
-    # todo: check for multiple contracts of the same flight with the same account
-    #
-
-    return home()
 
 
 # Main page for interacting
@@ -165,6 +141,53 @@ def home():
     # return render_template('template.html',
     #                        contractAddress=current_user.contract_address,
     #                        contractABI=current_user.contract_abi)
+
+
+# Web Login
+@app.route('/login', methods=['POST'])
+def loginPage():
+    # info passed from frontend, save cookie and sent to main
+    print(request.form.get('test-login'))
+
+    uid = request.form.get('test-login')
+    redirect_to_index = redirect('/index')
+    response = app.make_response(redirect_to_index)
+    response.set_cookie('userID', value=uid)
+    return response
+
+
+# buy endpoint for creation of new contract
+@app.route('/buy', methods=['POST'])
+def buyPage():
+    print('A dummy has clicked!')
+
+    # todo: check for multiple contracts of the same flight with the same account
+    global user_db
+    user = request.cookies.get('userID')
+    if user is None:
+        # user is not logged in
+        return home()
+
+    form_details = request.form
+    # todo: parse form details and create contract
+
+    # todo: add flight details here
+    points_gained_from_req = 0
+    flight_details_ID = ["", "", ""]
+
+    if not user_db[user].checkExistingFlight(flight_details_ID):
+        # create new contract
+        # insurance_contract, contract_interface = createNewContract()
+        # user_db[user].newContract(
+        #     _contract_abi=json.dumps(contract_interface['abi']),
+        #     _contract_address=insurance_contract.address.lower(),
+        #     _flight_ID=flight_details_ID,
+        #     _flight_expiry=flight_details_ID[2],
+        #     _points_gained=points_gained_from_req,
+        # )
+        pass
+
+    return home()
 
 
 if __name__ == '__main__':
