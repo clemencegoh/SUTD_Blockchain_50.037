@@ -128,7 +128,6 @@ def home():
                            active_contracts=available_contracts)
 
 
-
 # Web Login
 @app.route('/login', methods=['POST'])
 def loginPage():
@@ -177,6 +176,11 @@ def buyPage():
         reward_points = 10
     user_db[user].loyalty_points += reward_points
 
+    # check that it is eth
+    if selected_payment_method == "Points":
+        user_db[user].loyalty_points -= trip_type_payment
+        trip_type_payment = 0
+
     # todo: uncomment this for the final draft
     # if not user_db[user].checkExistingFlight(flight_details_ID):
     #     # create new contract
@@ -189,7 +193,13 @@ def buyPage():
     #     )
     #
     #     # topup with 200 Wei
-    #     insurance_contract.topUp(transact={'from': w3.eth.accounts[0]}, value=200)
+    #     insurance_contract.topUp(transact={'from': w3.eth.accounts[0], 'value': 200})
+    #
+    #     return render_template('confirm_buy.html',
+    #                            contract_address=insurance_contract.address.lower(),
+    #                            contract_abi=json.dumps(contract_interface['abi']),
+    #                            payment=trip_type_payment
+    #                            )
 
     return home()
 
