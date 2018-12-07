@@ -2,13 +2,14 @@ pragma solidity ^0.4.24;
 
 contract FlightInsurance {
 
-	address public myAddress = 0x63F8Ca14261a495fEEE473B1636e29087D7Cbe8f;
+	address public myAddress;
     address public client;
     uint public amountState;
 	uint public expiryTime;
 	string private flightID;
 
     constructor() public payable {
+        myAddress = msg.sender;  // address is the owner of the server
 		amountState = 2;  // state of claim, should be 2 if unclaimed, 1 if partially claimed, 0 if fully claimed
 	}
 

@@ -3,9 +3,11 @@ var new_contract_fields = {}
 function oneWayTrip(){
     console.log('One way trip selected');
 
-    // todo: conversion API here
     // SGD$20
-    document.getElementById("payment_amount").innerHTML = "Payment Amount: 50 eth";
+    amount = exchangerateAPI("SGD", 20);
+    amount_payable_text = "Payment Amount: " + amount + " eth/100 points"
+
+    document.getElementById("payment_amount").innerHTML = amount_payable_text;
 
     // set choice
     new_contract_fields['trip_type_choice'] = "1-way";
@@ -16,13 +18,13 @@ function twoWayTrip(){
     console.log('Two way trip selected');
 
     // SGD$30
-
-    //todo: conversionAPI for SGD to eth
-    document.getElementById("payment_amount").innerHTML = "Payment Amount: 200 eth";
+    amount = exchangerateAPI("SGD", 30);
+    amount_payable_text = "Payment Amount: " + amount + " eth/150 points"
+    document.getElementById("payment_amount").innerHTML = amount_payable_text;
 
     // set choice
     new_contract_fields['trip_type_choice'] = "2-way";
-    new_contract_fields['trip_type_payment'] = "30";
+    new_contract_fields['trip_type_payment'] = amount;
 };
 
 function checkFlight(_company, _flightID, _date){
@@ -83,6 +85,9 @@ function restAPI(path, params, method){
 };
 
 function testBuy(){
+    // todo: Check fields, alert if any unfilled or wrong
+
+
     restAPI('/buy', new_contract_fields);
 };
 

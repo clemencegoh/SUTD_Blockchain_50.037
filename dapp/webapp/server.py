@@ -33,10 +33,9 @@ class User:
         self.claim_status = []
         self.flight_expiry = []
 
-    def newContract(self, _contract_abi, _contract_address, _flight_ID, _flight_expiry, _points_gained):
+    def newContract(self, _contract_abi, _contract_address, _flight_ID, _flight_expiry):
         self.contract_abi.append(_contract_abi)
         self.contract_address.append(_contract_address)
-        self.loyalty_points += _points_gained
         self.flight_ID.append(_flight_ID)
         self.claim_status.append(2)
         self.flight_expiry.append(_flight_expiry)
@@ -57,12 +56,14 @@ user_db = {"Anon": User()}
 #
 #     contract_compiled = compile_source(contract_source_code)
 #     contract_interface = contract_compiled['<stdin>:FlightInsurance']
-#     FlightInsurance = w3.eth.contract(abi=contract_interface['abi'],
+#     contract = w3.eth.contract(abi=contract_interface['abi'],
 #                               bytecode=contract_interface['bin'])
 #
 #     w3.personal.unlockAccount(w3.eth.accounts[0], '')
-#     tx_hash = FlightInsurance.constructor().transact({'from':w3.eth.accounts[0]})
-#     tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+#     tx_hash = contract.deploy(transaction={'from': w3.eth.accounts[0], 'gas': 410000})
+#     # tx_hash = contract.constructor().transact({'from':w3.eth.accounts[0]})
+#     # tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+#     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
 #
 #     # Contract Object
 #     insurance_contract = w3.eth.contract(address=tx_receipt.contractAddress, abi=contract_interface['abi'])
@@ -87,9 +88,6 @@ def home():
     if user not in user_db:
         # new person, add to db
         user_db[user] = User()
-
-        # todo: remove debug
-        print("New user added to db:", user)
 
     else:
         # construct contracts here
@@ -162,31 +160,47 @@ def buyPage():
     print('Received request...')
 
     # todo: check for multiple contracts of the same flight with the same account
-    # global user_db
-    # user = request.cookies.get('userID')
-    # if user is None:
-    #     # user is not logged in
-    #     return home()
+    global user_db
+    user = request.cookies.get('userID')
+    if user is None:
+        # user is not logged in
+        return home()
 
     form_details = request.form
     # todo: parse form details and create contract
     print("Got form:", form_details)
 
     # todo: add flight details here
-    points_gained_from_req = 0
-    flight_details_ID = ["", "", ""]
+    # don't need this
+    availability = form_details['flight_availability']
+
+    # pass this into template
+    flight_details_ID = form_details['flight_details'].split(',')
+    trip_type_choice = form_details['trip_type_choice']
+    trip_type_payment = form_details['trip_type_payment']
+    selected_payment_method = form_details['selected_payment_method']
+
+    # todo: Check if existing flight and create
+
+    # determine how much loyalty to award
+    if trip_type_choice == '1-way':
+        reward_points = 5
+    else:
+        reward_points = 10
+    user_db[user].loyalty_points += reward_points
 
     # if not user_db[user].checkExistingFlight(flight_details_ID):
-        # create new contract
-        # insurance_contract, contract_interface = createNewContract()
-        # user_db[user].newContract(
-        #     _contract_abi=json.dumps(contract_interface['abi']),
-        #     _contract_address=insurance_contract.address.lower(),
-        #     _flight_ID=flight_details_ID,
-        #     _flight_expiry=flight_details_ID[2],
-        #     _points_gained=points_gained_from_req,
-        # )
-        # pass
+    #     # create new contract
+    #     insurance_contract, contract_interface = createNewContract()
+    #     user_db[user].newContract(
+    #         _contract_abi=json.dumps(contract_interface['abi']),
+    #         _contract_address=insurance_contract.address.lower(),
+    #         _flight_ID=flight_details_ID,
+    #         _flight_expiry=flight_details_ID[2],
+    #     )
+    #
+    #     # topup with 200 Wei
+    #     insurance_contract.topUp(transact={'from': w3.eth.accounts[0]}, value=200)
 
     return home()
 
