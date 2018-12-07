@@ -46,7 +46,7 @@
             window.location.href = '/index'; //relative to domain
         }
 
-        window.addEventListener('load', function() {
+        function startUp() {
             console.log("Starting app!");
             getWeb3(startApp);
         });
@@ -57,7 +57,7 @@
 
 
 </head>
-<body>
+<body onload="startUp()">
     <h1>Please Confirm Payment</h1>
 </body>
 </html>
