@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e6de4882-100f-4c57-9f41-edf9a7839e00" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dapp/webapp/contract.sol" afterPath="$PROJECT_DIR$/dapp/webapp/contract.sol" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dapp/webapp/server.py" afterPath="$PROJECT_DIR$/dapp/webapp/server.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dapp/webapp/static/js/buy_helpers.js" afterPath="$PROJECT_DIR$/dapp/webapp/static/js/buy_helpers.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,8 +28,8 @@
           <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/dapp/webapp/server.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="536">
-                  <caret line="205" column="0" lean-forward="true" selection-start-line="205" selection-start-column="0" selection-end-line="205" selection-end-column="0" />
+                <state relative-caret-position="450">
+                  <caret line="191" column="65" lean-forward="true" selection-start-line="191" selection-start-column="65" selection-end-line="191" selection-end-column="65" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -77,7 +74,7 @@
           <file leaf-file-name="flightAPI.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/dapp/webapp/static/js/flightAPI.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="318">
+                <state relative-caret-position="610">
                   <caret line="63" column="24" lean-forward="true" selection-start-line="63" selection-start-column="24" selection-end-line="63" selection-end-column="24" />
                   <folding />
                 </state>
@@ -540,7 +537,7 @@
       <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="DB Execution Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35307518" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35307518" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30637813" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -889,7 +886,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dapp/webapp/static/js/flightAPI.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
+        <state relative-caret-position="610">
           <caret line="63" column="24" lean-forward="true" selection-start-line="63" selection-start-column="24" selection-end-line="63" selection-end-column="24" />
           <folding />
         </state>
@@ -956,8 +953,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dapp/webapp/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="536">
-          <caret line="205" column="0" lean-forward="true" selection-start-line="205" selection-start-column="0" selection-end-line="205" selection-end-column="0" />
+        <state relative-caret-position="450">
+          <caret line="191" column="65" lean-forward="true" selection-start-line="191" selection-start-column="65" selection-end-line="191" selection-end-column="65" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>

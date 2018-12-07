@@ -83,7 +83,7 @@ def home():
         user = "Anon"
 
         # todo remove this, TESTING ONLY
-        user_db[user].newContract(0, 0, ["SQ", "979", "2018/11/28"], "2018/11/28", 5)
+        user_db[user].newContract(0, 0, ["SQ", "979", "2018/11/28"], "2018/11/28")
 
     if user not in user_db:
         # new person, add to db
@@ -127,18 +127,6 @@ def home():
                            loyalty_points=user_db[user].loyalty_points,
                            active_contracts=available_contracts)
 
-    # insurance_contract, contract_interface = createNewContract()
-
-    # add to db
-    # user_db[user] = User(
-    #     _contract_abi=json.dumps(contract_interface['abi']),
-    #     _contract_address=insurance_contract.address.lower()
-    # )
-
-    # current_user = user_db[user]
-    # return render_template('template.html',
-    #                        contractAddress=current_user.contract_address,
-    #                        contractABI=current_user.contract_abi)
 
 
 # Web Login
@@ -189,6 +177,7 @@ def buyPage():
         reward_points = 10
     user_db[user].loyalty_points += reward_points
 
+    # todo: uncomment this for the final draft
     # if not user_db[user].checkExistingFlight(flight_details_ID):
     #     # create new contract
     #     insurance_contract, contract_interface = createNewContract()
