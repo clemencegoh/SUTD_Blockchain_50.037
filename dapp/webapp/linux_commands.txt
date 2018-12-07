@@ -21,6 +21,6 @@ Commands:
 
 
 2nd terminal:
-	cd SUTD_Blockchain_50.037/dapp/12_src/webapp
+	cd SUTD_Blockchain_50.037/dapp/webapp
 	export PATH=$HOME/.py-solc/solc-v0.4.25/bin:$PATH
 	python server.py
