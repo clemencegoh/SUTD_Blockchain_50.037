@@ -1,6 +1,6 @@
 // Need to add check if flightID dont exist
 
-flightAPI = function(airlineID,flightID,date){
+function flightAPI(airlineID,flightID,date){
     const url = "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flight/status/" + airlineID
               + "/" + flightID + "/arr/" + date +"?appId=ce0bfb9d&appKey=3e8b96e50e47533d6068a1fa42a2fdb6&utc=false"
 
@@ -39,26 +39,25 @@ flightAPI = function(airlineID,flightID,date){
     var actualGateDeparture = new Date(operational_times['actualGateDeparture']['dateLocal']);
     // var testdate = new Date(operational_times['scheduledGateDeparture']['dateLocal']);
     var actualRunwayDeparture = operational_times['actualRunwayDeparture']['dateLocal'];
-  }catch(error){
-    return [availability, 'flight status unavailable'];
-  }
+    }catch(error){
+        return [availability, 'flight status unavailable'];
+    }
 
     var flightstatus = 0;
     var timediff = actualGateDeparture - scheduledGateDeparture;
 
     if (checkcancelled == "C"){
-      flightstatus = "Cancelled"
+        flightstatus = "Cancelled"
     }
     // if >15 minutes, consider delayed
     else if (actualGateDeparture - scheduledGateDeparture >= 900000){
-      flightstatus = "Delayed"
+        flightstatus = "Delayed"
     }
     else{
-      flightstatus = "On-Time"
-      }
-      console.log("Returning status:", flightstatus);
-      return [availability, flightstatus,actualRunwayDeparture];
+        flightstatus = "On-Time"
     }
+    console.log("Returning status:", flightstatus);
+    return [availability, flightstatus,actualRunwayDeparture];
 };
 
 

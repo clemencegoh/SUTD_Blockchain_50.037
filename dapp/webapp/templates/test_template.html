@@ -23,10 +23,7 @@
 			  media="screen" />
 
         <script lang="javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script lang="javascript">
-			console.log("hello world! From test_template");
 
-        </script>
     </head>
     <body class="subpage">
 		<div id="buy-wrapper" class="buy-wrapper">
@@ -39,10 +36,15 @@
 				<input type="text" name="test-login" id="test-login" value="">
 			</form>
 
+			<div id="choice-storage" class="choice-storage">
+
+			</div>
+
 
 			<div id="buy-new-contract_wrapper" class="buy-new-contract_wrapper">
 				<div>
 					<p>Please choose the type of trip:</p>
+
 					<button type='button' onclick="oneWayTrip()"> 1-way trip </button>
 					<button type='button' onclick="twoWayTrip()"> Round trip </button>
 				</div>
@@ -79,15 +81,15 @@
 				<div id="payment-method_component">
 					<!-- Payment method selection -->
 					<p>Please select payment method:</p>
-					<span id="payment-method_selected" style="display: none;"></span>
 					<p id="selected-option_display">Selected Option: None</p>
 
 					<button type='button' onclick="setPaymentOption('ETH')"> ETH </button>
 					<button type='button' onclick="setPaymentOption('Points')"> Loyalty Points </button>
 
 				</div>
-
-				<button type="submit" onclick="testBuy()">Submit Insurance!</button>
+				<div>
+					<button type="submit" onclick="testBuy()">Submit Insurance!</button>
+				</div>
 
 			</div>
 			<hr style="border: 4px solid blue;" />

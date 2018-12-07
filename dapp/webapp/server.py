@@ -159,23 +159,24 @@ def loginPage():
 # buy endpoint for creation of new contract
 @app.route('/buy', methods=['POST'])
 def buyPage():
-    print('A dummy has clicked!')
+    print('Received request...')
 
     # todo: check for multiple contracts of the same flight with the same account
-    global user_db
-    user = request.cookies.get('userID')
-    if user is None:
-        # user is not logged in
-        return home()
+    # global user_db
+    # user = request.cookies.get('userID')
+    # if user is None:
+    #     # user is not logged in
+    #     return home()
 
     form_details = request.form
     # todo: parse form details and create contract
+    print("Got form:", form_details)
 
     # todo: add flight details here
     points_gained_from_req = 0
     flight_details_ID = ["", "", ""]
 
-    if not user_db[user].checkExistingFlight(flight_details_ID):
+    # if not user_db[user].checkExistingFlight(flight_details_ID):
         # create new contract
         # insurance_contract, contract_interface = createNewContract()
         # user_db[user].newContract(
@@ -185,7 +186,7 @@ def buyPage():
         #     _flight_expiry=flight_details_ID[2],
         #     _points_gained=points_gained_from_req,
         # )
-        pass
+        # pass
 
     return home()
 
