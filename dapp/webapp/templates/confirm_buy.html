@@ -34,20 +34,25 @@
         }
 
         function startApp(web3) {
+			console.log("Starting app!");
+		
             var sc_address = "{{contractAddress}}";
             var contractABI = web3.eth.contract(JSON.parse('{{contractABI | safe}}'));
             var contractInstance = contractABI.at(sc_address);
 
             contract = contractInstance;
 
-            contractInstance.setOwner({from: web3.eth.accounts[0], value: {{payment | safe}});
+            contractInstance.setOwner({from: web3.eth.accounts[0], 
+										value: {{payment | safe}}}, function(err, res){
+											console.log(err);
+											console.log(res);
+										});
 
             // redirect back to home
             window.location.href = '/index'; //relative to domain
         }
 
-        function startUp() {
-            console.log("Starting app!");
+        $(document).ready(function() {
             getWeb3(startApp);
         });
 
@@ -57,7 +62,7 @@
 
 
 </head>
-<body onload="startUp()">
+<body>
     <h1>Please Confirm Payment</h1>
 </body>
 </html>

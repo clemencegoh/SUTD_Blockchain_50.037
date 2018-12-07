@@ -203,8 +203,8 @@ def buyPage():
         insurance_contract.functions.topUp().transact({'from': w3.eth.accounts[0], 'value': 200})
     
         return render_template('confirm_buy.html',
-                               contract_address=insurance_contract.address.lower(),
-                               contract_abi=json.dumps(contract_interface['abi']),
+                               contractAddress=insurance_contract.address.lower(),
+                               contractABI=json.dumps(contract_interface['abi']),
                                payment=trip_type_payment
                                )
     print("Somehow was skipped")
