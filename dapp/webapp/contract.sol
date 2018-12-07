@@ -78,6 +78,10 @@ contract FlightInsurance {
         return true;
 	}
 
+	function topUp() payable public returns(bool success){
+	    return true;
+	}
+
 	function killContract() public {
 	    // Returns leftover to main
 	    selfdestruct(myAddress);
