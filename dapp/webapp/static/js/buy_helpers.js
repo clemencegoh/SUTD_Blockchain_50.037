@@ -29,7 +29,13 @@ function twoWayTrip(){
 
 function checkFlight(_company, _flightID, _date){
     console.log('checking flight status for', _company, _flightID, _date);
+    // check if any fields are empty
+    if (_company === 'undefined' || _flightID === 'undefined' || _date === 'undefined'){
+        alert("Insufficient flight details");
+    }
+
     console.log(flightAPI(_company, _flightID, _date));
+
     const status = flightAPI(_company, _flightID, _date);
     var answer = "Flight Availability: ";
     // maybe need to include check that is available but too far in the future

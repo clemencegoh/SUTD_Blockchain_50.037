@@ -23,21 +23,22 @@
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
-.checkflight:hover{
-	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-	font-size: 12px;
+.checkflight{
+	font-size: 12px; 
+	/*box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);*/
+	
 }
 
 .submit {
   display: inline-block;
-  border-radius: 4px;
-  background-color: #f4511e;
+  /*border-radius: 4px;*/
+  background-color: #4CAF50;
   border: none;
   color: #FFFFFF;
   text-align: center;
   font-size: 12px;
   padding: 0px;
-  width: 200px;
+  width: 100px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
