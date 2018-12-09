@@ -49,6 +49,11 @@ class User:
 # global mapping of user addresses to User class
 user_db = {"Anon": User()}
 
+# todo: remove this hardcoded data for testing purposes
+user_db["Anon"].flight_ID = [["testFlight","123","testDate"], ["test2", "2", "date2"]]
+user_db["Anon"].claim_status = [2, 2]
+user_db["Anon"].flight_expiry = [0, 0]
+
 
 def createNewContract():
     with open(contract_source_code_file, 'r') as file:
