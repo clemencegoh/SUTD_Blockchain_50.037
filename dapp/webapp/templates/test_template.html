@@ -71,17 +71,17 @@
     <body class="subpage">
 
 		<div id="buy-wrapper" class="buy-wrapper">
-			<h1>Welcome {{userID | safe}}! Check out console for logs</h1>
-			<h2> Test template is being rendered </h2>
+			<h2>Welcome {{userID | safe}}! Check out console for logs</h2>
+			<h1> Test template is being rendered </h1>
 
 			<!-- For testing ONLY -->
 			<form action="/login" method="post">
 				Trial login functionality:
 				<input type="text" name="test-login" id="test-login" value="">
-				<input type="submit" value="Login!">
+				<input class="buy-wrapper" type="submit" value="Login!">
 			</form>
 		<!-- Trigger/Open The Modal -->
-		<button id="myBtn">New Insurance</button>
+		<button class="button2" id="myBtn">New Insurance</button>
 
 		<!-- The Modal -->
 		<div id="myModal" class="modal">
@@ -91,10 +91,10 @@
 		    <span class="close">&times;</span>
 		    <h2>Please fill in your information</h2>
 		    <div id="buy-new-contract_wrapper" class="buy-new-contract_wrapper">
-				<div class="addspace_wrapper">
-					<p class="nospace_wrapper">Please choose the type of trip:</p>
-					<button type='button' onclick="oneWayTrip()"> 1-way trip </button>
-					<button type='button' onclick="twoWayTrip()"> Round trip </button>
+				<div class="add-space">
+					<p class="no-space">Please choose the type of trip:</p>
+					<button class="button2" type='button' onclick="oneWayTrip()"> 1-way trip </button>
+					<button class="button2" type='button' onclick="twoWayTrip()"> Round trip </button>
 				</div>
 
 				<div id="price-component">
@@ -110,31 +110,31 @@
 					<p id="flight_status">Flight Availability: Unknown</p>
 
 					<form action="javascript:void(0);">
-						<label class="nospace_wrapper" for="_flight_company">Company:</label>
-						<input class="addspace_wrapper" type="text" name="_flight_company" id="_flight_company" placeholder="SQ">
+						<label class="no-space" for="_flight_company">Company:</label>
+						<input class="add-space" type="text" name="_flight_company" id="_flight_company" placeholder="SQ">
 
-						<label class="nospace_wrapper" for="_flight_number">Flight Number:</label>
-						<input class="addspace_wrapper" type="text" name="_flight_number" id="_flight_number" placeholder="391">
+						<label class="no-space" for="_flight_number">Flight Number:</label>
+						<input class="add-space" type="text" name="_flight_number" id="_flight_number" placeholder="391">
 
-						<label class="nospace_wrapper" for="_flight_date">Flight Date:</label>
-						<input class="addspace_wrapper" type="text" name="_flight_date" id="_flight_date" placeholder="YYYY/MM/DD">
+						<label class="no-space" for="_flight_date">Flight Date:</label>
+						<input class="add-space" type="text" name="_flight_date" id="_flight_date" placeholder="YYYY/MM/DD">
 
-						<input class="checkflight" type="submit" value="Check Flight" onclick="checkFlight(
+						<input class="check-flight" type="submit" value="Check Flight" onclick="checkFlight(
 							_flight_company.value,
 							_flight_number.value,
 							_flight_date.value);">
 					</form>
 				</div>
 
-				<div class="addspace_wrapper" id="payment-method_component">
+				<div class="add-space" id="payment-method_component">
 					<!-- Payment method selection -->
-					<p class="nospace_wrapper">Please select payment method:</p>
+					<p class="no-space">Please select payment method:</p>
 					<button class="button2" type='button' onclick="setPaymentOption('ETH')"> ETH </button>
 					<button class="button2" type='button' onclick="setPaymentOption('Points')"> Loyalty Points </button>
 
 				</div>
 				<p id="selected-option_display">Selected Option: None</p>
-				<div>
+				<div class="align-center">
 					<button class="submit" style="vertical-align:middle" type="submit" onclick="testBuy()"><span>Submit Insurance!  </span></button>
 				</div>
 

@@ -11,34 +11,38 @@
     padding: 10px;
 }
 
-.nospace_wrapper {
+.no-space{
 	margin-bottom: 0px;
 }
 
-.addspace_wrapper{
+.add-space{
 	margin-bottom: 2em;
 }
 
 .button2:hover {
-  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  box-shadow: 0 8px 12px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
-.checkflight{
+.check-flight{
 	font-size: 12px; 
 	/*box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);*/
 	
 }
 
+.align-center{
+	align-content: center;
+}
+
 .submit {
   display: inline-block;
   /*border-radius: 4px;*/
-  background-color: #4CAF50;
+  background-color: #1FF893;
   border: none;
   color: #FFFFFF;
   text-align: center;
   font-size: 12px;
-  padding: 0px;
-  width: 100px;
+  /*padding-left: 20px;*/
+  width: 170px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
