@@ -4,6 +4,13 @@
     <p id="{{flight_refresh_status_id | safe}}" class="no-space">Flight Current Status: On-Time</p>
 
     <p id="{{claim_refresh_id | safe}}" class="no-space">Claim status: {{claim_status | safe}}</p>
+	<script>
+		var {{claim_refresh_id | safe}}_abi = '{{contract_abi | safe}}';
+		
+		function get{{claim_refresh_id | safe}}_ABI(){
+			return {{claim_refresh_id | safe}}_abi;
+		}
+	</script>
     <button type="button"
             class="check_status"
             id="check_status"
@@ -14,7 +21,7 @@
             '{{claim_refresh_id | safe}}',
             '{{claim_details | safe}}',
 			'{{contract_address | safe}}',
-			'{{contract_abi | safe}}')">
+			get{{claim_refresh_id | safe}}_ABI())">
         Refresh
     </button>
 </div>
