@@ -1,12 +1,13 @@
 <div id="active-contract" class="active-contract">
-    <p>Contract:</p>
-    <p id="{{flight_refresh_id | safe}}">Flight Details: {{flight_details_perm | safe}}</p>
-    <p id="{{flight_refresh_status_id | safe}}">Flight Current Status: On-Time</p>
+    <p style="background-color:#fffafb">Contract:</p>
+    <p id="{{flight_refresh_id | safe}}" style="background-color:#fffafb">Flight Details: {{flight_details_perm | safe}}</p>
+    <p id="{{flight_refresh_status_id | safe}}" style="background-color:#fffafb">Flight Current Status: On-Time</p>
 
-    <p id="{{claim_refresh_id | safe}}">Claim status: {{claim_status | safe}}</p>
+    <p id="{{claim_refresh_id | safe}}" style="background-color:#fffafb">Claim status: {{claim_status | safe}}</p>
     <button type="button"
             class="check_status"
             id="check_status"
+            style="vertical-align: center"
             onclick="checkAndRefresh('{{flight_refresh_id | safe}}',
             {{flight_details | safe }},
             '{{flight_refresh_status_id | safe}}',
