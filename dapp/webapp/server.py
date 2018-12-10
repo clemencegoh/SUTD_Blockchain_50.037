@@ -65,8 +65,8 @@ def createNewContract():
 
     w3.personal.unlockAccount(w3.eth.accounts[0], '')
     tx_hash = contract.deploy(transaction={'from': w3.eth.accounts[0]})
-    # tx_hash = contract.constructor().transact({'from':w3.eth.accounts[0]})
-    # tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    tx_hash = contract.constructor().transact({'from':w3.eth.accounts[0]})
+    tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
 
     # Contract Object
@@ -157,13 +157,16 @@ def loginPage():
 @app.route('/buy', methods=['POST'])
 def buyPage():
     print('Received request...')
+	
+    redirect_to_index = redirect('/index')
+    response = app.make_response(redirect_to_index)
 
     # todo: check for multiple contracts of the same flight with the same account
     global user_db
     user = request.cookies.get('userID')
     if user is None:
         # user is not logged in
-        return home()
+        return response
 
     form_details = request.form
     # todo: parse form details and create contract
@@ -213,7 +216,7 @@ def buyPage():
                                payment=trip_type_payment
                                )
     print("Somehow was skipped")
-    return home()
+    return response
 
 
 if __name__ == '__main__':

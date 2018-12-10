@@ -16,6 +16,7 @@
 		<script src="{{ url_for('static', filename='js/exchangerateAPI.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/flightAPI.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/buy_helpers.js') }}"></script>
+		
 
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
@@ -75,11 +76,11 @@
 			<h1 style="color:#03254e"> Test template is being rendered </h1>
 
 			<!-- For testing ONLY -->
-			<form action="/login" method="post">
+			<form action="javascript:void(0);">
 				Trial login functionality:
-				<input type="text" name="test-login" id="test-login" value="">
-				<input class="buy-wrapper" type="submit" value="Login!">
+				<button name="login-button" id="login-button" onclick="web3login()">Login!</button>
 			</form>
+			
 			<!-- Trigger/Open The Modal -->
 			<button class="button2" style="margin-bottom:2em" id="myBtn">New Insurance</button>
 

@@ -5,6 +5,7 @@
     <title>Confirm Payment</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}" />
     <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
@@ -36,20 +37,14 @@
         function startApp(web3) {
 			console.log("Starting app!");
 		
-            var sc_address = "{{contractAddress}}";
-            var contractABI = web3.eth.contract(JSON.parse('{{contractABI | safe}}'));
-            var contractInstance = contractABI.at(sc_address);
-			
-			console.log("ContractABI:\n", contractABI);
-			
-            contract = contractInstance;
-			
-			
-			web3.eth.getAccounts(function(error, result) {
+            var sc_address = "0x46764f525e777c7CF1C470AA5F08C069955fb527";
+            
+	
+            web3.eth.getAccounts(function(error, result) {
 				web3.eth.sendTransaction(
 					{from:result[0],
 					to:sc_address,
-					value:  '{{payment | safe}}', 
+					value:  '2002', //200000 Wei
 					// data: "0x06cb4bcd"
 						}, function(err, transactionHash) {
 				  if (!err)
@@ -58,37 +53,11 @@
 			});
 			
 			
-            contractInstance.setOwner(function(err, res){
-											console.log("Error in setting owner:");
-											console.log(err);
-											console.log(res);
-										});
-			
-			
-			// redirect back to home
+			//redirect back to home
             window.location.href = '/index'; //relative to domain
             
         }
 		
-		function listenForClicks (miniToken) {
-
-		  var button = document.querySelector('button.transferFunds')
-		  button.addEventListener('click', function() {
-
-			miniToken.transfer(toAddress, value, { from: addr })
-
-			.then(function (txHash) {
-			  console.log('Transaction sent')
-			  console.dir(txHash)
-
-			  waitForTxToBeMined(txHash)
-			})
-
-			.catch(console.error)
-
-		  })
-
-		}
 
         $(document).ready(function() {
             getWeb3(startApp);
