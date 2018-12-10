@@ -2,7 +2,7 @@ import json
 
 from flask import Flask, render_template, request, redirect
 
-from web3.auto import w3
+# from web3.auto import w3
 from solc import compile_source
 
 app = Flask(__name__)
@@ -53,25 +53,27 @@ user_db = {"Anon": User()}
 user_db["Anon"].flight_ID = [["testFlight","123","testDate"], ["test2", "2", "date2"]]
 user_db["Anon"].claim_status = [2, 2]
 user_db["Anon"].flight_expiry = [0, 0]
+user_db["Anon"].contract_address = ["", ""]
+user_db["Anon"].contract_abi = ["", ""]
 
 
-def createNewContract():
-    with open(contract_source_code_file, 'r') as file:
-        contract_source_code = file.read()
-
-    contract_compiled = compile_source(contract_source_code)
-    contract_interface = contract_compiled['<stdin>:FlightInsurance']
-    contract = w3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
-
-    w3.personal.unlockAccount(w3.eth.accounts[0], '')
-    tx_hash = contract.deploy(transaction={'from': w3.eth.accounts[0]})
-    tx_hash = contract.constructor().transact({'from':w3.eth.accounts[0]})
-    tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-
-    # Contract Object
-    insurance_contract = w3.eth.contract(address=tx_receipt.contractAddress, abi=contract_interface['abi'])
-    return insurance_contract, contract_interface
+# def createNewContract():
+#     with open(contract_source_code_file, 'r') as file:
+#         contract_source_code = file.read()
+#
+#     contract_compiled = compile_source(contract_source_code)
+#     contract_interface = contract_compiled['<stdin>:FlightInsurance']
+#     contract = w3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
+#
+#     w3.personal.unlockAccount(w3.eth.accounts[0], '')
+#     tx_hash = contract.deploy(transaction={'from': w3.eth.accounts[0]})
+#     tx_hash = contract.constructor().transact({'from':w3.eth.accounts[0]})
+#     tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+#     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
+#
+#     # Contract Object
+#     insurance_contract = w3.eth.contract(address=tx_receipt.contractAddress, abi=contract_interface['abi'])
+#     return insurance_contract, contract_interface
 
 
 # Main page for interacting
@@ -134,8 +136,8 @@ def home():
                                                    flight_refresh_status_id=flight_status_name,
                                                    claim_refresh_id=claim_name,
                                                    claim_details=claim_details,
-												   contract_address=contract_address,
-												   contract_abi=contract_abi)
+                                                   contract_address=contract_address,
+                                                   contract_abi=contract_abi)
             available_contracts += "\n"
 
     return render_template('test_template.html',
@@ -161,7 +163,7 @@ def loginPage():
 @app.route('/buy', methods=['POST'])
 def buyPage():
     print('Received request...')
-	
+
     redirect_to_index = redirect('/index')
     response = app.make_response(redirect_to_index)
 
@@ -201,25 +203,25 @@ def buyPage():
         trip_type_payment = 0
 
     # todo: uncomment this for the final draft
-    if not user_db[user].checkExistingFlight(flight_details_ID):
-        # create new contract
-        insurance_contract, contract_interface = createNewContract()
-        user_db[user].newContract(
-            _contract_abi=json.dumps(contract_interface['abi']),
-            _contract_address=insurance_contract.address.lower(),
-            _flight_ID=flight_details_ID,
-            _flight_expiry=flight_details_ID[2],
-        )
+    # if not user_db[user].checkExistingFlight(flight_details_ID):
+    #     # create new contract
+    #     insurance_contract, contract_interface = createNewContract()
+    #     user_db[user].newContract(
+    #         _contract_abi=json.dumps(contract_interface['abi']),
+    #         _contract_address=insurance_contract.address.lower(),
+    #         _flight_ID=flight_details_ID,
+    #         _flight_expiry=flight_details_ID[2],
+    #     )
 
         # topup with 1 ether
-        insurance_contract.functions.topUp().transact({'from': w3.eth.accounts[0], 
-		'value': 1000000000000000000})
+        # insurance_contract.functions.topUp().transact({'from': w3.eth.accounts[0],
+        #                                                'value': 1000000000000000000})
 
-        return render_template('confirm_buy.html',
-                               contractAddress=insurance_contract.address.lower(),
-                               contractABI=json.dumps(contract_interface['abi']),
-                               payment=trip_type_payment
-                               )
+        # return render_template('confirm_buy.html',
+        #                        contractAddress=insurance_contract.address.lower(),
+        #                        contractABI=json.dumps(contract_interface['abi']),
+        #                        payment=trip_type_payment
+        #                        )
     print("Somehow was skipped")
     return response
 
