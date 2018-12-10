@@ -1,9 +1,9 @@
 <div id="active-contract" class="active-contract">
-    <p style="background-color:#fffafb">Contract:</p>
-    <p id="{{flight_refresh_id | safe}}" style="background-color:#fffafb">Flight Details: {{flight_details_perm | safe}}</p>
-    <p id="{{flight_refresh_status_id | safe}}" style="background-color:#fffafb">Flight Current Status: On-Time</p>
+    <p class="no-space">Contract:</p>
+    <p id="{{flight_refresh_id | safe}}" class="no-space">Flight Details: {{flight_details_perm | safe}}</p>
+    <p id="{{flight_refresh_status_id | safe}}" class="no-space">Flight Current Status: On-Time</p>
 
-    <p id="{{claim_refresh_id | safe}}" style="background-color:#fffafb">Claim status: {{claim_status | safe}}</p>
+    <p id="{{claim_refresh_id | safe}}" class="no-space">Claim status: {{claim_status | safe}}</p>
     <button type="button"
             class="check_status"
             id="check_status"
@@ -16,3 +16,8 @@
         Refresh
     </button>
 </div>
+
+<div class:"add-space">
+    <h3> </h3>
+</div>
+
