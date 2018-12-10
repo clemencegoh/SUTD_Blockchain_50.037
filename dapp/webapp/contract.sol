@@ -5,7 +5,6 @@ contract FlightInsurance {
 	address public myAddress;
     address public client;
     uint public amountState;
-	uint public expiryTime;
 	string private flightID;
 
     constructor() public payable {
@@ -14,61 +13,59 @@ contract FlightInsurance {
 	}
 
 	// This is called when client checks on contract
-	function claim(uint _full_amount, uint _part_amount, uint _code) public {
+	function claim(uint _full_amount, uint _part_amount, uint _code, bool end) public {
 		/*
-		* Code 1: claim cancelled amount
-		* Code 2: claim delay amount
+		* Code 0: claim cancelled amount
+		* Code 1: claim delayed amount
+		* Code 2: normal
 		*/
-		if(_code == 1){
-			if(amountState == 2){
-			    if (viewBalance() >= _part_amount){
-    				// give part amount
-    				amountState = 1;
-    				client.transfer(_part_amount);
-			    }else{
-			        // amount too little - not sure what to do
-					selfdestruct(client);
-			    }
+		
+		if (end){
+			// flight has landed or past the date
+			killContract();
+			return;
+		}
+		
+		if (_code != 2){
+			if (_code == 0){
+				if (amountState == 2){
+					// full claim
+					client.transfer(_full_amount);
+					killContract();
+					return;
+				}
+				else if (amountState == 1){
+					// claim the rest
+					client.transfer(_full_amount - _part_amount);
+					killContract();
+					return;
+				}else{
+					// amount state should never be 0, error catch
+					killContract();
+					return;
+				}
+			} else if (_code == 1){
+				if (amountState == 2){
+					// partial claim
+					client.transfer(_part_amount);
+					return;
+				}else if (amountState == 1) {
+					// already claimed, do nothing
+					return;
+				}else{
+					// do nothing - this should not happen
+					return;
+				}
 			}
 		}
-		else if(_code == 2){
-			if (amountState == 2){
-			    if (viewBalance() >= _full_amount){
-			        // give full amount
-    				amountState = 0;
-    				client.transfer(_full_amount);
-			    }
-
-			} else if (amountState == 1){
-			    if (viewBalance() >= (_full_amount- _part_amount)){
-			        // give remaining
-    				amountState = 0;
-    				client.transfer(_full_amount - _part_amount);
-			    }
-			}
-		}
-		else{
-		    // Code 0 only, kill contract
-		    killContract();
-		}
-
 	}
 
-
-	function setFlight(uint _expiryTime, string _flightID) public {
-		expiryTime = _expiryTime;
+	function setFlight(string _flightID) public {
 		flightID = _flightID;
 	}
 
 	function getFlight() view public returns(string){
 		return(flightID);
-	}
-
-	function checkStatus(uint _timenow) view public returns(bool){
-		if (_timenow >= expiryTime){
-			return(true);
-		}
-		return(false);
 	}
 
 	function () payable public {

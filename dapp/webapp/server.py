@@ -112,6 +112,8 @@ def home():
             claim_name = common_name + "_cid"
             flight_status_name = common_name + "fsid"
             flight_details = ""
+            contract_address = user_obj.contract_address[i]
+            contract_abi = user_obj.contract_abi[i]
 
             for j in range(len(fid[i])):
                 flight_details += fid[i][j]
@@ -131,7 +133,9 @@ def home():
                                                    flight_details=fid[i],
                                                    flight_refresh_status_id=flight_status_name,
                                                    claim_refresh_id=claim_name,
-                                                   claim_details=claim_details)
+                                                   claim_details=claim_details,
+												   contract_address=contract_address,
+												   contract_abi=contract_abi)
             available_contracts += "\n"
 
     return render_template('test_template.html',
@@ -207,8 +211,9 @@ def buyPage():
             _flight_expiry=flight_details_ID[2],
         )
 
-        # topup with 200 Wei
-        insurance_contract.functions.topUp().transact({'from': w3.eth.accounts[0], 'value': 200})
+        # topup with 1 ether
+        insurance_contract.functions.topUp().transact({'from': w3.eth.accounts[0], 
+		'value': 1000000000000000000})
 
         return render_template('confirm_buy.html',
                                contractAddress=insurance_contract.address.lower(),
