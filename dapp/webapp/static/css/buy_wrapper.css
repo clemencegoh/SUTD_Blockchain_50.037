@@ -12,32 +12,11 @@
 }
 
 .header {
-  	background-color: #2C666E;
+  	/*background-color: #2C666E;*/
+  	color:#03254e;
   	text-align: center;
   	padding: 20px;
   	width: 1200px;
-}
-
-/* Style the top navigation bar */
-.topnav {
-  overflow: hidden;
-  background-color: #90ddf0;
-}
-
-/* Style the topnav links */
-.topnav button {
-  float: left;
-  display: block;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-/* Change color on hover */
-.topnav button:hover {
-  background-color: #ddd;
-  color: black;
 }
 
 .background{
@@ -45,8 +24,11 @@
 }
 
 .active-contract{
-	border:10px;
+	background-color: #f4fffd;
+	border:2px solid;
 	padding:2px;
+	align-items: center;
+	align-content: center;
 }
 
 .column {
@@ -92,6 +74,10 @@
 	/*box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);*/
 }
 
+.check_status{
+	background-color: #1FF893;
+}
+
 .align-center{
 	align-content: center;
 }
@@ -104,7 +90,7 @@
 .submit {
   display: inline-block;
   /*border-radius: 4px;*/
-  background-color: #1FF893;
+  /*background-color: #1FF893;*/
   border: none;
   color: #FFFFFF;
   text-align: center;

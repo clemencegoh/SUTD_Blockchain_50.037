@@ -69,10 +69,10 @@
         <script lang="javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
     </head>
-    <body class="subpage" style="background-color:#131515">
+    <body class="subpage" style="background-color:#FFFFFF">
 
 		<div id="buy-wrapper" class="buy-wrapper">
-			<h2 class="header" style="color:#03254e">Welcome {{userID | safe}}! Check out console for logs</h2>
+			<h2 class="header">Welcome {{userID | safe}}! Check out console for logs</h2>
 			<h1 style="color:#03254e"> Test template is being rendered </h1>
 
 			<!-- For testing ONLY -->
@@ -82,7 +82,7 @@
 			</form>
 			
 			<!-- Trigger/Open The Modal -->
-			<button class="button2" id="myBtn">New Insurance</button>
+			<button class="button2" style="margin-bottom:2em" id="myBtn">New Insurance</button>
 
 			<!-- The Modal -->
 			<div id="myModal" class="modal">
@@ -90,7 +90,7 @@
 			  <!-- Modal content -->
 			  <div class="modal-content">
 			    <span class="close">&times;</span>
-			    <h2>Please fill in your information</h2>
+			    <h2 style="color: #03254e">Please fill in your information</h2>
 			    <div id="buy-new-contract_wrapper" class="buy-new-contract_wrapper">
 					<div class="add-space">
 						<p class="no-space">Please choose the type of trip:</p>
@@ -176,16 +176,15 @@
 				<div id="choice-storage" class="choice-storage">
 
 				</div>
+			<!-- <hr class="no-space" style="border: 4px navy blue;" /> -->
+			<div>
+					<h3 class="center-no-space" style="color:#03254e">Active Contracts</h3>
+					<!-- <hr class="no-top-space" style="border: 4px navy blue;" /> -->
+					<div id="active-contracts">
+						{{active_contracts | safe}}
+					</div>
+			</div>
 			
-		</div>
-
-		<hr class="no-space" style="border: 4px navy blue;" />
-		<div class="buy-new-contract_wrapper" style="color:#03254e">
-				<h3 class="center-no-space" style="color:#03254e">Active Contracts</h3>
-				<hr class="no-top-space" style="border: 4px navy blue;" />
-				<div class="column"id="active-contracts">
-					{{active_contracts | safe}}
-				</div>
 		</div>
 
 
