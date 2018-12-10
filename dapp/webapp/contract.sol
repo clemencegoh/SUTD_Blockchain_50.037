@@ -27,6 +27,7 @@ contract FlightInsurance {
     				client.transfer(_part_amount);
 			    }else{
 			        // amount too little - not sure what to do
+					selfdestruct(client);
 			    }
 			}
 		}

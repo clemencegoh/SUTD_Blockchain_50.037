@@ -7,11 +7,14 @@ function oneWayTrip(){
     amount = exchangerateAPI("SGD", 20);
     amount_payable_text = "Payment Amount: " + amount + " eth/100 points"
 
+	// Convert to Wei
+	wei = amount * 1000000000000000000
+
     document.getElementById("payment_amount").innerHTML = amount_payable_text;
 
     // set choice
     new_contract_fields['trip_type_choice'] = "1-way";
-    new_contract_fields['trip_type_payment'] = "20";
+    new_contract_fields['trip_type_payment'] = wei;
 };
 
 function twoWayTrip(){
@@ -19,12 +22,16 @@ function twoWayTrip(){
 
     // SGD$30
     amount = exchangerateAPI("SGD", 30);
+	
+	// Convert to Wei
+	wei = amount * 1000000000000000000
+	
     amount_payable_text = "Payment Amount: " + amount + " eth/150 points"
     document.getElementById("payment_amount").innerHTML = amount_payable_text;
 
     // set choice
     new_contract_fields['trip_type_choice'] = "2-way";
-    new_contract_fields['trip_type_payment'] = amount;
+    new_contract_fields['trip_type_payment'] = wei;
 };
 
 function checkFlight(_company, _flightID, _date){
@@ -57,6 +64,19 @@ function checkFlight(_company, _flightID, _date){
     // update form
     new_contract_fields['flight_details'] = [_company, _flightID, _date];
     new_contract_fields['flight_availability'] = set_status;
+	
+	var today = getDate();
+	
+	var date_selected = new_contract_fields['flight_details'][2];
+	console.log(today);
+	var t = today.split("/")
+	var d = date_selected.split('/')
+	for (i = 0; i<t.length;i++){
+		if (t[i] < d[i]){
+			alert("Please enter valid date");
+		}
+	}
+	
 };
 
 function setPaymentOption(_method){
@@ -90,9 +110,43 @@ function restAPI(path, params, method){
     form.submit();
 };
 
+
+function getDate(){
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1; //January is 0!
+	var yyyy = today.getFullYear();
+
+	if(dd<10) {
+		dd = '0'+dd
+	} 
+
+	if(mm<10) {
+		mm = '0'+mm
+	} 
+
+	today = yyyy + '/' + mm + '/' + dd;
+	return today;
+}
+
+
 function testBuy(){
     // todo: Check fields, alert if any unfilled or wrong
-
+	var today = getDate();
+	
+	var date_selected = new_contract_fields['flight_details'][2];
+	console.log(today);
+	var t = today.split("/")
+	var d = date_selected.split('/')
+	for (i = 0; i<t.length;i++){
+		if (t[i] < d[i]){
+			alert("Please enter valid date");
+			// todo: uncomment this
+			// return;
+		}
+		
+	}
+	
 
     restAPI('/buy', new_contract_fields);
 };
@@ -116,3 +170,30 @@ function checkAndRefresh(_flight_rid,
 };
 
 
+function web3login(){
+	// Load WEB3
+	// Check wether it's already injected by something else (like Metamask or Parity Chrome plugin)
+	if(typeof web3 !== 'undefined') {
+		web3 = new Web3(web3.currentProvider);  
+
+	// Or connect to a node
+	} else {
+		web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+	}
+
+	// Check the connection
+	if(!web3.isConnected()) {
+		console.error("Not connected");
+
+	}
+
+	var account = web3.eth.accounts[0];
+	var accountInterval = setInterval(function() {
+	  if (web3.eth.accounts[0] !== account) {
+		account = web3.eth.accounts[0];
+		document.getElementById("address").innerHTML = account;
+	  }
+	}, 100);
+	
+	restAPI('/login', {'test-login': account}, 'POST');
+}
