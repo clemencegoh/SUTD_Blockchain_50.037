@@ -151,105 +151,105 @@ function testBuy(){
     restAPI('/buy', new_contract_fields);
 };
 
-function checkAndRefresh(_flight_rid,
-                         _flight_details,
-                         _flight_refresh_status_id,
-                         _claim_rid,
-                         _claim_details,
-						 _contract_address,
-						 _contract_abi){
+// function checkAndRefresh(_flight_rid,
+//                          _flight_details,
+//                          _flight_refresh_status_id,
+//                          _claim_rid,
+//                          _claim_details,
+// 						 _contract_address,
+// 						 _contract_abi){
 
-    console.log("Received flight details:", _flight_details);
-    console.log("Received claim status:", _claim_details);
+//     console.log("Received flight details:", _flight_details);
+//     console.log("Received claim status:", _claim_details);
 	
-	checkLogin();
+// 	checkLogin();
 
-    var flight_status = "Flight Status: ";
-    response = flightAPI(_flight_details[0], _flight_details[1], _flight_details[2]);
-    flight_status += response[1];
+//     var flight_status = "Flight Status: ";
+//     response = flightAPI(_flight_details[0], _flight_details[1], _flight_details[2]);
+//     flight_status += response[1];
 
-    document.getElementById(_flight_refresh_status_id).innerHTML = flight_status;
+//     document.getElementById(_flight_refresh_status_id).innerHTML = flight_status;
 
-    document.getElementById(_claim_rid).innerHTML = _claim_details;
+//     document.getElementById(_claim_rid).innerHTML = _claim_details;
 	
-	// execute checks:
-	// check time - update end bool
-	var _end = true;
-	var today = getDate();
+// 	// execute checks:
+// 	// check time - update end bool
+// 	var _end = true;
+// 	var today = getDate();
 	
-	var date_selected = _flight_details[2];
+// 	var date_selected = _flight_details[2];
 	
-	var t = today.split("/")
-	var d = date_selected.split('/')
+// 	var t = today.split("/")
+// 	var d = date_selected.split('/')
 	
-	for (i = 0; i<t.length;i++){
-		if (t[i] < d[i]){
-			end = false;
-		}
-	};
+// 	for (i = 0; i<t.length;i++){
+// 		if (t[i] < d[i]){
+// 			end = false;
+// 		}
+// 	};
 	
-	// check flight status - update claim
-	var _code = 2;
-	if (response[1] == "On-Time"){
-		_code = 2;
-	}
-	else if (response[1] == "Delayed"){
-		_code = 1;
-	}
-	else if (response[1] == "Cancelled"){
-		_code = 0;
-	}
+// 	// check flight status - update claim
+// 	var _code = 2;
+// 	if (response[1] == "On-Time"){
+// 		_code = 2;
+// 	}
+// 	else if (response[1] == "Delayed"){
+// 		_code = 1;
+// 	}
+// 	else if (response[1] == "Cancelled"){
+// 		_code = 0;
+// 	}
 	
-	// update full amount and part amount
-	// SGD 5000
-	var _full_amt = exchangerateAPI("SGD",5000);
-	_full_amt = _full_amt * 1000000000000000000;
+// 	// update full amount and part amount
+// 	// SGD 5000
+// 	var _full_amt = exchangerateAPI("SGD",5000);
+// 	_full_amt = _full_amt * 1000000000000000000;
 	
-	// SGD 200
-	var _part_amt = exchangerateAPI("SGD", 200);
-	_part_amt = _part_amt * 1000000000000000000;
+// 	// SGD 200
+// 	var _part_amt = exchangerateAPI("SGD", 200);
+// 	_part_amt = _part_amt * 1000000000000000000;
 	
-	var sc_address = _contract_address;
-	var contractABI = web3.eth.contract(JSON.parse(_contract_abi));
-	var contractInstance = contractABI.at(sc_address);
+// 	var sc_address = _contract_address;
+// 	var contractABI = web3.eth.contract(JSON.parse(_contract_abi));
+// 	var contractInstance = contractABI.at(sc_address);
 	
 	
-	contractInstance.claim(_full_amt, _part_amt, _code, _end, function(err, res){
-		console.log("Error in refreshing claim:");
-		console.log(err);
-		console.log(res);
-	});
+// 	contractInstance.claim(_full_amt, _part_amt, _code, _end, function(err, res){
+// 		console.log("Error in refreshing claim:");
+// 		console.log(err);
+// 		console.log(res);
+// 	});
 	
-};
+// };
 
-function checkLogin(){
-	// Load WEB3
-	// Check wether it's already injected by something else (like Metamask or Parity Chrome plugin)
-	if(typeof web3 !== 'undefined') {
-		web3 = new Web3(web3.currentProvider);  
+// function checkLogin(){
+// 	// Load WEB3
+// 	// Check wether it's already injected by something else (like Metamask or Parity Chrome plugin)
+// 	if(typeof web3 !== 'undefined') {
+// 		web3 = new Web3(web3.currentProvider);  
 
-	// Or connect to a node
-	} else {
-		web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-	}
+// 	// Or connect to a node
+// 	} else {
+// 		web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+// 	}
 
-	// Check the connection
-	if(!web3.isConnected()) {
-		console.error("Not connected");
-	}
-}
+// 	// Check the connection
+// 	if(!web3.isConnected()) {
+// 		console.error("Not connected");
+// 	}
+// }
 
 
-function web3login(){
-	checkLogin();
+// function web3login(){
+// 	checkLogin();
 
-	var account = web3.eth.accounts[0];
-	var accountInterval = setInterval(function() {
-	  if (web3.eth.accounts[0] !== account) {
-		account = web3.eth.accounts[0];
-		document.getElementById("address").innerHTML = account;
-	  }
-	}, 100);
+// 	var account = web3.eth.accounts[0];
+// 	var accountInterval = setInterval(function() {
+// 	  if (web3.eth.accounts[0] !== account) {
+// 		account = web3.eth.accounts[0];
+// 		document.getElementById("address").innerHTML = account;
+// 	  }
+// 	}, 100);
 	
-	restAPI('/login', {'test-login': account}, 'POST');
-}
+// 	restAPI('/login', {'test-login': account}, 'POST');
+// }
