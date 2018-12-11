@@ -20,13 +20,20 @@ function QRAPI(qrfile){
    // console.log(typeof detail);
    // console.log(flight);
    // Split into airline ID and flight number in a LIST
-	var regexStr = flight.match(/[a-z]+|[^a-z]+/gi);
-	var airlineID = regexStr[0];
-	var flightnumber = regexStr[1];
+	// var regexStr = flight.match(/[a-z]+|[^a-z]+/gi);
+	// var airlineID = regexStr[0];
+	// var flightnumber = regexStr[1];
+   var split = flight.split(" ");
+   var airlineID = split[0]
+   var flightnumber = split[1]
+   var flightdate = split[2]
 	console.log(airlineID);
 	console.log(flightnumber);
+   console.log(flightdate);
    document.getElementById('_flight_company').value = airlineID;
    document.getElementById('_flight_number').value = flightnumber;
+   document.getElementById('_flight_date').value = flightdate;
+
    
    
    // return (airlineID,flightnumber);
