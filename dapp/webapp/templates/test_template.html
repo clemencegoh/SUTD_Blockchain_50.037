@@ -14,7 +14,9 @@
 		<script src="{{ url_for('static', filename='js/exchangerateAPI.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/flightAPI.js') }}"></script>
 		<script src="{{ url_for('static', filename='js/buy_helpers.js') }}"></script>
+		<script src="{{ url_for('static', filename='qr/callQR.js') }}"></script>
 		
+		<!-- <script src="callQR.js" type="text/javascript"></script> -->
 		<style>
 		body {font-family: Arial, Helvetica, sans-serif;}
 
@@ -98,10 +100,22 @@
 					<div id="loyalty-points_component">
 						<p> Current Loyalty points: {{loyalty_points | safe}}</p>
 					</div>
+					
 
+					
+					
 					<div id="flight-status_component">
 						<!-- Checking of flight status -->
 						<p id="flight_status">Flight Availability: Unknown</p>
+
+						<!-- allow option to check flight statyus with qr code -->
+						
+						<form action = "javascript:void(0);">
+						Please upload QR code with flight details: <input type="file" name="qrfile">
+
+					<input type="submit" value="Check with QR Code" onclick="QRAPI(qrfile);">
+					</form>
+
 
 						<form action="javascript:void(0);">
 							<label class="no-space" for="_flight_company">Company:</label>

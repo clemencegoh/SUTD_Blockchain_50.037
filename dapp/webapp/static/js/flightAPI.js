@@ -8,7 +8,8 @@ function flightAPI(airlineID,flightID,date){
     // var json = require('JSON');
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET",url,false)
-    xhttp.setRequestHeader('Content-Type','application/json')
+    // xhttp.setRequestHeader('Content-Type','application/json');
+    // xhttp.setRequestHeader('Allow-Control-Allow-Origin','*');
     xhttp.send();
 
     if (xhttp.status != 200){

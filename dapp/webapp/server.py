@@ -2,7 +2,7 @@ import json
 
 from flask import Flask, render_template, request, redirect
 
-from web3.auto import w3
+# from web3.auto import w3
 from solc import compile_source
 
 app = Flask(__name__)
@@ -65,7 +65,7 @@ def createNewContract():
     contract_interface = contract_compiled['<stdin>:FlightInsurance']
     contract = w3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
 
-    w3.personal.unlockAccount(w3.eth.accounts[0], '')
+    # w3.personal.unlockAccount(w3.eth.accounts[0], '')
     tx_hash = contract.deploy(transaction={'from': w3.eth.accounts[0]})
     tx_hash = contract.constructor().transact({'from':w3.eth.accounts[0]})
     tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
@@ -212,7 +212,7 @@ def buyPage():
         )
 
         # topup with 1 ether
-        insurance_contract.functions.topUp().transact({'from': w3.eth.accounts[0],
+        # insurance_contract.functions.topUp().transact({'from': w3.eth.accounts[0],
                                                        'value': 1000000000000000000})
 
         return render_template('confirm_buy.html',
