@@ -64,8 +64,11 @@ function checkFlight(_company, _flightID, _date){
     console.log(month);
     console.log(year);
     //check if flight date has passed
-    if (input_year < year || input_month < month || input_day < day){
-    	console.log('flight date has passed, purchase not valid')
+    if (input_year < year && input_month < month && input_day < day){
+    	console.log('flight date has passed, purchase not valid');
+
+    	document.getElementById('flight_status').innerHTML = "Unavailable";
+
     }else{
     	console.log(flightAPI(_company, _flightID, _date));
 
