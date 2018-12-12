@@ -41,41 +41,65 @@ function checkFlight(_company, _flightID, _date){
         alert("Insufficient flight details");
     }
 
-    console.log(flightAPI(_company, _flightID, _date));
+    var date_selected = new_contract_fields['flight_details'][2];
+	
+	console.log(date_selected);
 
-    var curr_status = flightAPI(_company, _flightID, _date);
-    var answer = "Flight Availability: ";
-    // maybe need to include check that is available but too far in the future
-    // (No scheduledGateDeparture)
-    var set_status = "unavailable";
-    if (curr_status[1] === "flight status unavailable"){
-        if (curr_status[0] === true){
-            answer += "Available, further status will be updated";
-            set_status = "Available";
-        }else{
-            answer += "Unavailable";
-        }
-    }else if (curr_status[0] === true){
-        answer+= "Available";
-        set_status = "Available";
+	var input_split = date_selected.split("/")
+	var input_year = input_split[0];
+	var input_month = input_split[1];
+	var input_day = input_split[2];
+
+    var today = new Date();
+    var day = today.getDate();
+    var month = today.getMonth() + 1;
+    var year = today.getFullYear();
+
+    //check if flight date has passed
+    if (input_year <= year){
+    	if (input_month <= month){
+    		if (input_day <= day){
+
+    			console.log(flightAPI(_company, _flightID, _date));
+
+			    var curr_status = flightAPI(_company, _flightID, _date);
+			    var answer = "Flight Availability: ";
+			    // maybe need to include check that is available but too far in the future
+			    // (No scheduledGateDeparture)
+			    var set_status = "unavailable";
+			    if (curr_status[1] === "flight status unavailable"){
+			        if (curr_status[0] === true){
+			            answer += "Available, further status will be updated";
+			            set_status = "Available";
+			        }else{
+			            answer += "Unavailable";
+			        }
+			    }else if (curr_status[0] === true){
+			        answer+= "Available";
+			        set_status = "Available";
+			    }
+			    document.getElementById('flight_status').innerHTML = answer;
+
+			    // update form
+			    new_contract_fields['flight_details'] = [_company, _flightID, _date];
+			    new_contract_fields['flight_availability'] = set_status;
+	
+				// 	var today = getDate();
+	
+				// var date_selected = new_contract_fields['flight_details'][2];
+				// console.log(today);
+				// var t = today.split("/")
+				// var d = date_selected.split('/')
+				// for (i = 0; i<t.length;i++){
+				// 	if (t[i] < d[i]){
+				// 		alert("Please enter valid date");
+				// 	}
+				// }
+    		}
+    	}
     }
-    document.getElementById('flight_status').innerHTML = answer;
 
-    // update form
-    new_contract_fields['flight_details'] = [_company, _flightID, _date];
-    new_contract_fields['flight_availability'] = set_status;
-	
-	var today = getDate();
-	
-	var date_selected = new_contract_fields['flight_details'][2];
-	console.log(today);
-	var t = today.split("/")
-	var d = date_selected.split('/')
-	for (i = 0; i<t.length;i++){
-		if (t[i] < d[i]){
-			alert("Please enter valid date");
-		}
-	}
+    
 	
 }
 
