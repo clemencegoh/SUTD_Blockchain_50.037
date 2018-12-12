@@ -96,6 +96,7 @@ def home():
     if user not in user_db:
         # new person, add to db
         user_db[user] = User()
+        user_db[user].loyalty_points = 150
         return render_template('test_template.html',
                            userID=user,
                            loyalty_points=user_db[user].loyalty_points,
