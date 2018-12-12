@@ -41,6 +41,11 @@ function checkFlight(_company, _flightID, _date){
         alert("Insufficient flight details");
     }
 
+    // update form
+	new_contract_fields['flight_details'] = [_company, _flightID, _date];
+    new_contract_fields['flight_availability'] = set_status;
+	
+
     var date_selected = new_contract_fields['flight_details'][2];
 	
 	console.log(date_selected);
@@ -55,12 +60,14 @@ function checkFlight(_company, _flightID, _date){
     var month = today.getMonth() + 1;
     var year = today.getFullYear();
 
+    console.log(day);
+    console.log(month);
+    console.log(year);
     //check if flight date has passed
-    if (input_year <= year){
-    	if (input_month <= month){
-    		if (input_day <= day){
-
-    			console.log(flightAPI(_company, _flightID, _date));
+    if (input_year < year || input_month < month || input_day < day){
+    	console.log('flight date has passed, purchase not valid')
+    }else{
+    	console.log(flightAPI(_company, _flightID, _date));
 
 			    var curr_status = flightAPI(_company, _flightID, _date);
 			    var answer = "Flight Availability: ";
@@ -80,10 +87,7 @@ function checkFlight(_company, _flightID, _date){
 			    }
 			    document.getElementById('flight_status').innerHTML = answer;
 
-			    // update form
-			    new_contract_fields['flight_details'] = [_company, _flightID, _date];
-			    new_contract_fields['flight_availability'] = set_status;
-	
+			 
 				// 	var today = getDate();
 	
 				// var date_selected = new_contract_fields['flight_details'][2];
@@ -95,8 +99,6 @@ function checkFlight(_company, _flightID, _date){
 				// 		alert("Please enter valid date");
 				// 	}
 				// }
-    		}
-    	}
     }
 
     
